@@ -1,0 +1,10 @@
+file : ~/hgrc
+
+[ui]
+username = Guoxiong Li <lgxbslgx@gmail.com>
+
+[http_proxy]
+host = http://127.0.0.1:12333
+#passwd = root
+#user = root
+#always = True
