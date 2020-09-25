@@ -1,6 +1,11 @@
 [user]
-        name = Guoxiong Li
-        email = lgxbslgx@gmail.com
+    name = Guoxiong Li
+    email = lgxbslgx@gmail.com
+[credential]
+    helper = store
 
 [http]
-        proxy = http://127.0.0.1:12333
+    sslVerify = false
+    proxy = http://127.0.0.1:12333
+    proxyAuthMethod = basic
+    postBuffer = 4000000000    
