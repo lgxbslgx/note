@@ -11,7 +11,8 @@
 - git
 - mercurial
 - gcc
+- make
 
 ## source code in linux
-- linux kernel
+- linux kernel main
 - openjdk : jdk8/9 using mercurial and jdk10-16 using git
