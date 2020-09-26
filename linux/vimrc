@@ -1,0 +1,7 @@
+file : ~/.vimrc or /etc/vim/vimrc
+
+set number
+set showmode
+set showcmd
+set tabstop=4
+set shiftwidth=4
