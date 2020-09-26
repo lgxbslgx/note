@@ -1,4 +1,4 @@
-file : ~/hgrc
+file : ~/.hgrc
 
 [ui]
 username = Guoxiong Li <lgxbslgx@gmail.com>
