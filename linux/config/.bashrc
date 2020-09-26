@@ -1,9 +1,9 @@
 file : ~/.bashrc
 
-http_proxy="http://root:root@192.168.0.108:9998"
+http_proxy="http://127.0.0.1:12333"
 export http_proxy
-https_proxy="http://root:root@192.168.0.108:9998"
+https_proxy="http://127.0.0.1:12333"
 export https_proxy
-ALL_PROXY="http://root:root@192.168.0.108:9998"
+ALL_PROXY="http://127.0.0.1:12333"
 export ALL_PROXY
 
