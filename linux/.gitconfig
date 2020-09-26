@@ -1,0 +1,6 @@
+[user]
+        name = Guoxiong Li
+        email = lgxbslgx@gmail.com
+
+[http]
+        proxy = http://127.0.0.1:12333
