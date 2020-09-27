@@ -1,0 +1,39 @@
+#!/bin/bash
+
+if [[ "$1" == "8-dev" ]]; then
+	sudo update-alternatives --set java /home/lgx/source/java/jdk8u-dev/build/linux-x86_64-normal-server-release/images/j2sdk-image/bin/java
+	java -version
+
+elif [[ "$1" == "11-dev" ]]; then
+	sudo update-alternatives --set java /home/lgx/source/java/jdk11u-dev/build/linux-x86_64-normal-server-release/images/jdk/bin/java
+	java -version
+
+elif [[ "$1" == "12-dev" ]]; then
+	sudo update-alternatives --set java /home/lgx/source/java/jdk12u/build/linux-x86_64-server-release/images/jdk/bin/java
+	java -version
+
+elif [[ "$1" == "13-dev" ]]; then
+	sudo update-alternatives --set java /home/lgx/source/java/jdk13u/build/linux-x86_64-server-release/images/jdk/bin/java
+	java -version
+
+elif [[ "$1" == "14-dev" ]]; then
+	sudo update-alternatives --set java /home/lgx/source/java/jdk14u/build/linux-x86_64-server-release/images/jdk/bin/java
+	java -version
+
+elif [[ "$1" == "15-dev" ]]; then
+	sudo update-alternatives --set java /home/lgx/source/java/jdk15u/build/linux-x86_64-server-release/images/jdk/bin/java
+	java -version
+
+elif [[ "$1" == "dev" ]]; then
+	sudo update-alternatives --set java /home/lgx/source/java/jdk/build/linux-x86_64-server-release/images/jdk/bin/java
+	java -version
+
+elif [[ "$1" == "8" ]]; then
+	sudo update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
+	java -version
+
+elif [[ "$1" == "11" ]]; then
+	sudo update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java
+	java -version
+
+fi

@@ -1,0 +1,10 @@
+# Introduction
+Some useful scripts.
+
+# Usage
+- Change the mode of scripts to 'executable'.
+	chmod +x scriptName
+
+- Move the scripts to '/usr/local/bin/'.
+	mv scriptFile /usr/local/bin/
+
