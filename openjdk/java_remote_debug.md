@@ -7,7 +7,7 @@
 ## Implement
 -Server options
 	'''
-	java -agentlib:jdwp=transport=dt_socket,server=y,suspend=[yn],address=*:5005 -m jdk.compiler/com.sun.tools.javac.launcher.Main  Hello.java
+	java -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005 -m jdk.compiler/com.sun.tools.javac.launcher.Main  Hello.java
 	'''
 
 -Client options
