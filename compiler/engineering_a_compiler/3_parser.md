@@ -31,5 +31,5 @@
 - Table driven.
 
 ### BUilding LR(1) tables
-- Don't read carefully.ii TODO
+- Don't read carefully.// TODO
 
