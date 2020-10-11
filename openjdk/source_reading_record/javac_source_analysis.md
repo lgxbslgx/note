@@ -21,22 +21,23 @@
 
 ## compile procedure
 ### Scanner(lexer, use tokenizer and UnicodeReader) and Parser. 
-- Goal: Generate AST(abstract syntax trees, A compileUnit per file)
+- Goal: Generate AST(abstract syntax trees, A CompilationUnit means a source file)
 - Input: source file
-- Output: AST
+- Output: AST.
 - procedure
 	- com.sun.tools.javac.main.JavaCompiler.parseFiles() and parse()
 	- Create Scanner(Lexer) and  Parser parser
 	- parser.parseCompilationUnit()
 
 ### Semantics. Enter. 
-- Goal: Create symbol table.
+- Goal: Scan trees for class and member declarations, and initialize symbols and validates annotations.
 - Input: AST
-- Output: A *todo* list, containing trees that need to be analyzed and have class files generated. An entry of todo list means a class.
+- Output: A *todo* list and input files list.
+	- The todo list contains 'Env<AttrContext<>>' that need to be analyzed and be used to generate class files later. An entry of todo list means a top level class or interface.
 - procecdure
 	- com.sun.tools.javac.main.JavaCompiler.enterTrees()
-	- Enter.uncompleted  MemberEnter(1)
-	- MemberEnter.halfcompleted  MemberEnter(2)
+	- Enter.uncompleted  MemberEnter(1) // TODO don't understand
+	- MemberEnter.halfcompleted  MemberEnter(2) // TODO don't understand
 	- To Do list
 
 ### Annotation processing. JavacProcessingEnvironment.
