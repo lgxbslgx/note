@@ -30,15 +30,18 @@
 	- parser.parseCompilationUnit()
 
 ### Semantics. Enter. 
-- Goal: Scan trees for class and member declarations, and initialize symbols and validates annotations.
+- Goal: Scan trees for class and member declarations, and initialize symbols and validates annotations. Enter symbol for all encountered definintions into the symbol table. Get all types of the corresponding classes and members.
 - Input: AST
-- Output: A *todo* list and input files list.
+- Output: A *todo* list and symbols.
 	- The todo list contains 'Env<AttrContext<>>' that need to be analyzed and be used to generate class files later. An entry of todo list means a top level class or interface.
 - procecdure
 	- com.sun.tools.javac.main.JavaCompiler.enterTrees()
-	- Enter.uncompleted  MemberEnter(1) // TODO don't understand
-	- MemberEnter.halfcompleted  MemberEnter(2) // TODO don't understand
-	- To Do list
+	- classEnter: Enter all classes, and construct uncompleted list. Return the types of the classes. All the class symbol are entered into enclosing scope. Generate uncompleted classes list.
+	- typeEnter(memberEnter): complete all uncompleted classes and the members of the class. Generate todo list.
+		- ImportPhase
+		- HierarchyPhase
+		- HeaderPhase
+		- MembersPhase
 
 ### Annotation processing. JavacProcessingEnvironment.
 - Goal: Process annotation.
