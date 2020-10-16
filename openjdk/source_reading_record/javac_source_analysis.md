@@ -30,18 +30,20 @@
 	- parser.parseCompilationUnit()
 
 ### Semantics. Enter. 
-- Goal: Scan trees for class and member declarations, and initialize symbols and validates annotations. Enter symbol for all encountered definintions into the symbol table. Get all types of the corresponding classes and members.
+- Goal: Scan trees for class and member class declarations, and initialize symbols and validates annotations. Enter symbol for all encountered definintions into the symbol table. Get all types of the corresponding classes.
 - Input: AST
 - Output: A *todo* list and symbols.
-	- The todo list contains 'Env<AttrContext<>>' that need to be analyzed and be used to generate class files later. An entry of todo list means a top level class or interface.
+	- The todo list contains 'Env<AttrContext<>>' that need to be analyzed and be used to generate class files later. An entry of todo list means a class or interface.
 - procecdure
 	- com.sun.tools.javac.main.JavaCompiler.enterTrees()
 	- classEnter: Enter all classes, and construct uncompleted list. Return the types of the classes. All the class symbol are entered into enclosing scope. Generate uncompleted classes list.
 	- typeEnter(memberEnter): complete all uncompleted classes and the members of the class. Generate todo list.
 		- ImportPhase
-		- HierarchyPhase
+		- HierarchyPhase: Add default superclass Object.
+		- PermitsPhase
 		- HeaderPhase
-		- MembersPhase
+		- RecordPhase
+		- MembersPhase: Add default constructor. Add `this` and `super` to symbol table. MemberEnter.
 
 ### Annotation processing. JavacProcessingEnvironment.
 - Goal: Process annotation.
@@ -54,9 +56,10 @@
 ### Semantics. Code Analysis. Attr(check, Infer, Resolve) and Flow.
 - Goal: Analyse the syntax trees
 - Input: todo list, AST
-- Output: todo list, AST
+- Output: todo list, AST(Attributed tree)
 - procedure
 	- Attr(check, Infer, Resolve) analyzes names and expressions.
+		- Attr and Enter cooperate and call each other.
 	- Flow performs static program flow analysis. It checks reachability, definite assignment, definite unassignment.
 
 ### Code Simplification. Desugar. Lower, TransTypes, TreeTranslator.
