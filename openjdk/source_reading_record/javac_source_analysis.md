@@ -56,7 +56,7 @@
 ### Semantics. Code Analysis. Attr(check, Infer, Resolve) and Flow.
 - Goal: Analyse the syntax trees
 - Input: todo list, AST
-- Output: todo list, AST(Attributed tree)
+- Output: AST(Attributed tree), Env list
 - procedure
 	- Attr(check, Infer, Resolve) analyzes names and expressions.
 		- Attr and Enter cooperate and call each other.
@@ -64,15 +64,15 @@
 
 ### Code Simplification. Desugar. Lower, TransTypes, TreeTranslator.
 - Goal: Analyse the syntax trees
-- Input: todo list, AST
-- Output: todo list, AST
+- Input: AST(Attributed tree), Env list
+- Output: AST(Attributed tree), Env list
 - procedure
 	- Lower converts “syntactic sugar” constructions into simpler code. This includes inner classes, class literals, assertions, foreach loops, strings in switch, etc.
 	- TransTypes eliminates (erases) generics from the program.
 
 ### Code generation. Gen, Code, Pool, CRTable, ClassWriter.
 - Goal: Code generation. Generate class files.
-- Input: todo list, AST
+- Input: AST(Attributed tree), Env list
 - Output: class files
 
 
