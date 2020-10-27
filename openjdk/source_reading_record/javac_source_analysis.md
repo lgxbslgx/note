@@ -65,14 +65,14 @@
 ### Code Simplification. Desugar. Lower, TransTypes, TreeTranslator.
 - Goal: Analyse the syntax trees
 - Input: AST(Attributed tree), Env list
-- Output: AST(Attributed tree), Env list
+- Output: pair(Env, classDesc) list
 - procedure
 	- Lower converts “syntactic sugar” constructions into simpler code. This includes inner classes, class literals, assertions, foreach loops, strings in switch, etc.
 	- TransTypes eliminates (erases) generics from the program.
 
 ### Code generation. Gen, Code, Pool, CRTable, ClassWriter.
 - Goal: Code generation. Generate class files.
-- Input: AST(Attributed tree), Env list
+- Input: pair(Env, classDesc) list
 - Output: class files
 
 
