@@ -1,8 +1,5 @@
 ## The Garbage Collection
 
-### reachable analysis
-
-
 ### garbage collection algorithms
 - Mark-sweep. 
 	- Mark is a procedure that traverses object graph(depth-first or width-first) and sets the marked bit. Sweep traverses object list linearly to free unreachable objects and unset the marked bit.
@@ -21,13 +18,27 @@
 		- Compute the new location and store in object header. Scan and free pointer.
 		- Update references of roots and live objects.
 		- Move live objects.
-	- Threaded compaction.
-		- Update forward references. Threading the roots, unthreading roots, threading all objects.
-		- Update backward references. Unthreading all objects.
-	- One-pass algorithm.
+	- Threaded compaction. Two pass and sliding. Don't need additional space.
+		- Update forward references. Threading the roots, unthreading forward references, threading all objects.
+		- Update backward references. Unthreading backward references, move objects.
+		- the method I think: 1.threading roots and all the objects. 2.unthreading all the objects and move objects.
+	- One-pass algorithm. Use bitmap and offset vector.
+		- Compute Locations. Get the offset vector. Don't need to traverse all the objects. It uses the bitmap which is created in marking stage.
+		- Update references.
 
-- Copying. 
+- Copying. Semispaces. Fast Allocation and elimination of fragmentation. One pass and don't need additional spaces. Need twice spaces.
+	- According to roots and  worklist, copy objects to another semispaces. Use free and scan pointer.
+
 - Reference counting. 
+	- Add reference count when a object reference another object. And delete reference count when a object no longer reference another object. If the count of a object becomes zero, the object will be freed.
+	- Deferral reference counting. Use zero count table.
+	- Coalescing reference counting. Log the dirty object at the first time. // TODO
+	- Buffering reference counting. // TODO
+	- Cyclic reference counting.
+		- Use tracing collection.
+		- Trial deletion. Mark candidates(grey), scan(black, white), collect candidates(white). // TODO
+
+### Comparing common garbage collector
 
 
 ### Collectors in OpenJDK
