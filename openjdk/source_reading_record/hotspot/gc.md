@@ -1,6 +1,6 @@
 ## The Garbage Collection
 
-### garbage collection algorithms
+### Common garbage collection algorithms
 - Mark-sweep. 
 	- Mark is a procedure that traverses object graph(depth-first or width-first) and sets the marked bit. Sweep traverses object list linearly to free unreachable objects and unset the marked bit.
 	- Tricolor. Black, grey, white.
@@ -38,8 +38,20 @@
 		- Use tracing collection.
 		- Trial deletion. Mark candidates(grey), scan(black, white), collect candidates(white). // TODO
 
-### Comparing common garbage collector
+### Comparing garbage collector
+- Throughput
+- Pause time
+- Space
 
+### Advanced topics
+- Allocate memory.
+	- Sequential allocation. Free-list Allocation(first-fit, next-fit, best-fit). Use balanced binary tree or bitmap to speed. Use segregated-fit(multi list) to speed. 
+- Partitioning and generational. 
+	- Two generation: yound(new) and old(tenured) generation. minor(nrusery) collection and majot(full) collection.
+	- Remembered set saves the inter-generational porinters.
+- Parallel // TODO
+- Concurrent // TODO
+- Real-time // TODO
 
 ### Collectors in OpenJDK
 
