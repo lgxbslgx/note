@@ -39,15 +39,21 @@
 		- Trial deletion. Mark candidates(grey), scan(black, white), collect candidates(white). // TODO
 
 ### Comparing garbage collector
-- Throughput
-- Pause time
+- Time
+	- Throughput
+	- Pause time
+	- Frequency of collection
+	- Promptness
 - Space
+	- Additional Space
+	- Footprint
 
 ### Advanced topics
 - Allocate memory.
 	- Sequential allocation. Free-list Allocation(first-fit, next-fit, best-fit). Use balanced binary tree or bitmap to speed. Use segregated-fit(multi list) to speed. 
 - Partitioning and generational. 
-	- Two generation: yound(new) and old(tenured) generation. minor(nrusery) collection and majot(full) collection.
+	- Two generations: yound(new) and old(tenured) generation. minor(nrusery) collection and majot(full) collection.
+	- Multi generations.
 	- Remembered set saves the inter-generational porinters.
 - Parallel // TODO
 - Concurrent // TODO
@@ -55,7 +61,40 @@
 
 ### Collectors in OpenJDK
 
+#### Generatios
+- young(new) generation
+- old(tenured) generation
+- permanent generation(metaspace after JDK8)
 
-### The usage of collector
+#### Collection types
+- Minor collection(young generation collection)
+- Full collection(major collection): collect young, old and permanent generations. But CMS don't collect young generation. And the permanent generation is not exist after JDK8.
 
+#### Collectors
+- serial collector: young and old ccollections are done serially, in a stop-the-world fashion.
+	- Young generation: copying
+	- Old generation: mark-sweep-compact. sliding. Actually it is a mark-compact algorithm.
+	- Usage: default collector in client-class vm. Or use -XX:+UseSerialGC.
+
+- Parallel(throughput) collector: stop-the-world.
+	- Young generation: parallel copying.
+	- Old generation: serial mark-sweep-compact before jdk8, parallel mark-compact after jdk8.
+	- Usage: default collectors in server-class vm. Or use -XX:+UseParallelGC. Before JDK8, use -XX:+UseParallelOldGC to enable parallel mark-compat in old generation. But after JDK8, the parallel old collection is enabled when use -XX:UseParallelGC.
+
+- Concurrent Mark-Sweep (CMS) collector
+	- Young generation: parallel copying. ParNew.
+	- Old generation: concurrent mark sweep. Init marking(STW), concurrent marking, remark(STW), concurrent sweep. It don't compact.
+	- Usage: -XX:+UseConcMarKSweepGC
+
+- G1
+
+- Epsilon: no-op garbage collector
+
+- shenandoah
+
+- ZGC
+
+
+### The more usage of collector
+- // TODO
 
