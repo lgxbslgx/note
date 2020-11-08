@@ -71,7 +71,7 @@
 - Full collection(major collection): collect young, old and permanent generations. But CMS don't collect young generation. And the permanent generation is not exist after JDK8.
 
 #### Collectors
-- serial collector: young and old ccollections are done serially, in a stop-the-world fashion.
+- serial collector: young and old collections are done serially, in a stop-the-world fashion.
 	- Young generation: copying
 	- Old generation: mark-sweep-compact. sliding. Actually it is a mark-compact algorithm.
 	- Usage: default collector in client-class vm. Or use -XX:+UseSerialGC.
@@ -87,10 +87,21 @@
 	- Usage: -XX:+UseConcMarKSweepGC
 
 - G1
+	- Data structure: Remember Set, Card table, Collection set, previous and next bitmap, previous and next top at mark start(TAMS), 
+	- Initial Marking(STW)
+		- Clear the next marking bitmap.
+		- STW and then mark all objects from the roots.
+	- Concurrent Marking
+	- Final Marking(remark)(STW)
+		- Drain the mark stack
+		- Complete log buffer
+	- Cleanup
+	- Evacuation
 
 - Epsilon: no-op garbage collector
 
 - shenandoah
+
 
 - ZGC
 
