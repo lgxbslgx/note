@@ -87,7 +87,24 @@
 	- Usage: -XX:+UseConcMarKSweepGC
 
 - G1
-	- Data structure: Remember Set, Card table, Collection set, previous and next bitmap, previous and next top at mark start(TAMS), 
+	- Data structure: 
+		- heap regions
+		- remember set(A logical Rset pre region. A set or hashtable of cards.): Store the location which point to this region. 
+		- card table(heap 512byte:1byte card): 
+		- remember set log
+		- collection set
+		- previous and next bitmap(64bit:1bit)
+		- previous and next top at mark start(TAMS)
+	- Init when create vm
+		- init arguments
+			- heap region size: limit size 1M-32M, suggested count 2048(GrainBytes, GrainWords, LogOfHRGrainBytes, LogOfHRGrainWords, CardsPerRegion, LogCardsPerRegion, G1HeapRegionSize)
+			- rem set size(fine-grain, sparse)
+			- alignment(SpaceAlignment, HeapAlignment)
+			- heap size and alignment(max 3g, min 8m, init 186m)
+		- initialize heap
+			- create g1CollectedHeap
+			- get heap start address and end address(ReservedSpace, memRegion)
+			- create card table
 	- Initial Marking(STW)
 		- Clear the next marking bitmap.
 		- STW and then mark all objects from the roots.
