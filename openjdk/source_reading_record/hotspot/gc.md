@@ -91,20 +91,42 @@
 		- heap regions
 		- remember set(A logical Rset pre region. A set or hashtable of cards.): Store the location which point to this region. 
 		- card table(heap 512byte:1byte card): 
-		- remember set log
+		- marking buffer(one buffer per thread)
+		- global marking buffer
+		- remember set log buffer(a buffer per thread)
+		- global rem set buffer
+		- hot queue
 		- collection set
-		- previous and next bitmap(64bit:1bit)
+		- previous and next marking bitmap(64bit:1bit)
+		- mark stack
 		- previous and next top at mark start(TAMS)
-	- Init when create vm
+	- Init when creating vm
 		- init arguments
 			- heap region size: limit size 1M-32M, suggested count 2048(GrainBytes, GrainWords, LogOfHRGrainBytes, LogOfHRGrainWords, CardsPerRegion, LogCardsPerRegion, G1HeapRegionSize)
 			- rem set size(fine-grain, sparse)
 			- alignment(SpaceAlignment, HeapAlignment)
 			- heap size and alignment(max 3g, min 8m, init 186m)
-		- initialize heap
+		- initialize heap and additional data
 			- create g1CollectedHeap
 			- get heap start address and end address(ReservedSpace, memRegion)
 			- create card table
+			- create barrier set
+			- create hot card cache
+			- create previous and next bitmap
+			- create remember set
+			- create block offset table
+		- init gc related threads
+			- create gc work gang and worker and create gc thread(GangWorker, GC Thread#0)
+			- create concurrent mark thread(G1ConcurrentMarkThread extends ConcurrentGCThread, G1 main marker)
+			- create concurrent work and create thread(GangWorker, G1 conc#0)
+			- create concurrent refinement(G1ConcurrentRefine extends ConcurrentGCThread, G1 refine#0)
+			- initialize service hread(G1ServiceThread, G1 service)
+		- init other
+			- G1DirtyCardQueueSet
+			- dummy HeapRegion
+			- G1MonitoringSupport
+			- G1StringDedup
+			- _collection_set
 	- Initial Marking(STW)
 		- Clear the next marking bitmap.
 		- STW and then mark all objects from the roots.
