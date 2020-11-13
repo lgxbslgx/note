@@ -3,7 +3,8 @@
 #### 段位
 - OpenJDK Lead			荣耀
 - Group Lead			王者
-- OpenJDK Member		星耀
+- OpenJDK Member
+  or Project Lead		星耀 
 - Group Member			钻石
 - Project Reviewer		铂金
 - Project Committer		黄金
