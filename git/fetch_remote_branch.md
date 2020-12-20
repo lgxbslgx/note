@@ -1,0 +1,2 @@
+- git fetch origin dev
+- git checkout -b dev(本地分支名称) origin/dev(远程分支名称)
