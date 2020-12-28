@@ -1,0 +1,4 @@
+- git checkout JDK-8254023
+- git apply patch-name
+- git add
+- git commit -m "Info"
