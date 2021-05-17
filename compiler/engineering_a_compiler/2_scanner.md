@@ -60,5 +60,8 @@
 - Hand-coded scanner. Use code to reduce the overhead of the interfaces between the scanner and the rest of the system.
 
 
-## Kleene's Constrruction. DFA --> RE
-- Can't Understand.
+## Kleene's Construction. DFA --> RE
+- Dynamic programming.
+
+## Brzozowski NFA -> minimal DFA
+- reachable(subset(reverse(reachable(subset(reverse(n))))))
