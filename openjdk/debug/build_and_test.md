@@ -13,10 +13,14 @@
 	- build all the code and generate the complete jdk
 - `make clean`
 	- clean the old build
-- `sh bin/idea.sh`
-	- generate some files to support the Intellij IDE
-	- java program can be debugged by using IDEA
-	- hotspot(c/c++) can be debugged by using CLion
+- `make compile-commands`
+    - generate compilation data for Clion or other IDE
+- Coding c/c++
+	- `cp build/linux-x86_64-server-fastdebug/compile_commands.json .`
+	- Clion: `Open`->`Select dir`->`Select compile_commands.json`->`Open As Project`
+- Coding java
+	- `sh bin/idea.sh`
+	- IDEA: `Open`->`Select dir`
 
 ### test
 - `make test TEST="some test target"`
