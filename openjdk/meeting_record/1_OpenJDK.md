@@ -20,7 +20,7 @@
 - [bug系统](https://bugs.openjdk.java.net) 你们现在没有帐号，只能看bug，不能新建bug和评论。等你们贡献了2、3个补丁，就可以申请帐号了。
 - [代码review系统](https://github.com/openjdk/jdk/pulls) 以前很复杂，JDK16之后就是Github的Pull Request。现在除了JDK8之外，其他的版本都在Github上面。
 - [wiki](https://wiki.openjdk.java.net/) 一些额外的文档，内容较多，有空或者用到再看。
-- 社区交流例子1：别人认领的任务你有解决方案，要征求认领人的意见。反面教材：[jdk/pull/4902](https://github.com/openjdk/jdk/pull/4902#pullrequestreview-714499097) 正面教材： [issue-8267610](https://github.com/openjdk/jdk/pull/4902#pullrequestreview-714499097)
+- 社区交流例子1：别人认领的任务你有解决方案，要征求认领人的意见。反面教材：[jdk/pull/4902](https://github.com/openjdk/jdk/pull/4902#pullrequestreview-714499097) 正面教材： [issue-8267610](https://bugs.openjdk.java.net/browse/JDK-8267610)
 - 社区交流例子2：对别人的代码提出意见要委婉，尊重别人的思想和劳动成果，并且把采纳权交给对方（这也是我留在OpenJDK的原因）。正面教材：[jdk/pull/1490](https://github.com/openjdk/jdk/pull/1490#pullrequestreview-540865636) 反面教材：[pull/23811](https://github.com/spring-projects/spring-framework/pull/23811) [commit/dc59e50](https://github.com/spring-projects/spring-framework/commit/dc59e50561eeaedbc6f7a50d8703d627be2c6847)
 
 
