@@ -1,9 +1,18 @@
 ### maven主要运行过程
 
-整体流程: Launcher->MavenCli->DefaultMaven->LifecycleStarter->Builder(SingleThreadedBuilder、MultiThreadedBuilder)->LifecycleModuleBuilder->MojoExecutor->BuildPluginManager->执行具体的Mojo
+#### 整体流程 
+Launcher->
+MavenCli->
+DefaultMaven->
+LifecycleStarter->
+Builder(SingleThreadedBuilder、MultiThreadedBuilder)->
+LifecycleModuleBuilder->
+MojoExecutor->
+BuildPluginManager->
+执行具体的Mojo
 
 
-
+#### 具体流程
 - 从plexus开始启动（maven的bin和boot目录）
   boot目录的plexus-classworlds包添加到classpath， 使用java命令，启动主类plexus-classworlds-2.6.0.jar!/org/codehaus/plexus/classworlds/launcher/Launcher
 
