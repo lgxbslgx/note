@@ -1,0 +1,4 @@
+file: ~/.profile
+
+PATH="$PATH:/home/lgx/install/apache-maven-3.6.3/bin:/home/lgx/install/gradle-7.2/bin"
+
