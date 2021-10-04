@@ -8,7 +8,7 @@
 - Local(a basic block)
 - Regional(multiple block, extended basic block EBB)
 - Global(intraprocedural, a full procedure)
-- Interprocedura(whole-program, universal)
+- Interprocedural(whole-program, universal)
 
 #### Local optimization
 - Local value numbering(LVN): find and eliminate redundancies.
@@ -35,14 +35,14 @@
 - Loop Unrolling
     - 循环展开。使得 循环变量每次递增一个大的数量，而且循环内部的代码成复制性增加。
 
-#### Gobal Optimization
+#### Global Optimization
 - 全局数据流分析（查找未初始化的变量）
     - 先求每个模块的LiveOut集合，该集合表示在后继的模块中活跃的变量（被使用的变量）。
         - LiveOut(n) = U (UEVar(m) | (LiveOut(m) && ~VarKill(m)) )
-        - UEVar: upward-explosed variable 前面（上层）模块定义的变量，该模块使用;
+        - UEVar: upward-exposed variable 前面（上层）模块定义的变量，该模块使用;
         - VarKill: 定义在该模块的变量
         - 1. 构建控制流图CFG
-        - 2. 计算各个模块的UEvar和VarKill
+        - 2. 计算各个模块的UEVar和VarKill
         - 3. 根据公式迭代计算LiveOut，直到各个集合到达不动点（一次迭代后没变化）
     - 寻找未初始化的变量
         - liveout里面都是潜在的未初始化变量
