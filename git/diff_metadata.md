@@ -1,5 +1,5 @@
 ## 使用git diff显示的数据分析
-- 命令 `git -c core.quotePath=false diff --cached  --patch --find-copies-harder --binary --raw`
+- 命令 `git -c core.quotePath=false diff --cached  --patch --find-renames=90% --find-copies=90% --find-copies-harder --topo-order --binary --raw -c --combined-all-paths --raw --no-abbrev --unified=0 --no-color`
 
 
 ### 类型
