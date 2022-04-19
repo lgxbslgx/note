@@ -24,8 +24,8 @@ CompilerInstance.cpp::ExecuteAction
 FrontendAction.cpp::Execute
 FrontendAction.cpp::ASTFrontendAction::ExecuteAction
 ParseAST.cpp::ParseAST
-Parse.cpp::ParseTopLevelDecl 词法、语法、语义分析
-CodeGenAction.cpp::HandleTopLevelDecl 中间代码（LLVM IR）生成
+Parse.cpp::ParseTopLevelDecl (-dump-raw-tokens) 预处理（-E）、词法(-dump-tokens)、语法(-ast-dump)、语义分析(没有找到命令)
+CodeGenAction.cpp::HandleTopLevelDecl 中间代码（LLVM IR）生成(-emit-llvm -S 生成LLIR汇编文件.ll) （-emit-llvm -c 生成LLIR字节码文件.bc）
   ModuleBuilder.cpp::HandleTopLevelDecl
   CodeGenModule.cpp::EmitTopLevelDecl\EmitGlobal\EmitGlobalDefinition\EmitGlobalFunctionDefinition
     CodeGenFunction.cpp::GenerateCode\EmitFunctionBody
