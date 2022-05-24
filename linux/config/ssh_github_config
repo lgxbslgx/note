@@ -1,0 +1,8 @@
+# ~/.ssh/config
+Host github.com
+    Hostname ssh.github.com
+    ProxyCommand nc -X connect -x 127.0.0.1:12333  %h %p
+    Port 443
+    ServerAliveInterval 20
+    User git
+
