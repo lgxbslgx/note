@@ -206,7 +206,7 @@ BOOKIE_CONF=/home/lgx/install/pulsar-cluster/bk1/conf/bookkeeper.conf \
 BOOKIE_LOG_CONF=/home/lgx/install/pulsar-cluster/bk1/conf/log4j2.yaml \
 BOOKIE_CONF=/home/lgx/install/pulsar-cluster/bk1/conf/bookkeeper.conf \
 /home/lgx/source/java/pulsar/bin/bookkeeper shell simpletest \
---ensemble 3 --writeQuorum 3 --ackQuorum 3 --numEntries 3
+--ensemble 3 --writeQuorum 2 --ackQuorum 2
 
 // 停止bookkeeper
 BOOKIE_LOG_DIR=/home/lgx/install/pulsar-cluster/bk1/log \
@@ -333,7 +333,7 @@ mkdir -p client/log
 // 复制配置文件
 cp apache-pulsar/conf/ client -r
 
-// broker1修改配置文件
+// client修改配置文件
 vim client/conf/client.conf
 webServiceUrl=http://127.0.0.1:8880/
 
