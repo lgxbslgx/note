@@ -55,6 +55,19 @@ mvn test -pl pulsar-broker -Dinclude=org/apache/pulsar/**/*.java
 PULSAR_EXTRA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,address=*:5005,suspend=y" bin/pulsar standalone
 ```
 
+调试sql-worker
+```
+vim conf/presto/jvm.config
+// jvm.config文件中添加
+-agentlib:jdwp=transport=dt_socket,server=y,address=*:50i05,suspend=y
+// 运行
+bin/pulsar sql-worker run
+
+// 如果是主线代码，直接运行
+bin/pulsar sql-worker run \
+-J-agentlib:jdwp=transport=dt_socket,server=y,address=*:50i05,suspend=y
+```
+
 调试其他命令
 ```
 PULSAR_EXTRA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,address=*:5005,suspend=y" bin/pulsar <Pulsar子命令名>

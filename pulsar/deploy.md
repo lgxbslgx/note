@@ -369,6 +369,37 @@ PULSAR_CLIENT_CONF=/home/lgx/install/pulsar-cluster/client/conf/client.conf \
 /home/lgx/source/java/pulsar/bin/pulsar-client consume my-topic -s "first-subscription"
 ```
 
+Pulsar SQL 运行
+```shell
+// 创建目录
+cd /home/lgx/install/pulsar-cluster
+mkdir -p sql
+
+// 复制配置文件
+cp apache-pulsar/conf/ sql -r
+
+// 修改配置文件
+vim sql/conf/presto/catalog/pulsar.properties
+pulsar.web-service-url=http://127.0.0.1:8880,127.0.0.1:8881,127.0.0.1:8882
+pulsar.zookeeper-uri=127.0.0.1:2181,127.0.0.1:2182,127.0.0.1:2183
+vim sql/conf/presto/config.properties
+http-server.http.port=8085
+discovery.uri=http://localhost:8085
+
+// 运行sql-worker
+PULSAR_LOG_DIR=/home/lgx/install/pulsar-cluster/sql/log \
+PULSAR_LOG_CONF=/home/lgx/install/pulsar-cluster/sql/conf/log4j2.yaml \
+PULSAR_PRESTO_CONF=/home/lgx/install/pulsar-cluster/sql/conf/presto \
+/home/lgx/source/java/pulsar/bin/pulsar sql-worker run
+
+// 运行sql
+PULSAR_LOG_DIR=/home/lgx/install/pulsar-cluster/sql/log \
+PULSAR_LOG_CONF=/home/lgx/install/pulsar-cluster/sql/conf/log4j2.yaml \
+PULSAR_PRESTO_CONF=/home/lgx/install/pulsar-cluster/sql/conf/presto \
+/home/lgx/source/java/pulsar/bin/pulsar sql
+
+```
+
 ## 多集群部署
 // TODO
 [多集群部署](https://pulsar.apache.org/docs/next/deploy-bare-metal-multi-cluster/)
