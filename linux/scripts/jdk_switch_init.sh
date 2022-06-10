@@ -16,5 +16,7 @@ sudo update-alternatives --install /usr/bin/java java /home/lgx/source/java/jdk1
 
 sudo update-alternatives --install /usr/bin/java java /home/lgx/source/java/jdk17u/build/linux-x86_64-server-release/images/jdk/bin/java 1080
 
+sudo update-alternatives --install /usr/bin/java java /home/lgx/source/java/jdk18u/build/linux-x86_64-server-release/images/jdk/bin/java 1080
+
 sudo update-alternatives --install /usr/bin/java java /home/lgx/source/java/jdk/build/linux-x86_64-server-release/images/jdk/bin/java 1080
 

@@ -32,6 +32,10 @@ elif [[ "$1" == "17-dev" ]]; then
 	sudo update-alternatives --set java /home/lgx/source/java/jdk17u/build/linux-x86_64-server-release/images/jdk/bin/java
 	java -version
 
+elif [[ "$1" == "18-dev" ]]; then
+	sudo update-alternatives --set java /home/lgx/source/java/jdk18u/build/linux-x86_64-server-release/images/jdk/bin/java
+	java -version
+
 elif [[ "$1" == "dev" ]]; then
 	sudo update-alternatives --set java /home/lgx/source/java/jdk/build/linux-x86_64-server-release/images/jdk/bin/java
 	java -version
