@@ -21,6 +21,9 @@
 - Coding java
 	- `sh bin/idea.sh`
 	- IDEA: `Open`->`Select dir`
+- Using cscode
+    - `make vscode-project`
+    - Open the file `jdk.code-workspace` as a workspace in the vscode
 
 ### test
 - `make test TEST="some test target"`
