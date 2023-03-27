@@ -80,3 +80,8 @@ typedef const struct JNIInvokeInterface_ *JavaVM;
 result = JVM_FindPrimitiveClass(env, utfName);
 ```
 
+### 一个基础模型
+- 初始化过程就是一个有向无环图的拓扑排序
+- 图的节点: 模块::子模块::文件::类::需要初始化的变量（全局变量、文件作用域的静态变量、类的静态变量）
+- 图的边: 变量之间的依赖关系
+
