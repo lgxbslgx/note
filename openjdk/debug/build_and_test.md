@@ -1,7 +1,59 @@
 ## build jdk
 ### configure
 - If want to use jmh: `sh make/devkit/createJMHBundle.sh`
-- Usage: `sh configure --with-jtreg=/home/lgx/source/java/jtreg-stable/build/images/jtreg --with-boot-jdk=/home/lgx/source/java/jdk19u/build/linux-x86_64-server-release/images/jdk --with-gtest=/home/lgx/source/cpp/gtest --with-jmh=/home/lgx/source/java/jdk/build/jmh/jars --with-debug-level=slowdebug --with-native-debug-symbols=internal`
+- Usage: 
+
+```
+sh configure \
+--with-jtreg=/home/lgx/source/java/jtreg-stable/build/images/jtreg \
+--with-boot-jdk=/home/lgx/source/java/jdk19u/build/linux-x86_64-server-release/images/jdk \
+--with-gtest=/home/lgx/source/cpp/gtest \
+--with-jmh=/home/lgx/source/java/jdk/build/jmh/jars \
+--disable-warnings-as-errors \
+--with-debug-level=slowdebug \
+--with-native-debug-symbols=internal \
+```
+
+- Cross-compiling: 
+
+```
+export PATH=/opt/riscv/bin:$PATH
+export sysroot=/opt/riscv/sysroot
+export export prefix=$sysroot/usr
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/riscv/sysroot/lib:/opt/riscv/sysroot/usr/lib
+
+
+sh configure \
+--with-boot-jdk=/home/lgx/source/java/jdk19u/build/linux-x86_64-server-release/images/jdk \
+--disable-warnings-as-errors \
+--openjdk-target=riscv64-linux-gnu \
+--with-sysroot=/opt/riscv/sysroot \
+--with-toolchain-path=/opt/riscv/bin \
+--with-extra-path=/opt/riscv/bin
+
+
+# debug
+sh configure \
+--with-jtreg=/home/lgx/source/java/jtreg-stable/build/images/jtreg \
+--with-boot-jdk=/home/lgx/source/java/jdk19u/build/linux-x86_64-server-release/images/jdk \
+--with-gtest=/home/lgx/source/cpp/gtest \
+--with-jmh=/home/lgx/source/java/jdk/build/jmh/jars \
+--disable-warnings-as-errors \
+--with-debug-level=slowdebug \
+--with-native-debug-symbols=internal \
+--openjdk-target=riscv64-linux-gnu \
+--with-sysroot=/opt/riscv/sysroot \
+--with-toolchain-path=/opt/riscv/bin \
+--with-extra-path=/opt/riscv/bin
+
+# Debian sysroots
+sudo qemu-debootstrap --no-check-gpg \
+--foreign --arch=riscv64 --verbose \
+--include=fakeroot,symlinks,build-essential,libx11-dev,libxext-dev,libxrender-dev,libxrandr-dev,libxtst-dev,libxt-dev,libcups2-dev,libfontconfig1-dev,libasound2-dev,libfreetype6-dev,libpng-dev,libffi-dev \
+--resolve-deps buster /opt/debian/sysroot-riscv64 \
+http://httpredir.debian.org/debian/
+```
+
 - Usage: `sh configure --with-jtreg="path" --with-boot-jdk="path" --with-gtest="path" --with-debug-level=slowdebug --with-native-debug-symbols=internal`
 - Usage(simple): `sh configure --with-boot-jdk="path"`
 	- the `--with-jtreg --with-gtest --with-jmh` are not needed, if you only want to build but not test.

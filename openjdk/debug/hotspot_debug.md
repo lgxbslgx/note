@@ -3,6 +3,20 @@
 - Usage: gdb ~/source/java/jdk/build/linux-x86_64-server-slowdebug/images/jdk/bin/java
 	- Usage: r Test2
 	- Usage: b, c, n, s, i, finish, print, info
+- Cross-compiling debug:
+  ```
+  qemu-riscv64 -L /opt/riscv/sysroot -g 33334 \
+  /source/java/jdk-riscv64/build/linux-riscv64-server-release/images/jdk/bin/java \
+  --version
+
+  /opt/riscv/bin/riscv64-unknown-linux-gnu-gdb \
+  --args /source/java/jdk-riscv64/build/linux-riscv64-server-release/images/jdk/bin/java \
+  -version
+
+  target remote localhost:33334
+  set solib-search-path \
+  /source/java/jdk-riscv64/build/linux-riscv64-server-release/images/jdk/lib:/source/java/jdk-riscv64/build/linux-riscv64-server-release/images/jdk/lib/jli:/source/java/jdk-riscv64/build/linux-riscv64-server-release/images/jdk/lib/server
+  ```
 
 
 ## hotspot debug using CLion
