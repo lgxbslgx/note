@@ -5,17 +5,18 @@
 	- Usage: b, c, n, s, i, finish, print, info
 - Cross-compiling debug:
   ```
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/riscv/sysroot/lib:/opt/riscv/sysroot/usr/lib
   qemu-riscv64 -L /opt/riscv/sysroot -g 33334 \
-  /source/java/jdk-riscv64/build/linux-riscv64-server-release/images/jdk/bin/java \
+  /source/java/jdk-riscv64/build/linux-riscv64-server-slowdebug/images/jdk/bin/java \
   --version
 
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/riscv/sysroot/lib:/opt/riscv/sysroot/usr/lib
   /opt/riscv/bin/riscv64-unknown-linux-gnu-gdb \
-  --args /source/java/jdk-riscv64/build/linux-riscv64-server-release/images/jdk/bin/java \
+  --eval-command="target remote localhost:33334" \
+  --eval-command="set solib-search-path \
+  /source/java/jdk-riscv64/build/linux-riscv64-server-slowdebug/images/jdk/lib:/source/java/jdk-riscv64/build/linux-riscv64-server-slowdebug/images/jdk/lib/jli:/source/java/jdk-riscv64/build/linux-riscv64-server-slowdebug/images/jdk/lib/server:/opt/riscv/sysroot/lib:/opt/riscv/sysroot/usr/lib" \
+  --args /source/java/jdk-riscv64/build/linux-riscv64-server-slowdebug/images/jdk/bin/java \
   -version
-
-  target remote localhost:33334
-  set solib-search-path \
-  /source/java/jdk-riscv64/build/linux-riscv64-server-release/images/jdk/lib:/source/java/jdk-riscv64/build/linux-riscv64-server-release/images/jdk/lib/jli:/source/java/jdk-riscv64/build/linux-riscv64-server-release/images/jdk/lib/server
   ```
 
 
