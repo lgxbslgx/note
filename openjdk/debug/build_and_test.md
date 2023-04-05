@@ -47,11 +47,11 @@ sh configure \
 --with-extra-path=/opt/riscv/bin
 
 # Debian sysroots
-sudo qemu-debootstrap --no-check-gpg \
+sudo debootstrap --no-check-gpg \
 --foreign --arch=riscv64 --verbose \
 --include=fakeroot,symlinks,build-essential,libx11-dev,libxext-dev,libxrender-dev,libxrandr-dev,libxtst-dev,libxt-dev,libcups2-dev,libfontconfig1-dev,libasound2-dev,libfreetype6-dev,libpng-dev,libffi-dev \
 --resolve-deps buster /opt/debian/sysroot-riscv64 \
-http://httpredir.debian.org/debian/
+http://httpredir.debian.org/debian-ports/
 ```
 
 - Usage: `sh configure --with-jtreg="path" --with-boot-jdk="path" --with-gtest="path" --with-debug-level=slowdebug --with-native-debug-symbols=internal`

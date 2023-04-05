@@ -10,7 +10,6 @@
   /source/java/jdk-riscv64/build/linux-riscv64-server-slowdebug/images/jdk/bin/java \
   --version
 
-  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/riscv/sysroot/lib:/opt/riscv/sysroot/usr/lib
   /opt/riscv/bin/riscv64-unknown-linux-gnu-gdb \
   --eval-command="target remote localhost:33334" \
   --eval-command="set solib-search-path \
