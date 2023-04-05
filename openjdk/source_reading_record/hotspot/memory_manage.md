@@ -1,12 +1,14 @@
 ## linux
 映射物理内存到虚拟内存
 接口: 系统调用`brk`、`mmap`（根据是否文件映射、是否共享，至少分成4种类型）等
+// TODO
 
 ## glibc库
 使用`brk`和`mmap`对虚拟内存进行管理，提供易于使用的方法
 接口: 
 分配释放方法: malloc、realloc、calloc、free等
 内存映射相关方法（在mman.h头文件中）: mmap、munmap等
+// TODO
 
 接下来是OpenJDK的抽象
 
@@ -41,6 +43,7 @@ OpenJDK的内存主要分成 C堆对象、栈对象、静态对象metaspace元�
   Arena区域：资源对象区域（resource area）、HandleArea等
   metaspace元空间的对象，其类都要继承`MetaspaceObj`
   Java堆的对象，其类都要继承`oopDesc`（常说的`OOP`是`oopDesc *`）
+  CodeCache，详见`interpreter.md`
 
 ### C堆对象
   其类都要继承`CHeapObj`或者`CHeapObjBase`
@@ -55,7 +58,7 @@ OpenJDK的内存主要分成 C堆对象、栈对象、静态对象metaspace元�
   里面全是静态字段和方法，作为命名空间使用
   不支持`new`、`delete`操作
 
-### Arena区域（其实里面也是由malloc/free进行操作，有`ChunkHeaderPool`避免了频繁分配回收）
+### Arena区域（其实里面也是由malloc/free进行操作，有`ChunkPool`避免了频繁分配回收）
   `Arena`自己要继承`CHeapObjBase`
   由一系列不连续的块（`Chunk`）组成(即`Chuck`组成的链表)，对象分配在块中
   字段`Chunk *_first`开始块
