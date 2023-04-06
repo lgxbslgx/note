@@ -12,6 +12,7 @@ sh configure \
 --disable-warnings-as-errors \
 --with-debug-level=slowdebug \
 --with-native-debug-symbols=internal \
+--with-hsdis=capstone \
 ```
 
 - Cross-compiling: 
@@ -19,7 +20,7 @@ sh configure \
 ```
 export PATH=/opt/riscv/bin:$PATH
 export sysroot=/opt/riscv/sysroot
-export export prefix=$sysroot/usr
+export prefix=$sysroot/usr
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/riscv/sysroot/lib:/opt/riscv/sysroot/usr/lib
 
 
@@ -44,7 +45,9 @@ sh configure \
 --openjdk-target=riscv64-linux-gnu \
 --with-sysroot=/opt/riscv/sysroot \
 --with-toolchain-path=/opt/riscv/bin \
---with-extra-path=/opt/riscv/bin
+--with-extra-path=/opt/riscv/bin \
+--with-hsdis=binutils \
+--with-binutils=/source/c/lib_src/binutils \
 
 # Debian sysroots
 sudo debootstrap --no-check-gpg \

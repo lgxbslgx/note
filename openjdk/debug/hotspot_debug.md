@@ -14,8 +14,7 @@
   --eval-command="target remote localhost:33334" \
   --eval-command="set solib-search-path \
   /source/java/jdk-riscv64/build/linux-riscv64-server-slowdebug/images/jdk/lib:/source/java/jdk-riscv64/build/linux-riscv64-server-slowdebug/images/jdk/lib/jli:/source/java/jdk-riscv64/build/linux-riscv64-server-slowdebug/images/jdk/lib/server:/opt/riscv/sysroot/lib:/opt/riscv/sysroot/usr/lib" \
-  --args /source/java/jdk-riscv64/build/linux-riscv64-server-slowdebug/images/jdk/bin/java \
-  -version
+  --args /source/java/jdk-riscv64/build/linux-riscv64-server-slowdebug/images/jdk/bin/java
   ```
 
 

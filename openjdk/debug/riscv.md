@@ -28,3 +28,6 @@ cp /usr/share/aclocal/*.m4 /usr/local/share/aclocal/
 cups库:
 # 把configure文件里面的-Werror删了
 
+binutils
+CFLAGS='-fPIC -O' ./configure --disable-nls --host=riscv64-unknown-linux-gnu --prefix=/opt/riscv/sysroot/
+
