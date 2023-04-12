@@ -160,4 +160,4 @@ FreeChunkListVector: `FreeChunkList`组成的数组
 1个C堆，大部分对象都分配在C堆，用malloc/realloc/free方法
 2种特殊对象，StackObj不能分配在堆上、AllStatics不能分配
 3种特殊管理的内存，Java堆，metaspace，Arena
-
+还有CodeCache

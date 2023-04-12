@@ -202,7 +202,7 @@ oopDesc
 - 链接父类
 - 链接父接口
 - 验证`InstanceKlass::verify_code`、`Verifier::verify`
-- 重写`InstanceKlass::rewrite_class`
+- 重写`InstanceKlass::rewrite_class`、`Rewriter::rewrite_bytecodes`
   - **建立方法index的map（constant pool cache <--> constant pool entries）**
   - 重写Object类的构造函数的`_return`为`_return_register_finalizer`，为了之后初始化`finalize`方法
   - 重写一些字节码`Rewriter::scan_method`
@@ -212,7 +212,7 @@ oopDesc
     - 一些`_ldc`、`_ldc_w`改成`_fast_aldc`、`_fast_aldc_w`
   - **分配常量池cache`constant pool cache`**
   - `jsr`相关（不懂//TODO）
-- 链接`InstanceKlass::link_method(s)`
+- 链接`InstanceKlass::link_methods(s)`、`Method::link_method`
    - 设置`从解释`入口（就是调用这个方法的代码是解释器代码）`_from_interpreted_entry`和`_i2i_entry`
    - 设置`从编译`入口（就是调用这个方法的代码是编译后的代码）`_from_compiled_entry`
 - 初始化vtable
