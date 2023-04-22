@@ -57,6 +57,21 @@ sudo debootstrap --no-check-gpg \
 http://httpredir.debian.org/debian-ports/
 ```
 
+- riscv visionfive2
+```
+sh configure \
+--with-jtreg=/home/user/source/jtreg \
+--with-boot-jdk=/usr/lib/jvm/java-20-openjdk-riscv64 \
+--with-gtest=/home/user/source/gtest \
+--with-jmh=/home/user/source/jdk/build/jmh/jars \
+--disable-warnings-as-errors \
+--with-debug-level=slowdebug \
+--with-native-debug-symbols=internal \
+--with-hsdis=capstone \
+
+## `make images JOBS=4`可能会内存溢出，用`JOBS=1`就好了
+```
+
 - Usage: `sh configure --with-jtreg="path" --with-boot-jdk="path" --with-gtest="path" --with-debug-level=slowdebug --with-native-debug-symbols=internal`
 - Usage(simple): `sh configure --with-boot-jdk="path"`
 	- the `--with-jtreg --with-gtest --with-jmh` are not needed, if you only want to build but not test.
