@@ -13,6 +13,12 @@ sh configure \
 --with-debug-level=slowdebug \
 --with-native-debug-symbols=internal \
 --with-hsdis=capstone \
+
+# 使用llvm来构建hsdis
+--with-hsdis=llvm --with-llvm=/usr/lib/llvm-10
+
+# 使用binutils来构建hsdis
+--with-hsdis=binutils --with-binutils-src=
 ```
 
 - Cross-compiling: 
@@ -68,7 +74,12 @@ sh configure \
 --disable-warnings-as-errors \
 --with-debug-level=slowdebug \
 --with-native-debug-symbols=internal \
---with-hsdis=capstone \
+--with-hsdis=binutils --with-binutils-src=/home/user/source/binutils
+
+# 使用llvm来构建hsdis
+--with-hsdis=llvm --with-llvm=/usr/lib/llvm-15
+
+# capstone现在不支持riscv
 
 # `make images JOBS=4`可能会内存溢出，用`JOBS=1`就好了
 ```
