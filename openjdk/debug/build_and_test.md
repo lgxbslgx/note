@@ -6,7 +6,7 @@
 ```
 sh configure \
 --with-jtreg=/home/lgx/source/java/jtreg-stable/build/images/jtreg \
---with-boot-jdk=/home/lgx/source/java/jdk19u/build/linux-x86_64-server-release/images/jdk \
+--with-boot-jdk=/home/lgx/source/java/jdk20u/build/linux-x86_64-server-release/images/jdk \
 --with-gtest=/home/lgx/source/cpp/gtest \
 --with-jmh=/home/lgx/source/java/jdk/build/jmh/jars \
 --disable-warnings-as-errors \
@@ -25,7 +25,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/riscv/sysroot/lib:/opt/riscv/sysroo
 
 
 sh configure \
---with-boot-jdk=/home/lgx/source/java/jdk19u/build/linux-x86_64-server-release/images/jdk \
+--with-boot-jdk=/home/lgx/source/java/jdk20u/build/linux-x86_64-server-release/images/jdk \
 --disable-warnings-as-errors \
 --openjdk-target=riscv64-linux-gnu \
 --with-sysroot=/opt/riscv/sysroot \
@@ -36,7 +36,7 @@ sh configure \
 # debug
 sh configure \
 --with-jtreg=/home/lgx/source/java/jtreg-stable/build/images/jtreg \
---with-boot-jdk=/home/lgx/source/java/jdk19u/build/linux-x86_64-server-release/images/jdk \
+--with-boot-jdk=/home/lgx/source/java/jdk20u/build/linux-x86_64-server-release/images/jdk \
 --with-gtest=/home/lgx/source/cpp/gtest \
 --with-jmh=/home/lgx/source/java/jdk/build/jmh/jars \
 --disable-warnings-as-errors \
@@ -46,8 +46,9 @@ sh configure \
 --with-sysroot=/opt/riscv/sysroot \
 --with-toolchain-path=/opt/riscv/bin \
 --with-extra-path=/opt/riscv/bin \
+# 下面的hsdis相关内容在本地不行
 --with-hsdis=binutils \
---with-binutils=/source/c/lib_src/binutils \
+--with-binutils=/source/c/lib_src/binutils-riscv64/binutils/ \
 
 # Debian sysroots
 sudo debootstrap --no-check-gpg \
@@ -69,7 +70,7 @@ sh configure \
 --with-native-debug-symbols=internal \
 --with-hsdis=capstone \
 
-## `make images JOBS=4`可能会内存溢出，用`JOBS=1`就好了
+# `make images JOBS=4`可能会内存溢出，用`JOBS=1`就好了
 ```
 
 - Usage: `sh configure --with-jtreg="path" --with-boot-jdk="path" --with-gtest="path" --with-debug-level=slowdebug --with-native-debug-symbols=internal`
