@@ -115,3 +115,4 @@ sh configure \
 	- eg: make test TEST="gtest:LogTagSetDescriptions"
 	- eg: make test TEST="micro:java.lang.reflect" MICRO="FORK=1;WARMUP_ITER=2"
 	- eg: make test TEST="jtreg:test/langtools/tools/javac/T8254557/T8254557.java"
+	- 如果设备性能很差，则使用`JTREG="TIMEOUT_FACTOR=8;"`来调节超时时间，避免超时引起的测试失败。注意`TIMEOUT_FACTOR`默认值是`4`，设置的值要比4大才有用。
