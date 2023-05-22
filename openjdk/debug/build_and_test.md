@@ -74,14 +74,37 @@ sh configure \
 --disable-warnings-as-errors \
 --with-debug-level=slowdebug \
 --with-native-debug-symbols=internal \
---with-hsdis=binutils --with-binutils-src=/home/user/source/binutils
+--with-hsdis=binutils \
+--with-binutils-src=/home/user/source/binutils
 
 # 使用llvm来构建hsdis
 --with-hsdis=llvm --with-llvm=/usr/lib/llvm-15
 
 # capstone现在不支持riscv
 
-# `make images JOBS=4`可能会内存溢出，用`JOBS=1`就好了
+# 使用llvm/clang工具链（不成功，链接报错）
+--with-toolchain-type=clang \
+--with-toolchain-path=/usr/lib/llvm-15/bin
+
+# `make images JOBS=4`可能会内存溢出，用`JOBS=1`就好了。
+# `JOBS=1`还是不行，`ld`链接时内存不足。
+# 使用`lld`替换`ld`:
+#   安装`lld`: `sudo apt install lld-15`
+#   删除之前的`ld`符号链接（之前指向 `/usr/bin/riscv64-linux-gnu-ld`）： `sudo rm /usr/bin/ld`
+#   使用`lld`: `sudo ln -s /usr/bin/ld.lld-15 /usr/bin/ld`
+```
+
+- arm rk3399
+```
+sh configure \
+--with-jtreg=/home/pi/source/jtreg \
+--with-boot-jdk=/home/pi/install/jdk-20.0.1 \
+--with-gtest=/home/pi/source/googletest \
+--with-jmh=/home/pi/source/jdk/build/jmh/jars \
+--disable-warnings-as-errors \
+--with-debug-level=slowdebug \
+--with-native-debug-symbols=internal \
+--with-hsdis=capstone
 ```
 
 - Usage: `sh configure --with-jtreg="path" --with-boot-jdk="path" --with-gtest="path" --with-debug-level=slowdebug --with-native-debug-symbols=internal`
@@ -115,4 +138,12 @@ sh configure \
 	- eg: make test TEST="gtest:LogTagSetDescriptions"
 	- eg: make test TEST="micro:java.lang.reflect" MICRO="FORK=1;WARMUP_ITER=2"
 	- eg: make test TEST="jtreg:test/langtools/tools/javac/T8254557/T8254557.java"
-	- 如果设备性能很差，则使用`JTREG="TIMEOUT_FACTOR=8;"`来调节超时时间，避免超时引起的测试失败。注意`TIMEOUT_FACTOR`默认值是`4`，设置的值要比4大才有用。
+
+	- 如果设备性能很差，则使用`JTREG="TIMEOUT_FACTOR=20;"`来调节超时时间，避免超时引起的测试失败。注意`TIMEOUT_FACTOR`默认值是`4`，设置的值要比4大才有用。
+	- 后台运行 `nohup make test TEST=jtreg:hotspot:tier1 JTREG="TIMEOUT_FACTOR=20;" JOBS=4 > out.log 2>&1 &`
+	- 切换到后台运行
+	```
+	Ctrl + Z 暂停程序
+	jobs -l 查看程序
+	bg %NUMBER 后台继续执行一个程序，`NUMBER`换成`jobs -l`查到的具体的编号
+	```
