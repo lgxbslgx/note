@@ -32,13 +32,13 @@
 ## 连接另一台机器进行远程**开发**和调试（比如嵌入式riscv开发板）: 
 - 开发板:
   - 安装CMake（主要是本地CLion需要）、其他构建需要的工具和库（看文档`build_and_test.md`）
-  - `gdbserver :33334 /home/user/source/jdk/build/linux-riscv64-server-slowdebug/images/jdk/bin/java`
+  - `gdbserver :33334 /home/user/source/jdk/build/linux-riscv64-server-slowdebug/images/jdk/bin/java --version`
 - 本地Clion
   - 新建远程工具链
     - [文档](https://www.jetbrains.com/help/clion/remote-projects-support.html)
 	  - 设置路径: `Settings | Build, Execution, Deployment | Toolchains`
 	    - `Credentials`类似ssh远程连接的配置
-	    - CLion会自动侦探远程的工具链（注意远程要安装CMake）
+	    - CLion会自动侦探远程的工具链（注意远程要安装CMake、rsync、gdb等）
   - 设置远程开发工具
     - 设置路径: `Settings | Build, Execution, Deployment | Deployment`
 	  - `Connection`

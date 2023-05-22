@@ -21,7 +21,7 @@ sh configure \
 --with-hsdis=binutils --with-binutils-src=
 ```
 
-- Cross-compiling: 
+- riscv Cross-compiling: 
 
 ```
 export PATH=/opt/riscv/bin:$PATH
@@ -62,6 +62,33 @@ sudo debootstrap --no-check-gpg \
 --include=fakeroot,symlinks,build-essential,libx11-dev,libxext-dev,libxrender-dev,libxrandr-dev,libxtst-dev,libxt-dev,libcups2-dev,libfontconfig1-dev,libasound2-dev,libfreetype6-dev,libpng-dev,libffi-dev \
 --resolve-deps buster /opt/debian/sysroot-riscv64 \
 http://httpredir.debian.org/debian-ports/
+```
+
+- arm Cross-compiling:
+```
+sudo apt install g++-aarch64-linux-gnu gcc-aarch64-linux-gnu
+
+sudo debootstrap \
+      --arch=arm64 \
+      --verbose \
+      --include=fakeroot,symlinks,build-essential,libx11-dev,libxext-dev,libxrender-dev,libxrandr-dev,libxtst-dev,libxt-dev,libcups2-dev,libfontconfig1-dev,libasound2-dev,libfreetype6-dev,libpng-dev,libffi-dev \
+      --resolve-deps \
+      buster \
+      /opt/debian/sysroot-arm64 \
+      http://httpredir.debian.org/debian/
+
+sudo chroot /opt/debian/sysroot-arm64 symlinks -cr .
+
+sh configure \
+--with-jtreg=/home/lgx/source/java/jtreg-stable/build/images/jtreg \
+--with-boot-jdk=/home/lgx/source/java/jdk20u/build/linux-x86_64-server-release/images/jdk \
+--with-gtest=/home/lgx/source/cpp/gtest \
+--with-jmh=/home/lgx/source/java/jdk/build/jmh/jars \
+--disable-warnings-as-errors \
+--with-debug-level=slowdebug \
+--with-native-debug-symbols=internal \
+--openjdk-target=aarch64-linux-gnu \
+--with-sysroot=/opt/debian/sysroot-arm64
 ```
 
 - riscv visionfive2
