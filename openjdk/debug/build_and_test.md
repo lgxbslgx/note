@@ -165,6 +165,7 @@ sh configure \
 	- eg: make test TEST="gtest:LogTagSetDescriptions"
 	- eg: make test TEST="micro:java.lang.reflect" MICRO="FORK=1;WARMUP_ITER=2"
 	- eg: make test TEST="jtreg:test/langtools/tools/javac/T8254557/T8254557.java"
+	- eg: make test TEST="jtreg:hotspot:tier1_common jtreg:hotspot:tier1_gc jtreg:hotspot:tier1_runtime jtreg:hotspot:tier1_serviceability" JTREG="TIMEOUT_FACTOR=20;" JOBS=4
 
 	- 如果设备性能很差，则使用`JTREG="TIMEOUT_FACTOR=20;"`来调节超时时间，避免超时引起的测试失败。注意`TIMEOUT_FACTOR`默认值是`4`，设置的值要比4大才有用。
 	- 后台运行 `nohup make test TEST=jtreg:hotspot:tier1 JTREG="TIMEOUT_FACTOR=20;" JOBS=4 > out.log 2>&1 &`
