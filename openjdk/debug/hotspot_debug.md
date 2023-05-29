@@ -57,7 +57,14 @@
       - remote: /home/user/source/jdk
       - local: /source/java/jdk-riscv64/
 
+
+## 常见问题
 gdb提示`不合法指令`等情况，会造成gdb在`非自己设置的断点`的位置停止，使用下面命令避免频繁的停止：
 ```
 handle SIGILL nostop
+```
+
+设置只当前线程运行:
+```
+set scheduler-locking on
 ```
