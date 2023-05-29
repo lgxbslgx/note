@@ -1,76 +1,13 @@
-## The Garbage Collection
-
-### Common garbage collection algorithms
-- Mark-sweep. 
-	- Mark is a procedure that traverses object graph(depth-first or width-first) and sets the marked bit. Sweep traverses object list linearly to free unreachable objects and unset the marked bit.
-	- Tricolor. Black, grey, white.
-	- Bitmap marking. Pre-block or single or hybrid. // TODO
-	- Lazy sweeping. Use a reclaimList to reuse blocks instead of sweeping immediately.
-	- Use cache in marking. Use a FIFO queue.
-
-- Mark-compact. 
-	- Mark and compact.
-	- Rearrange objects: arbitrary, linearising, sliding. Sliding is best.
-	- Two-finger. Two pass and arbitrary order. Fixed size objects. Simple and fast.
-		- Relocate. Set free pointer to the first gap. Set scan pointer to the last live object. Set a threshold. Move the live object of scan pointer to free pointer and set new address.
-		- Update references. The references of roots and live objects.
-	- Lisp 2 algorithm. Three pass and sliding order.
-		- Compute the new location and store in object header. Scan and free pointer.
-		- Update references of roots and live objects.
-		- Move live objects.
-	- Threaded compaction. Two pass and sliding. Don't need additional space.
-		- Update forward references. Threading the roots, unthreading forward references, threading all objects.
-		- Update backward references. Unthreading backward references, move objects.
-		- the method I think: 1.threading roots and all the objects. 2.unthreading all the objects and move objects.
-	- One-pass algorithm. Use bitmap and offset vector.
-		- Compute Locations. Get the offset vector. Don't need to traverse all the objects. It uses the bitmap which is created in marking stage.
-		- Update references.
-
-- Copying. Semispaces. Fast Allocation and elimination of fragmentation. One pass and don't need additional spaces. Need twice spaces.
-	- According to roots and  worklist, copy objects to another semispaces. Use free and scan pointer.
-
-- Reference counting. 
-	- Add reference count when a object reference another object. And delete reference count when a object no longer reference another object. If the count of a object becomes zero, the object will be freed.
-	- Deferral reference counting. Use zero count table.
-	- Coalescing reference counting. Log the dirty object at the first time. // TODO
-	- Buffering reference counting. // TODO
-	- Cyclic reference counting.
-		- Use tracing collection.
-		- Trial deletion. Mark candidates(grey), scan(black, white), collect candidates(white). // TODO
-
-### Comparing garbage collector
-- Time
-	- Throughput
-	- Pause time
-	- Frequency of collection
-	- Promptness
-- Space
-	- Additional Space
-	- Footprint
-
-### Advanced topics
-- Allocate memory.
-	- Sequential allocation. Free-list Allocation(first-fit, next-fit, best-fit). Use balanced binary tree or bitmap to speed. Use segregated-fit(multi list) to speed. 
-- Partitioning and generational. 
-	- Two generations: yound(new) and old(tenured) generation. minor(nrusery) collection and major(full) collection.
-	- Multi generations.
-	- Remembered set saves the inter-generational porinters.
-- Parallel // TODO
-- Concurrent // TODO
-- Real-time // TODO
-
-### HotSpot中的GC（这节是概要知识，具体的内容在后面）
-
-#### Generatios
+## Generations
 - young(new) generation
 - old(tenured) generation
 - permanent generation(metaspace after JDK8)
 
-#### Collection types
+## Collection types
 - Minor collection(young generation collection)
 - Full collection(major collection): collect young, old and permanent generations. But CMS don't collect young generation. And the permanent generation is not exist after JDK8.
 
-#### Collectors in HotSpot
+## HotSpot中的GC（这节是概要知识，具体的内容在后面）
 - Epsilon: no-op garbage collector
 
 - serial collector: young and old collections are done serially, in a stop-the-world fashion.
@@ -145,8 +82,8 @@
 - ZGC
 // TODO
 
-### GC初始化基本流程
-初始化调用栈，注意栈的上面几个方法的前后还有一些操作，具体操作看下文。文中**特定GC内容**在对应的GC描述中。
+## GC初始化基本流程
+初始化调用栈，注意栈的上面几个方法的前后还有一些操作，具体操作看下文。注意，文中**特定GC内容**在对应的GC描述中。
 ```
 Universe::initialize_heap universe.cpp:843
 universe_init universe.cpp:785
@@ -161,17 +98,18 @@ start_thread 0x0000003ff7ef051c
 __thread_start 0x0000003ff7f3de3e
 ```
 
-- 初始化基本流程 `universe_init里面使用的GCLogPrecious::initialize、GCConfig::arguments()->initialize_heap_sizes、Universe::initialize_heap`
+- 判断使用哪个GC，并获取对应的`GCArguments子类` `Arguments::apply_ergo -> Arguments::set_ergonomics_flags -> GCConfig::initialize`
+- 人体工学（`ergonomically`）地设置堆大小信息 `Arguments::apply_ergo -> Arguments::set_heap_size`
+- GC参数初始化  `Arguments::apply_ergo -> GCArguments::initialize` **特定GC内容**
+
+- GC初始化基本流程 `universe_init里面使用的GCLogPrecious::initialize、GCConfig::arguments()->initialize_heap_sizes、Universe::initialize_heap`
   - 初始化`GC Log`日记处理相关类 `GCLogPrecious::initialize`
     - 和统一日记不同，这里主要为了虚拟机crash的时候，输出内容到`hs_err`文件
     - 类`GCLogPreciousHandle`和`GCLogPrecious`
   - 调整堆大小参数，为了`类数据共享CDS功能`dump数据
   - 根据传入参数初始化堆配置（大小等）`universe_init -> GCArguments::initialize_heap_sizes`
-    - 注意`GCArguments`已经在方法`Arguments::set_ergonomics_flags -> GCConfig::initialize`中初始化，也就是说在那里已经知道了使用哪个GC并获取GC相关参数`GCArguments`，具体操作由具体GC的`GCArguments`决定，比如:
 	- 初始化对齐信息，**特定GC内容** `GCArguments::initialize_alignments（纯虚函数）`
-	- 初始化堆大小和其他参数 `GCArguments::initialize_heap_flags_and_sizes`
-	  - 检测堆大小（初始值、最大值、最小值）关系是否正确、是否对齐，根据这三个大小，互相调整对应的值
-	  - **特定GC内容**
+	- 初始化堆大小和其他参数 **特定GC内容** `GCArguments::initialize_heap_flags_and_sizes`
 	- 再次启发式地设置堆参数，**特定GC内容** `GCArguments::initialize_size_info`
   - 初始化堆(这里面的内容大部分由具体的GC决定) `universe_init -> Universe::initialize_heap`
     - 创建堆对象，`new`一个`CollectedHeap`的子类（**特定GC内容**）的对象 `GCArguments::create_heap`
@@ -183,23 +121,28 @@ __thread_start 0x0000003ff7f3de3e
         - `BarrierSetC2`，C2特定的一些方法，和GC相关，要放在`/hotspot/share/gc/GC_NAME_OR_shared/c2`
         - 一些共享的内容则是放在`shared`目录，`GC_NAME_OR_shared`里面的`OR_shared`就表示`shared`目录
   - 初始化线程本地分配缓存 `Universe::initialize_tlab`
-  - 初始化`barrier集`的`汇编器`，操作可能为空。**特定GC内容** `gc_barrier_stubs_init`
+  - 初始化`barrier集`的`汇编器`，操作可能为空。**特定GC内容** `init_globals -> gc_barrier_stubs_init`
 
-### 堆内存分配基本流程
+## 堆内存分配基本流程
 `堆内存分配`的可能路径:
+
 - 解释器调用字节码`new`、`newarray`、`anewarray`、`multianewarray`，代码在`TemplateTable`。其中一个调用栈:
 ```
 CollectedHeap::obj_allocate collectedHeap.inline.hpp:35
 InstanceKlass::allocate_instance instanceKlass.cpp:1434
 InterpreterRuntime::_new interpreterRuntime.cpp:243
 <unknown> 0x00007f9c73d9507c  // <- 这里是`TemplateTable::_new`
-<unknown> 0x00007f9c73d94ff9
-<unknown> 0x00007f9c8f0a4588
-<unknown> 0x0000000800c7f9d3
-<unknown> 0x0000000000000001
-<unknown> 0x00000008004dae30
-<unknown> 0x0000000000000000
+// 省略
 ```
+
+- C2的runtime库`OptoRuntime::new_instance_C`。其中一个调用栈:
+```
+CollectedHeap::obj_allocate collectedHeap.inline.hpp:36
+InstanceKlass::allocate_instance instanceKlass.cpp:1434
+OptoRuntime::new_instance_C runtime.cpp:235
+// 省略
+```
+
 - 直接调用堆的分配方法（在虚拟机初始化的时候，解释器还没有初始化完成，就会直接调用） `Universe::heap()->obj_allocate等方法`。其中一个调用栈:
 ```
 CollectedHeap::obj_allocate collectedHeap.inline.hpp:35
@@ -212,15 +155,9 @@ StringTable::intern stringTable.cpp:341
 Universe::genesis universe.cpp:360
 universe2_init universe.cpp:973
 init_globals init.cpp:146
-Threads::create_vm threads.cpp:549
-JNI_CreateJavaVM_inner jni.cpp:3571
-JNI_CreateJavaVM jni.cpp:3657
-InitializeJVM java.c:1459
-JavaMain java.c:413
-ThreadJavaMain java_md.c:650
-start_thread 0x00007f9c8e2616db
-clone 0x00007f9c8e9bb61f
+// 省略
 ```
+
 - 直接调用`MemAllocator`及其子类的内存分配方法`MemAllocator::allocate`
 - // TODO 其他`堆内存分配`的可能路径
 
@@ -239,34 +176,32 @@ clone 0x00007f9c8e9bb61f
 	    - 尝试分配 **特定GC内容**
 		- 使用`0`值或者一个特殊的值填充TLAB，初始化TLAB相关记录信息
 		- 分配成功后返回的`TLAB指针`就是`新分配对象的指针`
-	- 前面的分配都不成功后，在TLAB外分配 `MemAllocator::mem_allocate_outside_tlab`
-	  - 大部分操作和上文`新建（叫分配也行）新的TLAB`一样，主要是`分配的大小`不同
-	  - 分配内存 **特定GC内容**
+	- 前面的分配都不成功后，在TLAB外分配 `MemAllocator::mem_allocate_outside_tlab` **特定GC内容**
 
 
-### 垃圾收集基本情况
-#### GC原因（很多）
+## 垃圾收集基本情况
+### GC原因（很多）
 代码在`GCCause::Cause`，下面列出一些，还有很多，未一一列出。
-- 堆分配失败 `VM_GenCollectForAllocation` `GCCause::_allocation_failure`
-- 元空间分配失败 `VM_CollectForMetadataAllocation` `GCCause::_metadata_GC_threshold`
+- 堆分配失败 `GCCause::_allocation_failure`
+- 元空间分配失败 `GCCause::_metadata_GC_threshold`
 - 调用Java方法`System.gc` 调用链为`System.gc -> Runtime.c::Java_java_lang_Runtime_gc -> jvm.cpp::JVM_GC -> CollectedHeap::collect` `GCCause::_java_lang_system_gc`
 
-#### 垃圾收集的接口（`collectedHeap`的方法）
+### 垃圾收集的接口（`collectedHeap`的方法）
 `collectedHeap`只有垃圾收集接口，没有分代垃圾收集接口。分代相关操作在子类中。
 - `collect` 一般是被`java方法System.gc`调用，`collect`一般直接或间接调用`do_full_collection`
 - `do_full_collection` 一般是`full GC`
 - `collect_as_vm_thread` vm线程调用
 
-#### 垃圾收集基本流程 // TODO 等全部GC看完之后再回来总结一遍
+### 垃圾收集基本流程 // TODO 等全部GC看完之后再回来总结一遍
 - 无垃圾收集: Epsilon
-- 基本都是同步操作的GC（Serial、Parallel、G1）// TODO 要改
+- 基本都是同步操作的GC（Serial、Parallel）// TODO 要改
   - 提交`VM_GC_Sync_Operation/VM_GC_Operation及其子类`给`VMThread`线程，然后等待`VMThread`线程完成操作。
   - 或者直接调用`垃圾收集`的接口: `collect`、`do_full_collection`、`collect_as_vm_thread`。注意上一点的`VM_GC_Sync_Operation/VM_GC_Operation`操作里面也是调用这3个接口，只不过这里是用户线程调用，上面是`VMThread`线程调用。
   - 注意，之前`CMS`存在的时候，`VMThread`是可以做异步操作的，现在`CMS`删除了，`VMThread`就只做同步操作了。
 - 基本都是异步操作（并发）的GC
   - // TODO 要改
 
-### HotSpot GC 基础部分总结
+## HotSpot GC 基础部分总结
 `CollectedHeap`提供堆的统一接口:
 - 堆初始化的接口: `initialize`
 - 分配堆内存的接口: `allocate_new_tlab`、`mem_allocate` **GC特定内容**
