@@ -133,8 +133,8 @@ oopDesc
 - 获取常量池条数并校检（它实际是`常量池条数+1`，一定要>=1，第0项保留）
 - 新建常量池`ConstantPool`对象，初始化了tags（一个和条数相同的数组）。注意: `ConstantPool`对象最后面还有一个和条数相同的表示常量池具体内容的数组。
 - 处理常量池`ClassFileParser::parse_constant_pool`
-  - 不断获取常量池内容，根据tag类型（**17种**，没有编号2、13、14），初始化`ConstantPool`对象的tags和具体内容，一般都是一些index和基本数据类型的值。特殊: utf8的数据`JVM_CONSTANT_Utf8`要存到符号表`SymbolTable`中，所以utf8条目存的是一个符号指针`Symbol*`。
-  - 验证常量池内容是否正确（各种index是否指向正确的条目等）、类条目内容变成数组`Array<Klass*>*       _resolved_klasses`的下标、字符串条目内容变成符号指针`Symbol*`
+  - 不断获取常量池内容，根据tag类型（**17种**，没有编号2、13、14），初始化`ConstantPool`对象的tags和具体内容，一般都是一些index和基本数据类型的值。特殊: utf8的数据`JVM_CONSTANT_Utf8`要存到符号表`SymbolTable`中，所以utf8条目存的是一个符号指针`Symbol*`。接下来`JVM_CONSTANT_String`也要指向对应的`Symbol*`。
+  - 验证常量池内容是否正确（各种index是否指向正确的条目等）、类条目内容变成数组`Array<Klass*>* _resolved_klasses`的下标、字符串条目内容变成符号指针`Symbol*`
   - 验证各种字符串是否符合规定
 - 获取和验证flags
 - 获取并验证类名，验证index是否有效和名称是否一致
