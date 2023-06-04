@@ -1,6 +1,6 @@
 ## hotspot debug using gdb
 - Same as debugging c/c++ code using gdb.
-- Usage: gdb ~/source/java/jdk/build/linux-x86_64-server-slowdebug/images/jdk/bin/java
+- Usage: gdb ~/source/java/jdkvm/build/linux-x86_64-server-slowdebug/images/jdk/bin/java
 	- Usage: r Test2
 	- Usage: b, c, n, s, i, finish, print, info
 
@@ -68,3 +68,5 @@ handle SIGILL nostop
 ```
 set scheduler-locking on
 ```
+
+注意: 自动开启了类数据共享，所以断点打在类加载相关的类和方法上，不会被运行到，如果要调试，则使用`-Xshare:off`关闭类数据共享。相关内容在`class_load.md`和`cds.md`。
