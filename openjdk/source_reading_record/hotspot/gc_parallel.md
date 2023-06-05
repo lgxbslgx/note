@@ -131,11 +131,13 @@
   - 每个`worker线程`有一个`PSPromotionManager`，里面有一个`PSScannerTasksQueue _claimed_stack_depth`存放任务给当前线程使用
   - 同时`PSScannerTasksQueueSet _stack_array_depth`汇总了所有线程的`PSScannerTasksQueue _claimed_stack_depth`，用于任务窃取。
 
-后面处理弱引用、调整大小参数等。// TODO
+后面处理引用`Reference类及其子类的对象`（详见`reference.md`）和各个弱`weak`的`OopStorage`、调整大小参数等。
 
 
 #### 老年代垃圾收集（full gc）
 `vm线程`调用链: `PSParallelCompact::invoke_no_policy` -> `PSParallelCompact::marking_phase 、adjust_roots、compact`-> `WorkerThreads::run_task` -> `WorkerTaskDispatcher::coordinator_distribute_task` -> 等待`Worker线程`完成
+
+`vm线程`调用`PSParallelCompact::marking_phase`提交任务`MarkFromRootsTask`，进行标记工作。
 
 `worker线程`调用`MarkFromRootsTask::work`**标记对象**（这里的根 比`Young GC`少了卡表），具体过程:
 - 遍历类加载器`ClassLoaderData::_handles`。**每个`worker线程`调用`ClassLoaderData::oops_do`时，会根据`ClassLoaderData::_claim`判断是否处理该类加载器**。代码在`CLDToOopClosure::do_cld`和`PCMarkAndPushClosure::do_oop_nv -> ParCompactionManager::mark_and_push`
@@ -151,6 +153,10 @@
 - 窃取工作
   - 和`Young GC`一样，每个`worker线程`有一个`ParCompactionManager`，`ParCompactionManager`里面有`OopTaskQueue`和`ObjArrayTaskQueue`存放任务给当前线程使用
   - 同时`OopTaskQueueSet _stack_array_depth`和`ObjArrayTaskQueueSet`汇总了所有线程的任务，用于任务窃取。
+
+`vm线程`调用`PSParallelCompact::marking_phase`提交任务`ParallelCompactRefProcProxyTask`处理引用`Reference类及其子类的对象`（详见`reference.md`）。
+
+调用`WeakProcessor::weak_oops_do`处理各个弱`weak`的`OopStorage`
 
 `vm线程`调用`PSParallelCompact::summary_phase`处理一些汇总信息，为后面阶段做准备。
 - 主要是处理标记阶段的对象信息`ParallelCompactData`。
@@ -178,7 +184,7 @@
   - 使用`PSParallelCompact::fill_region`、`MoveAndUpdateClosure`、`PCAdjustPointerClosure`等进行处理，其中`MoveAndUpdateClosure::do_addr -> Copy::aligned_conjoint_words`负责拷贝对象到新地址
 - 窃取工作 上文已写，这里略过
 
-后面调整大小参数等。// TODO
+后面调整大小参数等。
 
 
 `Parallel GC`和`Serial GC`的`Full GC`比较：

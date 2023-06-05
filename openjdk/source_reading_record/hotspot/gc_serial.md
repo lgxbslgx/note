@@ -113,6 +113,8 @@
 
 然后遍历刚刚放在`to`区域、老年代的对象，修改里面的字段对应的对象指针，并且递归执行拷贝操作（操作和上面一样）。`FastEvacuateFollowersClosure::do_void`
 
+处理各种引用`Reference类及其子类的对象`，详见`reference.md`
+处理各个弱`weak`的`OopStorage`
 
 #### 老年代垃圾收集（full gc）
 调用链: `GenCollectedHeap::collect_generation(_old_gen, ...)` -> `TenuredGeneration::collect` -> `GenMarkSweep::invoke_at_safepoint`。整体流程主要在`GenMarkSweep`中，注意不是`标记-清除`算法，是`标记-压缩`算法，这里错误命名了。
@@ -124,8 +126,8 @@
 	- 线程`Thread/JavaThread等`的`oop`相关字段(`Thread::_pending_exception`、`JavaThread::_vm_result/_exception_oop/_jvmci_reserved_oop0/_jvmti_deferred_updates/_jvmti_thread_state/_cont_entry/_lock_stack`等)，线程的handle(`Thread::_handle_area`、`JavaThread::_active_handles/_monitor_chunks/`等)，线程的栈（以栈帧的方式遍历）。 `Threads::oops_do -> Thread::oops_do -> JavaThread::oops_do_no_frames/oops_do_frames`
 	- 各个strong的`OopStorage`，存放在`OopStorageSet::_storages`
 	- `CodeCache`、`nmethods`
-  - 处理各种弱引用`Reference类及其子类的对象`
-  - 各个weak的`OopStorage`
+  - 处理各种引用`Reference类及其子类的对象`，详见`reference.md`
+  - 各个弱`weak`的`OopStorage`
   - 卸载类、卸载`nmethods`
 
 - 计算对象新地址 `GenMarkSweep::mark_sweep_phase2`
