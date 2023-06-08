@@ -2,6 +2,14 @@
 ### 初始化
 整体流程和`gc_jvm.md 初始化基本流程`差不多，具体内容在`GenArguments`、`SerialArguments`和`SerialHeap`。**特定GC内容**如下：
 
+`GenArguments::conservative_max_heap_alignment`:
+设置最大堆对齐信息，一般为`1<<16`。ARM32位则是`1<<17`。
+
+`SerialArguments::initialize`：
+- 调用`GCArguments::initialize`
+- Serial GC 特定的内容
+  - 设置其他参数（用到再看）
+
 `GenArguments::initialize_alignments`：
 - 初始化卡表相关信息: 一个卡的大小（一般为512B）、移位数 `CardTable::initialize_card_size`
   - 初始化块偏移量表信息（和卡表信息有重复）

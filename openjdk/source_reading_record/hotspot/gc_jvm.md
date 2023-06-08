@@ -22,7 +22,7 @@
 
 - Concurrent Mark-Sweep (CMS) collector
 	- Young generation: parallel copying. ParNew.
-	- Old generation: concurrent mark sweep. Init marking(STW), concurrent marking, remark(STW), concurrent sweep. It don't compact.
+	- Old generation: concurrent mark sweep. Init marking(STW), concurrent marking, remark(STW), concurrent sweep. It doesn't compact.
 	- Usage: -XX:+UseConcMarKSweepGC
 
 - G1
@@ -99,6 +99,7 @@ __thread_start 0x0000003ff7f3de3e
 ```
 
 - 判断使用哪个GC，并获取对应的`GCArguments子类` `Arguments::apply_ergo -> Arguments::set_ergonomics_flags -> GCConfig::initialize`
+- 设置最大堆对齐信息 `Arguments::apply_ergo -> Arguments::set_ergonomics_flags -> Arguments::set_conservative_max_heap_alignment -> GCArguments::conservative_max_heap_alignment` **特定GC内容**
 - 人体工学（`ergonomically`）地设置堆大小信息 `Arguments::apply_ergo -> Arguments::set_heap_size`
 - GC参数初始化  `Arguments::apply_ergo -> GCArguments::initialize` **特定GC内容**
 
@@ -108,13 +109,13 @@ __thread_start 0x0000003ff7f3de3e
     - 类`GCLogPreciousHandle`和`GCLogPrecious`
   - 调整堆大小参数，为了`类数据共享CDS功能`dump数据
   - 根据传入参数初始化堆配置（大小等）`universe_init -> GCArguments::initialize_heap_sizes`
-	- 初始化对齐信息，**特定GC内容** `GCArguments::initialize_alignments（纯虚函数）`
-	- 初始化堆大小和其他参数 **特定GC内容** `GCArguments::initialize_heap_flags_and_sizes`
-	- 再次启发式地设置堆参数，**特定GC内容** `GCArguments::initialize_size_info`
+    - 初始化对齐信息，**特定GC内容** `GCArguments::initialize_alignments（纯虚函数）`
+    - 初始化堆大小和其他参数 **特定GC内容** `GCArguments::initialize_heap_flags_and_sizes`
+    - 再次启发式地设置堆参数，**特定GC内容** `GCArguments::initialize_size_info`
   - 初始化堆(这里面的内容大部分由具体的GC决定) `universe_init -> Universe::initialize_heap`
     - 创建堆对象，`new`一个`CollectedHeap`的子类（**特定GC内容**）的对象 `GCArguments::create_heap`
-	- 初始化堆，至少有`下面的内容`加上**特定GC内容** `CollectedHeap::initialize`
-	  - 跟操作系统申请保留一个连续的区域
+    - 初始化堆，至少有`下面的内容`加上**特定GC内容** `CollectedHeap::initialize`
+      - 跟操作系统申请保留一个连续的区域
       - 新建`BarrierSet`，设置到静态变量`BarrierSet::_barrier_set`中，**BarrierSet和GC相关**。
         - `BarrierSetAssembler`等汇编器，和`体系结构、指令集`相关，结合`BarrierSet和GC相关`，则要放在`/hotspot/cpu/CPU_NAME/gc/GC_NAME_OR_shared/`里面
         - `BarrierSetC1`，C1特定的一些方法，和GC相关，要放在`/hotspot/share/gc/GC_NAME_OR_shared/c1`

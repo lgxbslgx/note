@@ -2,10 +2,13 @@
 ### 初始化
 整体流程和`gc_jvm.md 初始化基本流程`差不多，具体内容在`GenArguments`、`ParallelArguments`和`ParallelScavengeHeap`。**特定GC内容**如下：
 
+`GenArguments::conservative_max_heap_alignment`**这里和`Serial GC`一样**:
+设置最大堆对齐信息，一般为`1<<16`。ARM32位则是`1<<17`。
+
 `ParallelArguments::initialize`：
 - 调用`GCArguments::initialize`
-- parallel GC 特定的内容
-  - 计算并发线程数 `ParallelGCThreads`
+- Parallel GC 特定的内容
+  - 计算并行`Worker`线程数 `ParallelGCThreads`
   - 设置其他参数（用到再看）
 
 `ParallelArguments::initialize_alignments`：
