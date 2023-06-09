@@ -36,7 +36,7 @@
 `Universe::initialize_heap -> ParallelScavengeHeap::initialize`:
 - 跟操作系统申请保留一个连续的区域
 - 在刚刚申请的连续区域中划分新生代、老年代区域，也就是设置对应的边界值。（注意和Serial GC不同，这里低地址是老年代，高地址是新生代）
-- 创建卡表`PSCardTable`（Card table），卡表是记忆集（Remembered Set， RSet）的一种实现方式。
+- 创建卡表`PSCardTable`（Card table），卡表是记忆集（Remembered Set）的一种实现方式。这里的卡表是`point-out`记忆集，表示该卡有指针指向新生代。
 - 卡表初始化 `CardTable::initialize`。**这里和`Serial GC`一样**
   - 计算卡表大小（页对齐）、记得要`+1`
   - 申请保留空间
