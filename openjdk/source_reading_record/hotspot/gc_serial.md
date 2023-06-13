@@ -80,10 +80,10 @@
 
 
 ### 垃圾收集
-- Serial GC有关的`VMOp`（`VMThread的操作`）
-  - `VM_GenCollectForAllocation` `VM_CollectForAllocation` 堆对象分配失败触发GC
+- Serial GC有关的`VMOp`（`VMThread的操作`）// TODO
   - `VM_CollectForMetadataAllocation` 元空间分配失败触发GC
   - `VM_GC_HeapInspection` 堆侦探剖析造成GC
+  - `VM_GenCollectForAllocation` 堆对象分配失败触发GC
   - `VM_GenCollectFull` 这里不是full GC，错误命名了
 
 `GenCollectedHeap`除了普通GC接口`collect`、`do_full_collection`、`collect_as_vm_thread`外，还有下面分代接口:

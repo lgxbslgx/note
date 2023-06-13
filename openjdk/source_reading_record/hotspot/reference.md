@@ -204,7 +204,8 @@ ReferenceDiscoverer (referenceDiscoverer.hpp)
   DiscoveredList* _discoveredPhantomRefs;
 ```
 
-如果是软引用`SoftReference`，`ReferenceProcessor::discover_reference`中要比较 `最近一次引用处理`的时间`ReferenceProcessor::_soft_ref_timestamp_clock、SoftReference::clock`和最近一次`调用get方法`的时间`SoftReference::timestamp`的差 是否大于 `_max_interval`（`_max_interval`由堆空间决定，详见`ReferencePolicy及其子类`）。
+如果是软引用`SoftReference`，`ReferenceProcessor::discover_reference`中要比较 `最近一次引用处理`的时间`ReferenceProcessor::_soft_ref_timestamp_clock、SoftReference::clock`
+和最近一次`调用get方法`的时间`SoftReference::timestamp`的差 是否大于 `_max_interval`（`_max_interval`由堆空间决定，详见`ReferencePolicy及其子类`）。
 
 `ReferenceProcessor::add_to_discovered_list`:
 - 设置该引用的字段`discoverd`为`DiscoveredList`列表的表头节点。

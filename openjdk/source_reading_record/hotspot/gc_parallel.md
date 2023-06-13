@@ -77,12 +77,12 @@
 
 ### 垃圾收集
 - Parallel GC有关的`VMOp`（`VMThread的操作`）// TODO
-  - `VM_ParallelGCFailedAllocation` 堆对象分配失败触发GC
   - `VM_CollectForMetadataAllocation` 元空间分配失败触发GC
   - `VM_GC_HeapInspection` 堆侦探剖析造成GC
+  - `VM_ParallelGCFailedAllocation` 堆对象分配失败触发GC
   - `VM_ParallelGCSystemGC` 被`System.gc`调用
 
-相关方法:
+除了普通GC接口`collect`、`do_full_collection`、`collect_as_vm_thread`外，还有下面方法:
 - `PSScavenge::invoke_no_policy`: 完成一次`Young GC`
 - `PSParallelCompact::invoke_no_policy`: 完成一次`Full GC`
 - `PSScavenge::invoke`: 先调用`PSScavenge::invoke_no_policy`完成一次`Young GC`，再根据具体情况看是否需要调用`PSParallelCompact::invoke_no_policy`完成一次`Full GC`
