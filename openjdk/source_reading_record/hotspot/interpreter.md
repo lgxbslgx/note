@@ -311,7 +311,11 @@ new一个对象时，会调用`Object`的构造函数，一定会执行`_return_
   - `InterpreterMacroAssembler::unlock_object`
     - `InterpreterRuntime::monitorexit`
 - 弹出当前栈
-- 获取返回的入口地址，就是返回要调用的代码（不是直接返回）。具体可以看invoke指令
+- 获取返回的入口地址，就是返回要调用的代码（不是直接返回）。
+  - `invoke`指令会调用`Interpreter::invoke_return_entry_table_for`获取地址，压进栈中。代码在`TemplateTable::prepare_invoke`
+  - 这里就是把之前的代码地址出栈，然后跳转到代码位置
+  - `TemplateInterpreterGenerator::generate_return_entry_for`创建对应的返回代码。
+  - 返回代码最后会调用`dispatch_next`执行方法（这里是调用者`caller`方法，不是`callee`）的下一个字节码。
 
 
 #### `getfield`和`getstatic`、`putfield`和`putstatic`字节码
