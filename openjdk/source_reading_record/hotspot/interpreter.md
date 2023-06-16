@@ -304,7 +304,7 @@ CodeBlob继承层次
 如果是`Object`的构造函数的`return`，它会被改写成`_return_register_finalizer`。
 new一个对象时，会调用`Object`的构造函数，一定会执行`_return_register_finalizer`，其他时候都不会执行它。
 - 如果是`_return_register_finalizer`（也就是new一个对象）
-  - 则要查看类是否重写了`finalize`方法，重写了则要执行`InterpreterRuntime::register_finalizer`来注册对象
+  - 则要查看类是否重写了`finalize`方法，重写了则要执行`InterpreterRuntime::register_finalizer -> InstanceKlass::register_finalizer`来注册对象
   - 最终调用java方法`Finalizer::register`来完成操作（放在Java类`Finalizer`的静态变量`queue`链表里面）。
 - 如果不是`_return_register_finalizer`，判断是否允许线程本地安全点轮寻，是则轮寻 // TODO
 - 解锁monitor（`synchronized`方法的、`synchronized`块的）`InterpreterMacroAssembler::remove_activation -> unlock_object`
