@@ -6,7 +6,7 @@
 ```
 sh configure \
 --with-jtreg=/home/lgx/source/java/jtreg-stable/build/images/jtreg \
---with-boot-jdk=/home/lgx/source/java/jdk20u/build/linux-x86_64-server-release/images/jdk \
+--with-boot-jdk=/home/lgx/source/java/jdk21u/build/linux-x86_64-server-release/images/jdk \
 --with-gtest=/home/lgx/source/cpp/gtest \
 --with-jmh=/home/lgx/source/java/jdk/build/jmh/jars \
 --disable-warnings-as-errors \
