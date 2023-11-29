@@ -129,7 +129,7 @@
   - 遍历类加载器`ClassLoaderData::_handles`，代码在`PSScavengeCLDClosure::do_cld`和`PSScavengeFromCLDClosure::do_oop`
   - 遍历`CodeCache`，代码在`MarkingCodeBlobClosure::do_code_blob`和`PSPromoteRootsClosure::do_oop_work`
 - 遍历各个线程，**每个`worker线程`每次遍历一个线程，直到所有线程被遍历**。代码在`PSThreadRootsTaskClosure::do_thread`和`MarkingCodeBlobClosure::do_code_blob`和`PSScavengeRootsClosure/PSRootsClosure::do_oop_work`
-- 遍历`OopStarageSet`，**使用`ParState/BasicParState`来控制并行操作**。`BasicParState::iterate`调用`BasicParState::claim_next_segment`来获取`OopStarage`的一段空间（几个块`Block`），然后逐个调用`Block::iterate`完成操作。最终操作的代码在`PSScavengeRootsClosure/PSRootsClosure::do_oop_work`
+- 遍历`OopStorageSet`，**使用`ParState/BasicParState`来控制并行操作**。`BasicParState::iterate`调用`BasicParState::claim_next_segment`来获取`OopStorage`的一段空间（几个块`Block`），然后逐个调用`Block::iterate`完成操作。最终操作的代码在`PSScavengeRootsClosure/PSRootsClosure::do_oop_work`
 - 窃取工作。**`worker线程`最后空闲的时候，会调用``steal_work -> PSPromotionManager::steal_depth`获取其他`worker线程`的任务**
   - 每个`worker线程`有一个`PSPromotionManager`，里面有一个`PSScannerTasksQueue _claimed_stack_depth`存放任务给当前线程使用
   - 同时`PSScannerTasksQueueSet _stack_array_depth`汇总了所有线程的`PSScannerTasksQueue _claimed_stack_depth`，用于任务窃取。
@@ -152,7 +152,7 @@
   - 把对象数组放到任务队列`ParCompactionManager::_objarray_stack`（注意: 每次只添加一段到队列中，完成一段之后，在添加下一段。很奇怪，感觉一起添加会好一点。）
   - 使用`ParCompactionManager::follow_marking_stacks`遍历2个栈`ParCompactionManager::_oop_stack/_objarray_stack`，循环标记对象。
 - 遍历各个线程和`CodeCache`，**每个`worker线程`每次遍历一个线程，直到所有线程被遍历，注意和Young GC不同，这里还遍历了CodeCache**。代码在`PCAddThreadRootsMarkingTaskClosure::do_thread`和`PCMarkAndPushClosure::do_oop_nv`、`MarkingCodeBlobClosure::do_code_blob`
-- 遍历`OopStarageSet`，和Young GC一样**使用`ParState/BasicParState`来控制并行操作**。代码在`PCMarkAndPushClosure::do_oop_nv`
+- 遍历`OopStorageSet`，和Young GC一样**使用`ParState/BasicParState`来控制并行操作**。代码在`PCMarkAndPushClosure::do_oop_nv`
 - 窃取工作
   - 和`Young GC`一样，每个`worker线程`有一个`ParCompactionManager`，`ParCompactionManager`里面有`OopTaskQueue`和`ObjArrayTaskQueue`存放任务给当前线程使用
   - 同时`OopTaskQueueSet _stack_array_depth`和`ObjArrayTaskQueueSet`汇总了所有线程的任务，用于任务窃取。

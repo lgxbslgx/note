@@ -39,7 +39,8 @@
 
 `Universe::initialize_heap -> G1CollectedHeap::initialize`:
 - 跟操作系统申请保留一个连续的区域
-- 创建卡表`G1CardTable`（Card table）， 放在字段`_card_table`。卡表是记忆集（Remembered Set）的一种实现方式。但是`G1`这里不把它当记忆集使用。
+- 创建卡表`G1CardTable`（Card table）， 放在字段`_card_table`。卡表是记忆集（Remembered Set）的一种实现方式。
+  - G1在合并记忆集的时候，使用卡表记录汇总信息。这里是`point-out`记忆集。
 - 新建`G1BarrierSet`，设置到静态变量`BarrierSet::_barrier_set`。初始化`G1BarrierSet`
   - `G1BarrierSetAssembler` **在`/hotspot/cpu/CPU_NAME/gc/g1/`里面**
     - 读前没有barrier
