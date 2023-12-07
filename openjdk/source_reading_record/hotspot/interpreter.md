@@ -7,7 +7,7 @@
 ## Java代码调用native代码
 - 通过intrinsic执行native代码
   - 一种intrinsic是直接修改方法入口，具体类型在`AbstractInterpreter::MethodKind和_entry_table`
-  - 一种是通过普通的JNI接口，统一的方法入口，为``AbstractInterpreter::MethodKind::native*`
+  - 一种是通过普通的JNI接口，统一的方法入口，为`AbstractInterpreter::MethodKind::native*`
 - 普通用户则通过JNI执行native代码
 
 ## Zero解释器（C++解释器）
