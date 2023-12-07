@@ -1,7 +1,11 @@
-### GC barrier
+## GC barrier
 
+### 分类
 按barrier所在的位置划分
-- 读barrier
+- 读前barrier（后文的`读barrier`都是指的是`读前barrier`）
+  - `load barrier`: 对于语句`var x = obj.field`, the barrier is invoked on `field`, ensuring only “clean” pointers live on the stack。比如《The Garbage Collection Handbook》的`Algorithm 15.2`的`(a) Baker [1978] barrier`。
+  - `use barrier`: 对于语句`var x = obj.field`, the barrier is invoked on `obj`, ensuring pointers are “cleaned” before using (dereferencing)。比如《The Garbage Collection Handbook》的`Algorithm 15.2`的`(b) Appel et al [1988] barrier`。
+- 读后barrier（暂时还没看到哪个GC有`读后barrier`）
 - 写前barrier
 - 写后barrier
 
@@ -19,52 +23,136 @@
 要并发收集成功，只要破坏其中一个条件即可。
 
 
+### HotSpot中barrier代码的位置
+
+[GC统一接口的资料](https://openjdk.org/jeps/304)
+
+简单描述:
+- `BarrierSet`的子类用C++实现barrier，主要给虚拟机的C++代码使用。
+- `BarrierSetAssembler`的子类实现了模板解释器的barrier
+- `BarrierSetC1`的子类实现了C1的barrier
+- `BarrierSetC2`的子类实现了C2的barrier
+- `XXXBarrierSetRuntime`相关的类实现了barrier的runtime库。模板解释器、C1、C2（上面三个）会复用这里的代码。
+  - 注意如果某个GC的barrier代码逻辑简单，就不用写这样一个runtime库了，直接在自己的类中写就行。
+  - 如果虚拟机C++代码（`BarrierSet`的子类）和`模板解释器、C1、C2`的barrier代码逻辑复杂，很多相同的代码，可以提取出来进行复用。
+    - 比如`ZBarrier`作为公共代码，被`ZBarrierSet`和`ZBarrierSetRuntime`使用。
+    - `ZBarrierSetRuntime`又被`ZBarrierSetAssembler`、`ZBarrierSetC1`、`ZBarrierSetC2`使用。
+
+
 ### Serial GC 和 Parallel GC
 
 - `写后barrier`，为了维护记忆集。
   - 把卡表对应位置置为`dirty`。
-  - 具体代码在`CardTableBarrierSet::write_ref_field_post`。
+  - 具体代码
+    - C++代码 `CardTableBarrierSet::write_ref_field_post`
+    - 模板解释器 `ModRefBarrierSetAssembler::store_at`、`CardTableBarrierSetAssembler::oop_store_at`
+    - C1 `CardTableBarrierSetC1::post_barrier`
+    - C2 `CardTableBarrierSetC2::post_barrier`
 
-相关代码在`BarrierSet`、`ModRefBarrierSet`、`CardTableBarrierSet`。
+相关代码（主要是每项的第一个，后面的一般是它的父类）
+- C++代码 `CardTableBarrierSet`、`ModRefBarrierSet`、`BarrierSet`、
+- 模板解释器 `CardTableBarrierSetAssembler`、`ModRefBarrierSetAssembler`、`BarrierSetAssembler`
+- C1 `CardTableBarrierSetC1`、`ModRefBarrierSetC1`、`BarrierSetC1`
+- C2 `CardTableBarrierSetC2`、`ModRefBarrierSetC2`、`BarrierSetC2`
+
+
+### CMS
+// TODO
 
 
 ### G1 GC
 
-- `读barrier`，为了标记被读的弱引用对象。
+- `读barrier`，为了标记被读的**弱引用对象**。
   - 每个弱引用的对象（弱可达）被读之后，会变成强可达，所以需要标记。
-  - 只在并发标记的时候才需要该barrier，因为只有并发的情况，mutator才会修改引用。
-  - 具体代码在`G1BarrierSet::AccessBarrier::oop_load_in_heap`、`G1BarrierSet::enqueue_preloaded_if_weak`。
+  - 具体代码
+    - C++代码 `G1BarrierSet::AccessBarrier::oop_load_in_heap`、`G1BarrierSet::enqueue_preloaded_if_weak`、`G1BarrierSet::enqueue_preloaded`
+    - 模板解释器 `G1BarrierSetAssembler::load_at`、`G1BarrierSetAssembler::g1_write_barrier_pre`
+    - C1 `G1BarrierSetC1::load_at_resolved`、`G1BarrierSetC1::pre_barrier`
+    - C2 `G1BarrierSetC2::load_at_resolved`、`G1BarrierSetC2::pre_barrier`
+
 - `写前barrier`，为了标记写前的对象。**也就是保留灰色对象指向白色对象的边。破坏了上文提到的`并发收集失败的条件2`。**
   - 把写前的对应对象指针放到队列（叫`satb mark queue`）中，然后让其他线程递归标记这些对象。
-  - 具体代码在`G1BarrierSet::write_ref_field_pre`、`G1BarrierSet::enqueue`。
-- `写后barrier`，为了维护记忆集。
-  - 把对应对象指针放到队列（叫`dirty card queue`DCQ）中，然后让其他线程**根据该队列**把卡表对应位置置为`dirty`。
-  - 具体代码在`G1BarrierSet::write_ref_field_post`、`G1BarrierSet::write_ref_field_post_slow`。
+  - 具体代码
+    - C++代码 `G1BarrierSet::write_ref_field_post`、`G1BarrierSet::write_ref_field_post_slow`
+    - 模板解释器 `ModRefBarrierSetAssembler::store_at`、`G1BarrierSetAssembler::oop_store_at`、`G1BarrierSetAssembler::g1_write_barrier_pre`
+    - C1 `G1BarrierSetC1::pre_barrier`
+    - C2 `G1BarrierSetC2::pre_barrier`
 
-相关代码在`BarrierSet`、`ModRefBarrierSet`、`CardTableBarrierSet`、`G1BarrierSet`。
+- `写后barrier`，为了维护记忆集。
+  - 把对应对象指针放到队列（叫`dirty card queue`DCQ）中，然后让GC线程**根据该队列**把卡表对应位置置为`dirty`。
+  - 具体代码
+    - C++代码 `G1BarrierSet::write_ref_field_post`、`G1BarrierSet::write_ref_field_post_slow`
+    - 模板解释器 `ModRefBarrierSetAssembler::store_at`、`G1BarrierSetAssembler::oop_store_at`、`G1BarrierSetAssembler::g1_write_barrier_post`
+    - C1 `G1BarrierSetC1::post_barrier`
+    - C2 `G1BarrierSetC2::post_barrier`
+
+相关代码（主要是每项的第一个，后面的一般是它的父类）
+- C++代码 `G1BarrierSet`、`CardTableBarrierSet`、`ModRefBarrierSet`、`BarrierSet`、
+- 模板解释器 `G1BarrierSetAssembler`、`ModRefBarrierSetAssembler`、`BarrierSetAssembler`
+- C1 `G1BarrierSetC1`、`ModRefBarrierSetC1`、`BarrierSetC1`
+- C2 `G1BarrierSetC2`、`ModRefBarrierSetC2`、`BarrierSetC2`
+- runtime库 `G1BarrierSetRuntime`
 
 
 ### 无分代ZGC
+并发标记`mark`时用递增更新（increment update)的读barrier，和G1不同。在读barrier中完成标记操作(gc线程也在标记)。
+并发转移`relocate`时使用`tospace invariant`，保证没有`tospace`指向`fromspace`的指针，也是在读barrier中完成（gc线程也在转移）。
 
-- `读barrier`，为了标记被读的对象（当然也包括弱引用对象）。
-  - 每个对象被读之后，对其进行标记。**把白色对象置为灰色，也就等于删除黑色对象指向白色对象的边。破坏了上文提到的`并发收集失败的条件1`。**
-  - 只在并发标记的时候才需要该barrier，因为只有并发的情况，mutator才会修改引用关系。
-  - 具体代码在`XBarrierSet::AccessBarrier::oop_load_in_heap`、`XBarrierSet::AccessBarrier::load_barrier_on_oop_field_preloaded`。
+- `读barrier`，为了标记`mark`、转移`reloate`被读的对象、remap对象指针
+  - 并发标志阶段，每个对象被读之后，对其进行标记。**把白色对象置为灰色，破坏了上文提到的`并发收集失败的条件1`。**
+  - 转移阶段，转移被保护的区域`from space`的对象
+  - 转移阶段，转移对象成功后，remap指针
+  - 标记和remap阶段，remap上一次GC的指针
+  - 具体代码
+    - C++代码 `XBarrierSet::AccessBarrier::oop_load_in_heap`、`XBarrierSet::AccessBarrier::load_barrier_on_oop_field_preloaded`
+    - 模板解释器 `XBarrierSetAssembler::load_at`
+    - C1 `XBarrierSetC1::load_at_resolved`、`XBarrierSetC1::load_barrier`
+    - C2 `XBarrierSetC2::load_at_resolved`
 
-相关代码在`BarrierSet`、`XBarrierSet`。
+相关代码（主要是每项的第一个，后面的一般是它的父类）
+- C++代码 `XBarrierSet`、`BarrierSet`
+- 模板解释器 `XBarrierSetAssembler`、`XBarrierSetAssemblerBase`、`BarrierSetAssembler`
+- C1 `XBarrierSetC1`、`BarrierSetC1`
+- C2 `XBarrierSetC2`、`BarrierSetC2`
+- runtime库 `XBarrierSetRuntime`、`XBarrier`
 
 
 ### 分代ZGC
-
-- `读barrier`，为了标记被读的对象（当然也包括弱引用对象）。
-  - 每个对象被读之后，对其进行标记。**把白色对象置为灰色，也就等于删除黑色对象指向白色对象的边。破坏了上文提到的`并发收集失败的条件1`。**
-  - 只在并发标记的时候才需要该barrier，因为只有并发的情况，mutator才会修改引用关系。
-  - 具体代码在`ZBarrierSet::AccessBarrier::oop_load_in_heap`、`ZBarrierSet::AccessBarrier::load_barrier`。
-- `写前barrier`，为了标记对象和维护记忆集。
-  - 如果对象需要保持活跃（这里具体的代码不太懂），则对其进行标记。**把白色对象置为灰色，也就等于删除黑色对象指向白色对象的边。破坏了上文提到的`并发收集失败的条件1`。**
-  - 处理记忆集。
-  - 具体代码在`ZBarrierSet::AccessBarrier::oop_store_in_heap`、`ZBarrierSet::store_barrier_on_heap_oop_field`、`ZBarrierSet::heap_store_slow_path`、`ZBarrier::remember`。
+并发标记`mark`时使用SATB的写barrier，和G1相同。在写barrier中完成标记操作(gc线程也在标记)。
+并发转移`relocate`时使用`tospace invariant`，保证没有`tospace`指向`fromspace`的指针，无分代ZGC一样。在读barrier中完成操作(gc线程也在转移对象)。
 
 
-相关代码在`BarrierSet`、`ZBarrierSet`。
+- `读barrier`，转移`relocate`对象 和 映射`remap`指针 （注意: 这里没有标记）
+  - 转移阶段，转移被保护的区域`from space`的对象
+  - 转移阶段，转移对象成功后，remap指针
+  - 标记和remap阶段，remap上一次GC的指针
+  - 具体代码
+    - C++代码 `ZBarrierSet::AccessBarrier::oop_load_in_heap`、`ZBarrierSet::AccessBarrier::load_barrier`
+    - 模板解释器 `ZBarrierSetAssembler::load_at`
+    - C1 `ZBarrierSetC1::load_at_resolved`、`ZBarrierSetC1::load_barrier`
+    - C2 `ZBarrierSetC2::load_at_resolved`
+
+- `写前barrier`，为了标记写前的对象和维护记忆集。
+  - 标记写前的对象。**也就是保留灰色对象指向白色对象的边。破坏了上文提到的`并发收集失败的条件2`。**
+    - 把对应对象指针放到`ZStoreBarrierBuffer`中，让GC线程进行标记。`ZStoreBarrierBuffer::add`
+    - `ZStoreBarrierBuffer`不存在时，mutator线程直接处理。`ZBarrier::mark`
+  - 处理记忆集
+    - 把对应对象指针放到`ZStoreBarrierBuffer`中，让GC线程修改记忆集。`ZStoreBarrierBuffer::add`
+    - `ZStoreBarrierBuffer`不存在时，mutator线程直接处理。 `ZBarrier::remember`
+  - 具体代码
+    - C++代码 `ZBarrierSet::AccessBarrier::oop_store_in_heap`、`ZBarrierSet::AccessBarrier::store_barrier_heap_without_healing`、`ZBarrier::store_barrier_on_heap_oop_fiel`、`ZBarrier::heap_store_slow_path`
+    - 模板解释器 `ZBarrierSetAssembler::store_at`
+    - C1 `ZBarrierSetC1::store_at_resolved`、`XBarrierSetC1::store_barrier`
+    - C2 `ZBarrierSetC2::store_at_resolved`
+
+相关代码（主要是每项的第一个，后面的一般是它的父类）
+- C++代码 `ZBarrierSet`、`BarrierSet`
+- 模板解释器 `XBarrierSetAssembler`、`ZBarrierSetAssemblerBase`、`BarrierSetAssembler`
+- C1 `ZBarrierSetC1`、`BarrierSetC1`
+- C2 `ZBarrierSetC2`、`BarrierSetC2`
+- runtime库 `ZBarrierSetRuntime`、`ZBarrier`
+
+
+### Shenandoah
+// TODO
 
