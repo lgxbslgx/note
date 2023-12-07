@@ -1,5 +1,9 @@
 `Reference引用`相关内容
 
+## 相关资料
+- 论文《Deep Dive into ZGC: A Modern Garbage Collector in OpenJDK》 Section 4、5
+- 论文《Reference Object Processing in On-The-Fly Garbage Collection》
+
 ## Reference类别
 
 - Reference 抽象类，不能被实例化
@@ -227,13 +231,15 @@ ReferenceDiscoverer (referenceDiscoverer.hpp)
       - 遍历下一个引用
       - 最后**调用`DiscoveredListIterator::complete_enqueue`把该引用队列放到`Universe::_reference_pending_list`，给`ReferenceHandler`线程使用**
     - 如果引用对象还存活（对象被其他地方强引用）:
-      - 把该引用从引用队列中`DiscoveredList`删除，代码在`DiscoveredListIterator::remove`（注意删除不是清理`clear`）
+      - 把该引用从引用队列中`DiscoveredList`删除，代码在`DiscoveredListIterator::remove`（注意这里的删除不是清理`Refenrence::referent`字段）
       - 标记该对象为存活对象，比如设置markword为`|其他|11`（前面`引用不存活`的情况没有这一步，所以对象就会被回收）
       - 遍历下一个引用
 - 处理final引用`Finalizer`（`KeepAliveFinalRefsPhase`）因为后面`FinalizerThread`要调用对象的`finalize`方法，所以还不能清除`Finalizer`引用的对象。
   - 把上一步所有的`Finalizer`引用的对象标记为存活，放到`next`字段和`discovered`字段中，为了后面再次处理。
   - 具体代码在`RefProcProxyTask及其子类`、`RefProcTask及其子类`、`ReferenceProcessor::process_final_keep_alive_work`、`DiscoveredListIterator`。
-- 处理虚引用`PhantomReference`（`PhantomRefsPhase`）具体操作和上面 软引用`SoftReference`、弱引用`WeakReference`、`Finalizer`引用 差不多，不知道为什么要分开。
+- 处理虚引用`PhantomReference`（`PhantomRefsPhase`）具体操作和上面 软引用`SoftReference`、弱引用`WeakReference`、`Finalizer`引用差不多。
+  - 因为`虚引用`弱于`final引用`，所以上一步对final引用的对象及其后继（传递闭包）重新标记为存活之后，对应的`虚引用`对象也会被标记成存活，所以`虚引用`要在最后处理。
+  - ZGC中`虚引用`和其他引用一起处理，不用最后单独处理，因为ZGC的`标记阶段`会识别出**正常存活的对象**和**因finalizable存活的对象**，所以引用处理阶段无需特殊处理。详见`XReferenceProcessor`和`ZReferenceProcessor`。
 - 设置引用数量汇总信息到`ReferenceProcessorStats`并返回
 
 
