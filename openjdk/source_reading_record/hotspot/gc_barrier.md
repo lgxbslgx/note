@@ -64,6 +64,7 @@
 
 - `读barrier`，为了标记被读的**弱引用对象**。
   - 每个弱引用的对象（弱可达）被读之后，会变成强可达，所以需要标记。
+  - 这些需要改变的弱引用的对象具体为: 它的`DecoratorSet`的`ON_STRONG_OOP_REF`为0（即非强可达），`AS_NO_KEEPALIVE`为`0`（即可以存活）。
   - 具体代码
     - C++代码 `G1BarrierSet::AccessBarrier::oop_load_in_heap`、`G1BarrierSet::enqueue_preloaded_if_weak`、`G1BarrierSet::enqueue_preloaded`
     - 模板解释器 `G1BarrierSetAssembler::load_at`、`G1BarrierSetAssembler::g1_write_barrier_pre`
@@ -99,10 +100,11 @@
 并发转移`relocate`时使用`tospace invariant`，保证没有`tospace`指向`fromspace`的指针，也是在读barrier中完成（gc线程也在转移）。
 
 - `读barrier`，为了标记`mark`、转移`reloate`被读的对象、remap对象指针
-  - 并发标志阶段，每个对象被读之后，对其进行标记。**把白色对象置为灰色，破坏了上文提到的`并发收集失败的条件1`。**
-  - 转移阶段，转移被保护的区域`from space`的对象
-  - 转移阶段，转移对象成功后，remap指针
-  - 标记和remap阶段，remap上一次GC的指针
+  - 并发标志阶段，每个对象被读之后，如果其`DecoratorSet`的`AS_NO_KEEPALIVE`为`0`，则对其进行标记。**把白色对象置为灰色，破坏了上文提到的`并发收集失败的条件1`。**
+    - 注意: 这里不管`ON_STRONG_OOP_REF`是否为0（即非强可达），都需要标记。和G1不一样，相当于G1的`写前barrier`和`读barrier`合并在一起了。
+  - 转移阶段，转移被保护的区域`fromspace`的对象。转移阶段，转移对象成功后，remap指针。
+  - 并发标记和remap阶段，remap上一次GC的指针
+  - 这些需要改变的弱引用的对象具体为: 它的`DecoratorSet`的`ON_STRONG_OOP_REF`为0（即非强可达），`AS_NO_KEEPALIVE`为`0`（即可以存活）。
   - 具体代码
     - C++代码 `XBarrierSet::AccessBarrier::oop_load_in_heap`、`XBarrierSet::AccessBarrier::load_barrier_on_oop_field_preloaded`
     - 模板解释器 `XBarrierSetAssembler::load_at`
@@ -122,10 +124,13 @@
 并发转移`relocate`时使用`tospace invariant`，保证没有`tospace`指向`fromspace`的指针，无分代ZGC一样。在读barrier中完成操作(gc线程也在转移对象)。
 
 
-- `读barrier`，转移`relocate`对象 和 映射`remap`指针 （注意: 这里没有标记）
-  - 转移阶段，转移被保护的区域`from space`的对象
-  - 转移阶段，转移对象成功后，remap指针
-  - 标记和remap阶段，remap上一次GC的指针
+- `读barrier`，转移`relocate`对象、映射`remap`指针、标记被读的**弱引用对象**
+  - 并发标记阶段，每个弱引用的对象（弱可达）被读之后，会变成强可达，所以需要标记。这些需要改变的弱引用的对象具体为: 
+    - `DecoratorSet`的`ON_STRONG_OOP_REF`为0（即非强可达，也就是`ON_WEAK_OOP_REF`或者`ON_PHANTOM_OOP_REF`为1）
+    - `AS_NO_KEEPALIVE`为`0`（即可以存活）。这里和G1一样，和无分代ZGC不一样。
+  - 并发转移阶段，转移被保护的区域`from space`的对象
+  - 并发转移阶段，转移对象成功后，remap指针。
+  - 并发标记和remap阶段，remap上一次GC的指针。
   - 具体代码
     - C++代码 `ZBarrierSet::AccessBarrier::oop_load_in_heap`、`ZBarrierSet::AccessBarrier::load_barrier`
     - 模板解释器 `ZBarrierSetAssembler::load_at`
@@ -134,7 +139,7 @@
 
 - `写前barrier`，为了标记写前的对象和维护记忆集。
   - 标记写前的对象。**也就是保留灰色对象指向白色对象的边。破坏了上文提到的`并发收集失败的条件2`。**
-    - 把对应对象指针放到`ZStoreBarrierBuffer`中，让GC线程进行标记。`ZStoreBarrierBuffer::add`
+    - 把写前的对象放到`ZStoreBarrierBuffer`中，让GC线程进行标记。`ZStoreBarrierBuffer::add`
     - `ZStoreBarrierBuffer`不存在时，mutator线程直接处理。`ZBarrier::mark`
   - 处理记忆集
     - 把对应对象指针放到`ZStoreBarrierBuffer`中，让GC线程修改记忆集。`ZStoreBarrierBuffer::add`
