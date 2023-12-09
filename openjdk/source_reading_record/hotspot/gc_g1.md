@@ -39,14 +39,11 @@
 
 `Universe::initialize_heap -> G1CollectedHeap::initialize`:
 - 跟操作系统申请保留一个连续的区域
-- 创建卡表`G1CardTable`（Card table）， 放在字段`_card_table`。卡表是记忆集（Remembered Set）的一种实现方式。
-  - G1在合并记忆集的时候，使用卡表记录汇总信息。这里是`point-out`记忆集。
+- 创建卡表`G1CardTable`（Card table）， 放在字段`_card_table`。这里卡表不是最终记忆集（Remembered Set），只是辅助的数据结构。
+  - mutator会在`写barrier`时，把卡表对应位置置为`dirty`，再把这个位置加入`dirty card queue`，`Refine线程`通过这个信息来维护记忆集。
+  - G1在合并记忆集的时候，使用卡表记录汇总信息。
 - 新建`G1BarrierSet`，设置到静态变量`BarrierSet::_barrier_set`。初始化`G1BarrierSet`
   - `G1BarrierSetAssembler` **在`/hotspot/cpu/CPU_NAME/gc/g1/`里面**
-    - 读前没有barrier
-    - 读后的barrier把对象加到SATB相关队列（Thread::GCThreadLocalData _gc_data::SATBMarkQueue _satb_mark_queue）（注意如果不是并发标记阶段，则直接跳过）
-    - 写前的barrier和读后的一样
-    - 写后的barrier把对象加入DCQ相关队列（注意如果不是并发标记阶段，也需要加入DCQ，因为DCQ是为了之后修改记忆集）
   - `G1BarrierSetC1` **在`/hotspot/share/gc/g1/c1`里面**
   - `G1BarrierSetC2` **在`/hotspot/share/gc/g1/c2`里面**
 - 创建多个`G1RegionToSpaceMapper`，放到`HeapRegionManager`中。

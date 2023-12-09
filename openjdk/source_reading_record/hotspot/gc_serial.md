@@ -127,7 +127,7 @@
 #### 老年代垃圾收集（full gc）
 调用链: `GenCollectedHeap::collect_generation(_old_gen, ...)` -> `TenuredGeneration::collect` -> `GenMarkSweep::invoke_at_safepoint`。整体流程主要在`GenMarkSweep`中，注意不是`标记-清除`算法，是`标记-压缩`算法，这里错误命名了。
 
-- 标记存活对象 `GenMarkSweep::mark_sweep_phase1`
+- 标记存活对象、处理弱引用等 `GenMarkSweep::mark_sweep_phase1`
 获取`oop`当前的`markword`，设置`oop`的`markword`为`全0|11|`，如果刚刚获取的`markword`是未锁（`***|01|`）且未计算hash值，则不用保存。否则把刚刚获取的`markword`保存在`MarkSweep::_preserved_marks/_preserved_overflow_stack`中。 
   - 处理根 `GenCollectedHeap::process_roots`。
     - 所有**类加载器**的对象handle`ClassLoaderData::_handles`，把对象放到`MarkSweep::_marking_stack`（注意这里没有接着遍历这些对象）。 `ClassLoaderDataGraph::roots_cld_do -> CLDToOopClosure::do_cld -> ClassLoaderData::oops_do -> ChunkedHandleList::oops_do`
@@ -139,13 +139,13 @@
   - 卸载类、卸载`nmethods`
 
 - 计算对象新地址 `GenMarkSweep::mark_sweep_phase2`
-遍历堆上的所有对象（注意不是遍历`已经标记的存活对象`，也不是像前面一样重新`遍历根`），如果对象需要移动（`对象当前地址`不等于`移动后的地址`），则把移动后的地址放在对象头。之前的`markword`为`全0|11|`，现在变成了`新位置的指针|11|`。如果对象不需要移动，则把`markword`改为`全0|01|`（这步很奇怪）。
+遍历堆上的所有对象（注意不是遍历`已经标记的存活对象`，也不是像前面一样重新`遍历根`），如果对象需要移动（`对象当前地址`不等于`移动后的地址`），则把移动后的地址放在对象头。之前的`markword`为`全0|11|`，现在变成了`新位置的指针|11|`。如果对象不需要移动，则把`markword`改为`全0|01|`。
 注意: Full GC时，新生代的所有对象都会移动到老年代，不管GC年龄。
 `Generation::prepare_for_compaction -> ContiguousSpace::prepare_for_compaction -> ContiguousSpace::forward`
 
 - 调整对象指针 `GenMarkSweep::mark_sweep_phase3`
 像`标记存活对象`一样，修改对应对象的指针。根据当前指针找到对象，获取对象的`markword`为`新位置的指针|11|`，去掉`11`，把`新位置的指针`存到当前指针位置。如果`markword`为`全0|01|`，则表示对象不需要移动，也就不用修改对象指针。
-代码路径和`标记存活对象`差不多，只不过传入的`Closure`不同。`GenMarkSweep::mark_sweep_phase3 -> GenCollectedHeap::process_roots 遍历所有根 、GenCollectedHeap::generation_iterate 修改堆中字段`。
+代码路径和`第一阶段的标记存活对象`差不多，只不过传入的`Closure`不同。`GenMarkSweep::mark_sweep_phase3 -> GenCollectedHeap::process_roots 遍历所有根 、GenCollectedHeap::generation_iterate 修改堆中字段`。
 和`标记存活对象`不同的是，`GenCollectedHeap::process_roots`没有沿着根继续搜索，也就是堆中字段的对象指针还没修改。
 注意这里多了一个根: `标记存活对象`阶段产生的`MarkSweep::_preserved_marks/_preserved_overflow_stack`。
 `GenCollectedHeap::generation_iterate`才修改堆中字段的对象指针。
