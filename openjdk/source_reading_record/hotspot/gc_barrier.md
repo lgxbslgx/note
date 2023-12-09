@@ -5,7 +5,7 @@
 - 读barrier
   - `load barrier`: 对于语句`var x = obj.field`, the barrier is invoked on `field`, ensuring only “clean” pointers live on the stack。比如《The Garbage Collection Handbook》的`Algorithm 15.2`的`(a) Baker [1978] barrier`。
   - `use barrier`: 对于语句`var x = obj.field`, the barrier is invoked on `obj`, ensuring pointers are “cleaned” before using (dereferencing)。比如《The Garbage Collection Handbook》的`Algorithm 15.2`的`(b) Appel et al [1988] barrier`。
-  - 也可以按`读前barrier`和`读后barrier`分类
+  - 也可以按`读前barrier`和`读后barrier`进行分类
 - 写前barrier
 - 写后barrier
 
@@ -31,7 +31,7 @@
 - `BarrierSet`及其子类用C++实现barrier，主要给`BarrierSet::AccessBarrier`使用。
 - `BarrierSet::AccessBarrier`及其子类使用`BarrierSet`的方法实现了C++版本的barrier，给runtime代码使用。
   - 所有C++代码需要访问堆的都要经过`BarrierSet::AccessBarrier`。详见`gc_heap_access.md`。
-- `BarrierSetAssembler`的子类实现了模板解释器的barrier
+- `BarrierSetAssembler`的子类实现了`GC barrier`的汇编器，给模板解释器使用。C1、C2也可能使用它。
 - `BarrierSetC1`的子类实现了C1的barrier
 - `BarrierSetC2`的子类实现了C2的barrier
 - `XXXBarrierSetRuntime`相关的类实现了barrier的runtime库。模板解释器、C1、C2（上面三个）会复用这里的代码。

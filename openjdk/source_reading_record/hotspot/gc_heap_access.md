@@ -2,7 +2,7 @@
 本文记录**HotSpot中C++代码访问堆内存**的方法。
 文档`gc_barrier.md`有C++代码实现的`GC barrier`（`XXXBarrierSet`、`XXXBarrierSet::AccessBarrier`），这些`GC barrier`会被这里`访问堆内存的代码`调用，具体关系看下文。
 
-注意解释器、C1、C2生成的代码要访问堆内存，也会使用GC提供的相关barrier，
+注意模板解释器、C1、C2生成的代码要访问堆内存，也会使用GC提供的相关barrier，
 即`XXXBarrierSetAssembler`、`XXXBarrierSetC1`、`XXXBarrierSetC2`等，
 本文不关心这些内容，它们的内容详见文档`gc_barrier.md`。
 
