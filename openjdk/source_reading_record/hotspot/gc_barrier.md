@@ -162,3 +162,9 @@
 ### Shenandoah
 // TODO
 
+
+### 一些注意事项
+- 非堆的OOP读写（比如`OopHandle`）有可能会有特殊操作，目前的GC中
+  - 非堆的读（比如`IN_NATIVE`）和堆内读（`IN_HEAP`）的barrier一样
+  - 非堆的写（比如`IN_NATIVE`）与堆内写（`IN_HEAP`）的barrier相比，少了维护记忆集的工作。其他操作，比如标记操作，则完全相同。
+

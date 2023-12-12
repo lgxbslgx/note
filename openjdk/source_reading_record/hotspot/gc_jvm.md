@@ -85,15 +85,14 @@ init_globals init.cpp:146
   - 先从线程的TLAB上分配，TLAB上的可用空间大于需要空间就可以分配成功 `MemAllocator::mem_allocate_inside_tlab_fast`
   - 分配不成功则开始慢速分配 `MemAllocator::mem_allocate_slow`
     - 尝试新建新的TLAB并分配 `MemAllocator::mem_allocate_inside_tlab_slow`
-	  - 如果设置了`should_post_sampled_object_alloc`，则从TLAB上再尝试分配一次
-	  - 如果TLAB上剩余空间过多（大于`tlab.refill_waste_limit`），则保留该TLAB，直接返回，在下一个阶段`MemAllocator::mem_allocate_outside_tlab`分配（即保留当前buffer，在其他地方分配，因为当前buffer还是空间多，不能浪费）
-	  - 计算新分配的TLAB的大小 `tlab.compute_size` `ThreadLocalAllocBuffer::compute_min_size`
-	  - 记录浪费的空间，清除TLAB的一些记录数据，当前TLAB剩下的部分用一个`Object`对象或者`Array`对象填充
-	  - 新建（叫`分配`也行）新的TLAB `CollectedHeap::allocate_new_tlab` 
-	    - 尝试分配 **特定GC内容**
-		- 使用`0`值或者一个特殊的值填充TLAB，初始化TLAB相关记录信息
-		- 分配成功后返回的`TLAB指针`就是`新分配对象的指针`
-	- 前面的分配都不成功后，在TLAB外分配 `MemAllocator::mem_allocate_outside_tlab` **特定GC内容**
+	    - 如果设置了`should_post_sampled_object_alloc`，则从TLAB上再尝试分配一次
+	    - 如果TLAB上剩余空间过多（大于`tlab.refill_waste_limit`），则保留该TLAB，直接返回，在下一个阶段`MemAllocator::mem_allocate_outside_tlab`分配（即保留当前buffer，在其他地方分配，因为当前buffer还是空间多，不能浪费）
+	    - 计算新分配的TLAB的大小 `tlab.compute_size` `ThreadLocalAllocBuffer::compute_min_size`
+	    - 记录浪费的空间，清除TLAB的一些记录数据，当前TLAB剩下的部分用一个`Object`对象或者`Array`对象填充。`ThreadLocalAllocBuffer::retire_before_allocation`
+	    - 新建（叫`分配`也行）新的TLAB `CollectedHeap::allocate_new_tlab` **特定GC内容**
+		  - 使用`0`值或者一个特殊的值填充TLAB，初始化TLAB相关记录信息
+		  - 分配成功后返回的`TLAB指针`就是`新分配对象的指针`
+	  - 前面的分配都不成功后，在TLAB外分配 `MemAllocator::mem_allocate_outside_tlab` **特定GC内容**
 
 
 ## 垃圾收集基本情况

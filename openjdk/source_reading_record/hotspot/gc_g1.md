@@ -323,14 +323,14 @@ G1的`G1JavaThreadsListClaimer`实现了一个批量获取具体线程的方式�
       - 处理全局的任务队列`G1CMMarkStack _global_mark_stack`
         - 先从全局队列中获取任务到本地的任务队列
         - 再调用`G1CMTask::drain_local_queue`进行处理
-      - （循环开始）如果是大对象区域并且被标记，则直接调用`G1CMBitMapClosure::do_addr`进行处理
+      - （循环开始）当前区域`_curr_region`如果是大对象区域并且被标记，则直接调用`G1CMBitMapClosure::do_addr`进行处理
         - 处理对象 `G1CMTask::process_grey_task_entry`
         - 处理本地和全局的任务队列
       - 如果是普通区域，则遍历区域`G1CMBitMap::iterate`，对每个标记对象调用`G1CMBitMapClosure::do_addr`进行处理（内容和前面一样）
       - 再次处理本地和全局的任务队列
-      - 认领一个新的区域 `G1ConcurrentMark::claim_region`
+      - **认领一个新的区域 `G1ConcurrentMark::claim_region`**
       - 设置区域相关的值，比如`_curr_region`和`_finger` `G1CMTask::setup_for_region`
-      - 认领成功则跳到前面（循环开始）继续运行
+      - 认领区域成功则跳到前面（循环开始）继续运行，直到`处理所有区域`。
       - 再次处理本地和全局的任务队列，注意这时候要全部处理
       - 调用`G1ConcurrentMark::try_stealing`窃取其他线程的任务
       - 其他，不重要
