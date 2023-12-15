@@ -10,10 +10,12 @@ thread-1 java
 - parse parameters, check, get path
 - LoadVM : load the libjvm.so, initialize ifn
 - call JavaMain and create the vm in new thread
+  - Java主线程在`java_md.c::CallJavaMainInNewThread`中创建，它运行`java.c::JavaMain`方法。
 - wait thread-2
 
-thread-2
-- InitializeJVM(See vm init)
+thread-2 这是Java主线程
+- InitializeJVM(See vm init) `java.c::JavaMain -> java.c::InitializeJVM`
+    - 先调用`jni.cpp::JNI_CreateJavaVM -> jni.cpp::JNI_CreateJavaVM_inner -> Threads::create_vm`创建虚拟机相关内容
 	- use ifn->CreateJavaVM (JNI_CreateJavaVM in libjvm.so) to create vm. Init JavaVM(vm) and JNIEnv(env).
 - LoadMainClass
 - get main method and call main methodi(`(*env)->GetStaticMethodID()`, `(*env)->CallStaticVoidMethod()`)
