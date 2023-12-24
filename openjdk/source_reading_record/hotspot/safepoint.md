@@ -36,6 +36,9 @@ clone 0x00007f253ac8461f
 
 `SafepointSynchronize::begin`具体操作:
 - 设置`SafepointTracing`的一些值
+- 停止对象迁移线程 `ZCollectedHeap::safepoint_synchronize_begin -> ZGeneration::synchronize_relocation`
+  - 把`ZGeneration::ZRelocate::ZRelocateQueue::_synchronize`设置为`true`
+  - 等待所有线程停止 `ZRelocateQueue::synchronize`
 - **调用堆的同步开始方法`CollectedHeap::safepoint_synchronize_begin -> SuspendibleThreadSet::synchronize`。这一步会停止所有GC相关的并发线程。**
   - 把`SuspendibleThreadSet::_suspend_all`设置为`true`
   - 调用`SuspendibleThreadSet::is_synchronized`直到所有正在运行的GC并发线程停止（GC并发线程的操作见下文）
@@ -84,6 +87,9 @@ clone 0x00007f253ac8461f
 - 调用堆的同步方法`CollectedHeap::safepoint_synchronize_end -> SuspendibleThreadSet::desynchronize`。这一步会唤醒所有GC相关的并发线程。
   - 调用`SuspendibleThreadSet::desynchronize`，把`SuspendibleThreadSet::_suspend_all`设置为`false`
   - 调用`MonitorLocker::notify_all`唤醒所有GC并发线程（GC并发线程的操作见下文）
+- 唤醒对象迁移线程 `ZCollectedHeap::safepoint_synchronize_end -> ZGeneration::desynchronize_relocation`
+  - 把`ZGeneration::ZRelocate::ZRelocateQueue::_synchronize`设置为`falue`
+  - 唤醒对象迁移线程
 - 设置`SafepointTracing`的一些值
 - 提交一些JFR事件
 

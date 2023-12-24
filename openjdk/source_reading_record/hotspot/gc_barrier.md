@@ -126,12 +126,13 @@
 并发转移`relocate`时使用`tospace invariant`，保证没有`tospace`指向`fromspace`的指针，无分代ZGC一样。在读barrier中完成操作(gc线程也在转移对象)。
 
 - `读barrier`，转移`relocate`对象、映射`remap`指针、标记被读的**弱引用对象**
+  - 转换着色指针为无着色地址
   - 并发标记阶段，每个弱引用的对象（弱可达）被读之后，会变成强可达，所以需要标记。这些需要改变的弱引用的对象具体为: 
     - `DecoratorSet`的`ON_STRONG_OOP_REF`为0（即非强可达，也就是`ON_WEAK_OOP_REF`或者`ON_PHANTOM_OOP_REF`为1）
     - `AS_NO_KEEPALIVE`为`0`（即可以存活）。这里和G1一样，和无分代ZGC不一样。
-  - 并发转移阶段，转移被保护的区域`from space`的对象
+  - 下一次并发标记阶段，remap上一次GC的指针。
+  - 并发转移阶段，转移relocate被保护的区域`from space`的对象
   - 并发转移阶段，转移对象成功后，remap指针。
-  - 并发标记和remap阶段，remap上一次GC的指针。
   - 具体代码
     - C++代码 `ZBarrierSet::AccessBarrier::oop_load_in_heap`、`ZBarrierSet::AccessBarrier::load_barrier`
     - 模板解释器 `ZBarrierSetAssembler::load_at`
@@ -139,6 +140,7 @@
     - C2 `ZBarrierSetC2::load_at_resolved`
 
 - `写前barrier`，为了标记写前的对象和维护记忆集。
+  - 转换无着色地址为着色指针
   - 标记写前的对象。**也就是保留灰色对象指向白色对象的边。破坏了上文提到的`并发收集失败的条件2`。**
     - 把写前的对象放到`ZStoreBarrierBuffer`中，让GC线程进行标记。`ZStoreBarrierBuffer::add`
     - `ZStoreBarrierBuffer`不存在时，mutator线程直接处理。`ZBarrier::mark`

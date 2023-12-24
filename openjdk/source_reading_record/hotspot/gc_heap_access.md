@@ -132,7 +132,7 @@ ArrayAccess<ARRAYCOPY_DISJOINT>::oop_arraycopy(s, src_offset, d, dst_offset, len
 
   - 5.b 调用（Post-runtime dispatch）
     - 调用`XXXBarrierSet::AccessBarrier`对应的函数进行具体的`barrier`操作，和具体的GC有关。详见文档`gc_barrier.md`。
-    - 注意`XXXBarrierSet::AccessBarrier`的方法有一步是调用`RawAccessBarrier`的方法来完成具体的操作，`RawAccessBarrier`操作的前后就是`GC barrier`的内容。
+    - 注意`XXXBarrierSet::AccessBarrier`的方法有一步是调用`RawAccessBarrier`的方法来完成具体的操作，`RawAccessBarrier`操作的前后就是`GC barrier`的内容。`RawAccessBarrier`里面有压缩指针的编码（转换正常地址为压缩指针）、解码操作（转换压缩指针为正常地址）。
 
 
 相关代码在:
