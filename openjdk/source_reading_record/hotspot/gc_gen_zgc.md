@@ -577,12 +577,11 @@ clone 0x00007f588b92361f
   - 也就是只需要获取所有`年轻代指向老年代`的对象，不能获取根指向老年代的对象
   - 前面的栈水位操作确实会标记Java线程的指向老年代的对象，只是根的少部分内容。
   - 所以老年代并发标记还是要重新`遍历、标记`一次根
-- 注意: 经过这一轮`年轻代收集`之后，`老年代收集`并发标记的时候，遇到的所有指向年轻代的指针都是好指针，从而不标记年轻代对象（直到下一次年轻代收集开启）。
+
 
 具体老年代的收集在`ZDriverMajor::collect_old -> ZGenerationOld::collect`。大体流程和新生代差不多。主要有以下区别:
 - 老年代`标记开始`阶段和年轻代`标记开始`阶段同时开始（这一点刚刚已经详细描述），使得**栈水位操作标记老年代的对象**。
-- `并发标记根`阶段会标记根指向的所有对象,包括年轻代的对象
-  - 因为上一轮`年轻代收集`后，所有年轻代指针都是好指针，从而不标记年轻代对象（直到下一次年轻代收集开启） // TODO
+- `并发标记根`阶段会标记根指向的所有对象（包括年轻代的对象，但是后面不会递归遍历年轻代的对象 // TODO 标记年轻代对象的信息有用吗？）
   - 年轻代收集使用`ZMarkYoungRootsTask`、`ZMarkYoungOopClosure`、`ZBarrier::mark_young_good_barrier_on_oop_field`
   - 老年代收集使用`ZMarkOldRootsTask`、`ZMarkOopClosure`、`ZBarrier::mark_barrier_on_oop_field`
 - 老年代只标记强的根（`ZRootsIteratorStrongColored`、`ZRootsIteratorStrongUncolored`），而年轻代会标记所有根（包括强和弱）（`ZRootsIteratorAllColored`、`ZRootsIteratorAllUncolored`）
