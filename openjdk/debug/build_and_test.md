@@ -1,12 +1,16 @@
 ## build jdk
 ### configure
-- If want to use jmh: `sh make/devkit/createJMHBundle.sh`
+- jmh: `sh make/devkit/createJMHBundle.sh`
+- jtreg 见文档`jtreg.md`
+- gtest `git clone https://github.com/google/googletest.git gtest`
+- boot jdk: 安装对应版本的jdk，或者使用前面构建好的jdk
+
 - Usage: 
 
 ```
 sh configure \
 --with-jtreg=/home/lgx/source/java/jtreg-stable/build/images/jtreg \
---with-boot-jdk=/home/lgx/source/java/jdk21u/build/linux-x86_64-server-release/images/jdk \
+--with-boot-jdk=/home/lgx/source/java/jdk22u/build/linux-x86_64-server-release/images/jdk \
 --with-gtest=/home/lgx/source/cpp/gtest \
 --with-jmh=/home/lgx/source/java/jdk/build/jmh/jars \
 --disable-warnings-as-errors \
@@ -31,7 +35,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/riscv/sysroot/lib:/opt/riscv/sysroo
 
 
 sh configure \
---with-boot-jdk=/home/lgx/source/java/jdk20u/build/linux-x86_64-server-release/images/jdk \
+--with-boot-jdk=/home/lgx/source/java/jdk22u/build/linux-x86_64-server-release/images/jdk \
 --disable-warnings-as-errors \
 --openjdk-target=riscv64-linux-gnu \
 --with-sysroot=/opt/riscv/sysroot \
@@ -42,7 +46,7 @@ sh configure \
 # debug
 sh configure \
 --with-jtreg=/home/lgx/source/java/jtreg-stable/build/images/jtreg \
---with-boot-jdk=/home/lgx/source/java/jdk20u/build/linux-x86_64-server-release/images/jdk \
+--with-boot-jdk=/home/lgx/source/java/jdk22u/build/linux-x86_64-server-release/images/jdk \
 --with-gtest=/home/lgx/source/cpp/gtest \
 --with-jmh=/home/lgx/source/java/jdk/build/jmh/jars \
 --disable-warnings-as-errors \
@@ -81,7 +85,7 @@ sudo chroot /opt/debian/sysroot-arm64 symlinks -cr .
 
 sh configure \
 --with-jtreg=/home/lgx/source/java/jtreg-stable/build/images/jtreg \
---with-boot-jdk=/home/lgx/source/java/jdk20u/build/linux-x86_64-server-release/images/jdk \
+--with-boot-jdk=/home/lgx/source/java/jdk22u/build/linux-x86_64-server-release/images/jdk \
 --with-gtest=/home/lgx/source/cpp/gtest \
 --with-jmh=/home/lgx/source/java/jdk/build/jmh/jars \
 --disable-warnings-as-errors \
@@ -95,7 +99,7 @@ sh configure \
 ```
 sh configure \
 --with-jtreg=/home/user/source/jtreg \
---with-boot-jdk=/usr/lib/jvm/java-20-openjdk-riscv64 \
+--with-boot-jdk=/usr/lib/jvm/java-22-openjdk-riscv64 \
 --with-gtest=/home/user/source/gtest \
 --with-jmh=/home/user/source/jdk/build/jmh/jars \
 --disable-warnings-as-errors \
@@ -125,7 +129,7 @@ sh configure \
 ```
 sh configure \
 --with-jtreg=/home/pi/source/jtreg \
---with-boot-jdk=/home/pi/install/jdk-20.0.1 \
+--with-boot-jdk=/home/pi/install/jdk-22.0.1 \
 --with-gtest=/home/pi/source/googletest \
 --with-jmh=/home/pi/source/jdk/build/jmh/jars \
 --disable-warnings-as-errors \
