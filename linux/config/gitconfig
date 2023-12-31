@@ -3,11 +3,12 @@ file : ~/.gitconfig
 [user]
     name = Guoxiong Li
     email = lgxbslgx@gmail.com
-#[credential]
-#    helper = store
+[credential]
+    helper = store
 
 [http]
 #    sslVerify = false
     proxy = http://127.0.0.1:12333
 #    proxyAuthMethod = basic
-#    postBuffer = 4000000000    
+    postBuffer = 524288000
+
