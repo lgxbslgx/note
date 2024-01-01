@@ -1,3 +1,5 @@
+下面方法好像没用，直接设置不让ubuntu休眠暂时避免了这个问题。
+
 Ubuntu休眠后无法唤醒黑屏的解决方案
 
 - 安装laptop mode `sudo apt install laptop-mode-tools`
