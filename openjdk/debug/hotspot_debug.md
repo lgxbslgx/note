@@ -6,12 +6,16 @@
 
 ## hotspot debug using CLion（不适用交叉编译）
 - Add a `custom build application` configuration
-	- targer: the target for building
-		- Add `custom build target` using `make`
-	- executable: select the `java` command
-	- program arguments: the java program you want to run
-	- working directory: the directory of your java program
-	- before launch: if your java program was not compiled, you can add a `run external tool` in here to compile your program.
+    - target: `configure custom build target -> add -> 选择Build -> add`
+        - Name: make images
+        - Description: make images JOBS=2
+        - Program: /usr/bin/make
+        - Arguments:  images JOBS=2
+        - Working directory: /home/lgx/source/java/slow-jdk
+    - executable: select the `java` command
+    - program arguments: the java program you want to run
+    - working directory: the directory of your java program
+    - before launch: if your java program was not compiled, you can add a `run external tool` in here to compile your program.
 - set breakpoint, start debugging or running.
 
 
