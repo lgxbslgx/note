@@ -1,5 +1,5 @@
 ## software list in linux
-- electron-ssr proxy
+- electron-ssr/clash proxy
 - chrome
 - vim
 - idea
@@ -9,10 +9,10 @@
 - python 2\3
 - openjdk 8\11
 - git
-- mercurial
 - gcc
 - make
+- vscode
 
 ## source code in linux
 - linux kernel main
-- openjdk : jdk8/9 using mercurial and jdk10-16 using git
+- openjdk
