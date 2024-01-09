@@ -1,6 +1,7 @@
 ## Linux内核构建
 [How to quickly build a trimmed Linux kernel](https://docs.kernel.org/admin-guide/quickly-build-trimmed-linux.html)
 
+### 本地构建
 - （一次性）获取代码 `git clone https://github.com/torvalds/linux.git`
 - （一次性）安装依赖 `sudo apt-get install git fakeroot build-essential ncurses-dev xz-utils libssl-dev bc flex libelf-dev bison`
 - 配置（一般都是一次性配置）
@@ -14,6 +15,13 @@
 - 构建 `make -j2`
 - 安装内核模块（newbies先别不安装）`command -v installkernel && sudo make modules_install install`
 
-生成的内容
+### 交叉编译 ARM64
+// TODO
+
+### 交叉编译 RISCV64
+// TODO
+
+### 生成的内容
 - `vmlinx` 未压缩的内核文件
 - `arch/x86/boot/bzImage`或`arch/x86_64/boot/bzImage` 压缩后的镜像文件
+- 查看内容 `sudo find ~/source/c/linux -name *linux*.gz -or -name *linux*.bz2 -or -name *linux*.lzma -or -name *linux*.xz -or -name *linux*.lzo -or -name *linux*.lz4 -or -name *linux*.zst`

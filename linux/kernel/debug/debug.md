@@ -26,7 +26,6 @@
 - 启动gdb server `qemu-system-x86_64 -kernel arch/x86/boot/bzImage -nographic -append "console=ttyS0 nokaslr" -initrd ~/source/c/initramfs/tiny-initrd.img -s -S`
 - gdb调试 `gdb vmlinux`
   - 在gdb里面连接gdb server `target remote :1234`
-  - 在内核开始的地方打断点 `break start_kernel`
   - 继续运行代码 `continue`
 
 ### 使用Clion
@@ -39,11 +38,38 @@
   - Debugger: GDB
   - target remote args: 127.0.0.1:1234
   - Symbol file: 选择 `~/source/c/linux/vmlinux`
-- 命令行启动gdb server `qemu-system-x86_64 -kernel arch/x86/boot/bzImage -nographic -append "console=ttyS0 nokaslr" -initrd ~/source/c/initramfs/tiny-initrd.img -s -S`
+- 命令行启动gdb server `qemu-system-x86_64 -kernel ~/source/c/linux/arch/x86/boot/bzImage -nographic -append "console=ttyS0 nokaslr" -initrd ~/source/c/initramfs/tiny-initrd.img -s -S`
 - 点击Clion的debug按钮
+- 注意断点可以打在`arch/x86/kernel/head_64.S::secondary_startup_64_no_verify`。`b *0xffffffff81000145`
 
 ### gdb中常用命令
 - 加载模块符号 `lx-symbols`
 - dump日记buffer `lx-dmesg`
 - 列出命令列表 `apropos lx`
 - gdb中使用`quit`退出，`linux kernel命令行`中使用`exit`退出
+- 查看对应地址内容 `x/<count><format><per-size> <start-address>` `x/1000xw 0x10000`
+- 输出日记到文件 `set logging file test.log` `set logging enable on` `set logging redirect on` `set logging debugredirect on`
+- 反编译代码 `disassembe <start-adress>,<end-address>`
+- 显示汇编代码 `display /5i $pc`
+- 显示汇编代码/寄存器窗口 `layout asm/regs`
+- 切换窗口焦点 `focus reg/asm/cmd`
+- 退出窗口 `Ctrl X + a`
+
+### kernel常用断点
+
+```
+# 保护模式的boot
+b *0x100000
+
+# 内核初始化开始
+b *0x1000080
+
+# 内核初始化阶段，高地址映射后的开始位置，可以获取文件和符号信息，可以在clion断点调试
+b *0xffffffff81000145
+
+# 内核初始化阶段，C语言代码的开始位置
+b x86_64_start_kernel
+
+# 内核初始化，大量具体的初始化操作
+b start_kernel
+```
