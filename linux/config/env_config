@@ -1,5 +1,6 @@
 file: ~/.profile
 
-PATH="$PATH:/usr/local/install/apache-maven-3.6.3/bin:/usr/local/install/gradle-7.2/bin:/usr/local/install/go/bin:/usr/local/install/golib/bin"
-GOPATH="/usr/local/install/golib"
-
+PATH="$PATH:/home/lgx/install/maven/bin:/home/lgx/install/gradle/bin:/home/lgx/install/go/bin:/home/lgx/install/golib/bin"
+export PATH
+GOPATH="/home/lgx/install/golib"
+export GOPATH
