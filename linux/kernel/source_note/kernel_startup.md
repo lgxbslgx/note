@@ -245,7 +245,7 @@
   - 设置`CR4`的`LA57 57-Bit Linear Addresses`位为`1`（开启五级页表）
   - 注意目前为止还设置寄存器`cr3`（顶层页表的开始地址），所以使用的还是boot阶段设置的`arch/x86/boot/compressed/head_64.S::pgtable`
 - 验证新的页表的地址，内存加密的内容（不懂）
-- 切换到新的页表，即设置寄存器`cr3`（顶层页表的开始地址）
+- 切换到新的页表，即设置寄存器`cr3`为`early_top_pgt`（顶层页表的开始地址）
 - 再次设置`CR4`的`PGE Page Global Enabled`位为`1`（开启全局地址转换），确保TLB已经flush
 - 进行一次跳转操作，确保使用新的页表进行虚拟地址转换（跳转到高地址`0xffffffff81000145`）（**现在开始gdb可以找到对应的文件和行号信息，也就可以用clion进行调试，不用面对黑框了！！**）（断点`b *0xffffffff81000145`）
 
@@ -313,8 +313,147 @@
 - 初始化安全`security`模块
   - 设置`security/security.c::security_hook_heads`中各个类型的钩子列表为空
   - 准备`security/security.c::__start_early_lsm_info`各个安全模块信息，并运行它们的初始化函数`init`
-- 设置架构指定的内容，x86则运行`arch/x86/kernel/setup.c::setup_arch`的代码。很多内容。
-  - // TODO
-- 
+- **设置架构指定的内容，x86则运行`arch/x86/kernel/setup.c::setup_arch`的代码。很多内容，在后面单独列出。**
+- 设置bootconfig。`init/main.c::setup_boot_config`
+- 设置命令行参数（把命令行参数拷贝到新的位置）。`init/main.c::setup_command_line`
+- 设置每个CPU的区域。`arch/x86/kernel/setup_percpu.c::setup_per_cpu_areas`
+- 调用boot-cpu的钩子`hooks`。
+- 设置CPU热插拔
+- 初始化跳转符号（Jump Label）表`__start___jump_table - __stop___jump_table`。`kernel/jump_label.c::jump_label_init`
+- 解析命令行参数。`init/main.c::parse_early_param`
+- 设置日记buf。`kernel/printk.c::setup_log_buf`
+- 初始化虚拟文件系统（新建dcache和inode使用的hashtable）。`fs/dcaches.c::vfs_caches_init_early`
+- 排序异常表。`kernel/extable.c::sort_main_extable`
+- 初始化trap。`arch/x86/kernel/traps.c::trap_init`
+- 初始化内存分配器。`mm/mm_init.c::mm_core_init`
+- 初始化poking。`arch/x86/mm/init.c::poking_init`
+- 初始化ftrace（内核空间的调试工具）。`kernel/trace/ftrace.c::ftrace_init`
+- 初始化trace（内核数据跟踪）。`kernel/trace/trace.c::early_trace_init`
+- 初始化调度相关内容。`kernel/sched.c::sched_init`
+- 初始化基数树（基数树radix tree是将指针与long 整数键值相关联的机制）。`lib/radix-tree.c::radix_tree_init`
+- 初始化maple树（好像是用来取代红黑树的）。`lib/maple_tree.c::maple_tree_init`
+- 初始化housekeeping（任务隔离相关）。`kernel/sched/isolation.c::housekeeping_init`
+- 初始化workqueue（一个进程，用于执行延时异步操作）。`kernel/workqueue.c::workqueue_init_early`
+- 初始化rcu（Read-Copy Update 读拷贝更新机制，一种同步机制）。`kernel/rcu/tree.c::rcu_init`
+- 初始化trace（内核数据跟踪）。`kernel/trace/trace.c::trace_init`
+- 初始化IRQ（Interrupt ReQuest 来自设备的中断请求）。`kernel/irq/irqdesc.c::early_irq_init`和`arch/x86/kernel/irqinit.c::init_IRQ`
+- 初始化tick（tick是时间片轮转调度以及延迟操作的时间度量单位）。`kernel/time/tick-common.c::tick_init`
+- 初始化timers（计时相关）。`kernel/time/timer.c::init_timers`
+- 初始化srcu（Sleepable Read-Copy Update 可睡眠的读拷贝更新机制）。
+- 初始化hrtimers（high resolution timer 高精度定时器）。`kernel/time/hrtimer.c::hrtimers_init`
+- 初始化软中断。`kernel/softirq.c::softirq_init`
+- 初始化时间模块。`kernel/time/timekeeping.c::timekeeping_init`、`arch/x86/kernel/time.c::time_init`
+- 初始化随机数相关内容。`drivers/char/random.c::random_init`
+- 初始化kfence的内容（用于捕获内核及内核模块的内存污染问题）。`mm/kfence/core.c::kfence_init`
+- 初始化栈保护的内容。`arch/x86/include/asm/stackprotector.h::boot_init_stack_canary`
+- 初始化perf event（对用户态提供软硬件性能数据的一个统一的接口）。`kernel/events/core.c::perf_event_init`
+- 初始化profile（监控性能）。`kernel/profile.c::profile_init`
+- 初始化call function。（不知道作用）`kernel/smp.c::call_function_init`
+- 启动中断（使用`sti`命令）。`arch/x86/include/asm/paravirt.h::arch_local_irq_enable`
+- 初始化`kmem_cache`。`mm/slub.c::kmem_cache_init_late`
+  - kmem_cache是slab的核心结构体，主要描述slab的各种信息和链接空闲slab，还保存高速缓存的指针数组
+  - slab是伙伴系统下的更细粒度的内存分配器
+- 初始化控制台设备。`kernel/printk.c::console_init`
+- 初始化每个CPU的页集合pageset（每个CPU自己的页缓存，避免每次都跟伙伴系统申请页）。`mm/page_alloc.c::setup_per_cpu_pageset`
+- 初始化numa策略。`mm/mempolicy.c::numa_policy_init`
+- 初始化ACPI。`drivers/acpi/bus.c::acpi_early_init`
+- 初始化late time。`arch/x86/kernel/time.c::x86_late_time_init`
+- 初始化调度时钟Scheduling Clock。`kernel/sched.c::sched_clock_init`
+- 初始化calibrate delay校准延迟。`init/calibrate.c::calibrate_delay`
+- 结束初始化CPU。`arch/x86/kernel/cpu/common.c::arch_cpu_finalize_init`
+- 初始化整数ID管理机制。`kernel/pid.c::pid_idr_init`
+- 初始化匿名反向映射的内容（页表可以说是`虚拟页->物理页`正向映射，这里是`物理页->虚拟页`反向映射）。`mm/rmap.c::anon_vma_init`
+- 初始化证书`credential`相关内容。`kernel/cred.c::cred_init`
+- 初始化fork相关内容（设置最大进程数、初始化init_task进程等）。`kernel/fork.c::fork_init`
+- 初始化进程缓存（创建新进程需要的数据）。`kernel/fork.c::proc_caches_init`
+- 初始化UTS（Time-Sharing System 提供了对两个系统标识符的隔离：主机名和NIS`网络信息服务`域名）。`kernel/utsname.c::uts_ns_init`
+- 初始化秘钥（key）管理的内容。`security/keys.c::key_init`
+- 初始化安全框架。`security/security.c::security_init`
+- 初始化调试（gdb）相关内容。`kernel/debug/debug_core.c::dbg_late_init`
+- 初始化网络命名空间。`net/core/net_namespace.c::net_ns_init`
+- 初始化虚拟文件系统`vfs`的缓存内容。`fs/dcache.c::vfs_caches_init`
+- 初始化页缓存的内容。`mm/filemap.c::pagecache_init`
+- 初始化signal信号相关内容。`kernel/signal.c::signals_init`
+- 初始化Sequence file（序列文件，把信息导出到用户空间。和proc差不多？为了取代proc？）。`fs/seq_file.c::seq_file_init`
+- 初始化proc内容（提供内核与用户进行交互的平台，方便用户实时查看进程的信息）。`fs/root.c::proc_root_init`
+- 初始化nsfs文件系统。`fs/nsfs.c::nsfs_init`
+- 初始化cpusets（用于CPU资源的划分和进程的绑定）。`kernel/cgroup/cpuset.c::cpuset_init`
+- 初始化cgroup（用于资源划分和隔离）。`kernel/cgroup/cgroup.c::cgroup_init`
+- 初始化task status（用于从内核向用户空间发送任务及进程的统计信息）。`kernel/taskstats.c::taskstats_init_early`
+- 初始化delay account延迟计数（统计等待系统资源的时间）。`kernel/delayacct.c::delayacct_init`
+- 初始化ACPI子系统。`drivers/acpi/bus.c::acpi_subsystem_init`和`arch/x86/kernel/process.c::arch_post_acpi_subsys_init`
+- 初始化其余的内容。`init/main.c::arch_call_rest_init -> rest_init`
+  - `kernel/sched/core.c::schedule_preempt_disabled`会创建1号进程、启动shell
+  - `kernel/sched/idle.c::cpu_startup_entry`里面有一个不会退出的循环，不断调用`do_idle`。
+  - `kernel/sched/idle.c::cpu_startup_entry -> do_idle -> schedule_idle`会获取shell的输入，并进行相应操作。（如果是普通字符，则显示字符。如果是enter，则运行命令。）
 
+
+**`arch/x86/kernel/setup.c::setup_arch`的内容**:
+- 打印命令行参数
+- 设置中断描述符表为`arch/x86/kernel/idt.c::idt_table`。`arch/x86/kernel/idt.c::idt_setup_from_table`
+  - 设置调试、断点、虚拟化异常的中断条目`arch/x86/kernel/idt.c::early_idts`
+  - 使用命令`lidtl`完成设置
+- 初始化cpu。`arch/x86/cpu/common.c::early_cpu_init`
+  - 把`__x86_cpu_dev_start`开始的内容设置到`arch/x86/cpu/common.c::cpu_devs`
+  - CPU侦探，获取CPU相关信息（厂商、性能、地址位数等）
+- 初始化跳转符号（Jump Label）表`__start___jump_table - __stop___jump_table`。`kernel/jump_label.c::jump_label_init`
+- 初始化静态调用表。`kernel/static_call_init.c::static_call_init`
+- 初始化`ioremap`相关信息，`ioremap`用于映射外设寄存器到内存。`arch/x86/mm/ioremap.c::early_ioremap_init`
+- 设置屏幕相关信息（`screen_info`、`edid_info`、`saved_video_mode`）
+- 设置`bootloader`相关信息。
+- 保留一些物理内存到`memblock`: 内核相关的内存、前64K、初始RAM磁盘（initrd）的空间、启动阶段setup的数据、BIOS的区域、`Sandy Bridge graphics`的区域。`arch/x86/kernel/setup.c::early_reserve_memory`
+- 初始化BIOS提供的e820内存信息。`arch/x86/kernel/e820.c::e820__memory_setup`
+- 解析boot阶段传过来的setup数据。`boot_params.hdr.setup_data`。`arch/x86/kernel/setup.c::parse_setup_data`
+- 复制BIOS的EDD数据`Enhanced Disk Drive`。`arch/x86/kernel/setup.c::copy_edd`
+- 设置内核各个段的地址（text、rodata、data、bss）
+- 复制命令行参数。`lib/string.c::strscpy`
+- 解析命令行参数。`init/main.c::parse_early_param`
+- 保留BIOS提供的e820内存到`memblock`。`arch/x86/kernel/e820.c::e820__reserve_setup_data`
+- 设置DMI（Direct Media Interface 直接媒体接口）系统信息 `drivers/firmware/dmi_scan.c::dmi_setup`
+- 初始化`hypervisor`相关信息（内核运行在虚拟机时）。`arch/x86/cpu/hypervisor.c::init_hypervisor_platform`
+- 初始化TSC（时间戳计数器，Time Stamp Counter）。`arch/x86/kernel/tsc.c::tsc_early_init`
+- 侦探ROM内存，加入到资源信息`iomem_resource`中。`arch/x86/kernel/probe_roms.c::probe_roms`
+- 把刚刚设置的内核各个段地址信息加入到资源信息`iomem_resource`中
+- 添加内核和BIOS的内存段到资源信息`iomem_resource`中。
+- 检测GART（Graphic Address Remapping Table）（I/O memory management unit IOMMU，GPU相关内容）。`arch/x86/kernel/aperture_64.c::early_gart_iommu_check`
+- 设置MTRR（Memory Type Range Register）和PAT（页面属性表Page Attribute Table）。和内存访问权限有关。`arch/x86/kernel/cpu/cacheinfo.c::cache_bp_init`
+- 检测`x2apic`是否启用。（x2apic是一种高级中断控制器特性。 它可以使硬件中断控制更高效，从而提高系统性能。）`arch/x86/kernel/apic/apic.c::check_x2apic`
+- 找boot阶段的SMP配置（Symmetrical Multi-Processing 对称多处理）。`arch/x86/kernel/mpparse.c::default_find_smp_config`
+- 分配页表，这里只分配空间，后面会使用。`arch/x86/mm/init.c::early_alloc_pgt_buf`
+- 保留brk申请的内存到`memblock`。`arch/x86/kernel/setup.c::reserve_brk`
+- 清理未使用的页表项，只保留地址`_text`到`_brk_end`之间的页表。注意这里使用的页表还是`arch/x86/kernel/head_64.S::startup_64`设置的页表。`arch/x86/mm/init_64.c::cleanup_highmap`
+- 再次设置保留的内存`memblock`
+- 设置内存加密的内容。（未看）`arch/x86/mm/mem_encrypt.c::mem_encrypt_setup_arch`
+- 设置efi（Extensive Firmware Interface 可拓展固件接口）的内容。（未看）`efi_ 开头的多个方法`
+- BIOS损坏检测。`arch/x86/kernel/check.c::setup_bios_corruption_check`
+- 保留实模式涉及的内存到`memblock`。`arch/x86/realmode/init.c::reserve_real_mode`
+- 初始化内存映射信息。`arch/x86/realmode/init.c::init_mem_mapping`
+  - 像`arch/x86/kernel/head_64.S::startup_64`一样设置页表管理相关的寄存器
+  - 设置一些内存的页表项
+  - 设置CR3为`init_top_pgt`，之前是`early_top_pgt`
+- 添加`Page Fault`中断描述符条目到`arch/x86/kernel/idt.c::idt_table`。 `arch/x86/kernel/idt.c::idt_setup_early_pf`
+- 获取CR4寄存器的内容放到`mmu_cr4_features`
+- 设置日记buf。`kernel/printk.c::setup_log_buf`
+- 保留初始RAM磁盘（initrd）的内存到`memblock`。（有relocate操作）`arch/x86/kernel/setup.c::reserve_initrd`
+- 设置ACPI表（Advanced Configuration and Power Interface 高级配置与电源接口）。`drivers/acpi/tables.c::acpi_table_upgrade`
+- 保留ACPI表的内存到`memblock`。`arch/x86/kernel/acpi/tables.c::acpi_boot_table_init`
+- 初始化vsmp（未看）
+- 检测系统的DMI（Direct Media Interface 直接媒体接口）数据。`arch/x86/kernel/io_delay.c::io_delay_init`
+- 初始化ACPI。`arch/x86/kernel/acpi/boot.c::early_acpi_boot_init`
+- 初始化内存（这里只初始化numa相关内容）。`arch/x86/mm/numa_64.c::initmem_init -> arch/x86/mm/numa.c::x86_numa_init`
+- 为crash kernel保留内存（不懂）。`arch/x86/kernel/setup.c::arch_reserve_crashkernel`
+- 计算DMA需要的内存，把结果保存在`mm/mm_init.c::dma_reserve`。`arch/x86/mm/init.c::memblock_find_dma_reserve`
+- 设置xdbc（不懂）。
+- 初始化分页相关信息。（未认真看）`arch/x86/mm/init_64.c::paging_init`
+- tboot（启动环境测量）侦探。`arch/x86/kernel/tboot.c::tboot_probe`
+- 映射vsysall（虚拟系统调用、快速系统调用）。`arch/x86/entry/vsyscall/vsyscall_64.c::map_vsyscall`
+  - 设置`arch/x86/entry/vsyscall/vsyscall_64.c::gate_vma::vm_flags`为`VM_EXEC`
+- 检测PCI设备，结果放在`early_qrk`。`arch/x86/kernel/early-quirks.c::early_quirks`
+- 初始化ACPI。`arch/x86/kernel/acpi/boot.c::acpi_boot_init`
+- 初始化ACPI映射。`arch/x86/kernel/acpi/apic.c::init_apic_mappings`
+- 预填充CPU相关的mask。`arch/x86/kernel/smpboot/smpboot.c::prefill_possible_map`
+- 设置CPU到对应的numa节点。`arch/x86/mm/numa.c::init_cpu_to_node`
+- 添加e820的信息到资源信息`iomem_resource`中。`arch/x86/kernel/e820.c::e820__reserve_resources`
+- 保留IO资源到资源信息`ioport_resource`中。`arch/x86/kernel/setup.c::reserve_standard_io_resources`
+- 其他 // TODO
 
