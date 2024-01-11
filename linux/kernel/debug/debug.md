@@ -43,8 +43,9 @@
 - 注意断点可以打在`arch/x86/kernel/head_64.S::secondary_startup_64_no_verify`。`b *0xffffffff81000145`
 
 ### gdb中常用命令
-- 加载模块符号 `lx-symbols`
+- 加载vmlinux `lx-symbols`
 - dump日记buffer `lx-dmesg`
+- 查看进程 `lx-ps`
 - 列出命令列表 `apropos lx`
 - gdb中使用`quit`退出，`linux kernel命令行`中使用`exit`退出
 - 查看对应地址内容 `x/<count><format><per-size> <start-address>` `x/1000xw 0x10000`
@@ -54,6 +55,14 @@
 - 显示汇编代码/寄存器窗口 `layout asm/regs`
 - 切换窗口焦点 `focus reg/asm/cmd`
 - 退出窗口 `Ctrl X + a`
+- 多进程调试
+  - `fork`后调试父进程还是子进程
+    - 继续调试父进程 `set follow-fork-mode parent`
+    - 调试子进程 `set follow-fork-mode child`
+  - 是否断开其他进程的调试 `set detach-on-fork on`
+    - `on`表示: 断开`follow-fork-mode`未指定的其他进程，让它们自己运行，不挂起（遇到断点好像还是挂起，和多线程一样？）
+    - `set detach-on-fork on`类似于多线程调试中的`set scheduler-locking off`
+
 
 ### kernel常用断点
 
