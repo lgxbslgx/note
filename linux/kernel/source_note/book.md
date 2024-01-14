@@ -1,12 +1,13 @@
 ## 操作系统、Linux内核相关的书
 《Modern Operating Systems》
 《Operating System Concepts》
-《Operating Systems Principles and Practice》
 《Operating Systems Design and Implementation》
-《Understanding the Linux Kernel》
-《Professional Linux Kernel Architecture》
-《Linux Kernel Development》
-《Linux内核源代码情景分析》
+《Operating Systems Principles and Practice》
+
+《Linux Kernel Development》2010年
+《Linux内核源代码情景分析》2001年
+《Professional Linux Kernel Architecture》2008年
+《Understanding the Linux Kernel》2006年
 
 ## 网络相关
 《Understanding Linux Network Internals》
