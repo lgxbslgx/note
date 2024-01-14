@@ -1,8 +1,10 @@
 ## Linux内核启动流程
 
 [The Linux/x86 Boot Protocol](https://docs.kernel.org/arch/x86/boot.html)
-《Linux内核源代码情景分析》第10章
 [Linux内核的引导启动](https://frankjkl.github.io/2019/03/12/Linux%E5%86%85%E6%A0%B8-%E5%BC%95%E5%AF%BC%E5%90%AF%E5%8A%A8/)
+《Linux内核源代码情景分析》第10章
+《Professional Linux Kernel Architecture》APPENDIX D System Startup
+《Understanding the Linux Kernel》APPENDIX A System Startup
 
 ### 硬件引导
 和具体硬件有关，了解即可。`ROM stage -> RAM stage -> boot stage`
@@ -47,11 +49,10 @@
 
 注意`vmlinux`和`vmlinx.bin`有同名的情况。
 - `vmlinux`处于`linux`根目录，是整个内核代码
-- `arch/x86/boot/compressed/vmlinux.bin`是有根目录的`vmlinux`去除调试等相关信息而成
+- `arch/x86/boot/compressed/vmlinux.bin`是由根目录的`vmlinux`去除调试等相关信息而成
 - `arch/x86/boot/compressed/vmlinux.bin.zst`是`arch/x86/boot/compressed/vmlinux.bin`压缩而成
 - **`arch/x86/boot/compressed/vmlinux`**是目录`arch/x86/boot/compressed`的代码加上**压缩的内核代码`arch/x86/boot/compressed/vmlinux.bin.zst`组成（在`piggy.S`的`input_data`中）**。
 - `arch/x86/boot/vmlinux.bin`是由`arch/x86/boot/compressed/vmlinux`去除调试等相关信息而成
-- `arch/x86/boot/vmlinux.bin`是由`arch/x86/boot/setup.bin`、`arch/x86/boot/arch/x86/boot/vmlinux.bin`、`arch/x86/boot/zoffset.h`打包而成
 
 
 系统镜像`bzImage或vmlinuz`由`setup.bin`、`arch/x86/boot/vmlinux.bin`、`zoffset.h`打包而成
@@ -383,9 +384,8 @@
 - 初始化delay account延迟计数（统计等待系统资源的时间）。`kernel/delayacct.c::delayacct_init`
 - 初始化ACPI子系统。`drivers/acpi/bus.c::acpi_subsystem_init`和`arch/x86/kernel/process.c::arch_post_acpi_subsys_init`
 - 初始化其余的内容。`init/main.c::arch_call_rest_init -> rest_init`
-  - `kernel/sched/core.c::schedule_preempt_disabled`会创建1号进程、启动shell
-  - `kernel/sched/idle.c::cpu_startup_entry`里面有一个不会退出的循环，不断调用`do_idle`。
-  - `kernel/sched/idle.c::cpu_startup_entry -> do_idle -> schedule_idle`会获取shell的输入，并进行相应操作。（如果是普通字符，则显示字符。如果是enter，则运行命令。）
+  - `kernel/sched/core.c::schedule_preempt_disabled`会创建1号进程（当前为0号进程），1号进程则按需启动其他进程。
+  - `kernel/sched/idle.c::cpu_startup_entry`里面有一个不会退出的循环，不断调用`do_idle`。当CPU空闲时，调度器就会调度该idle进程（0号进程）进行操作（具体操作未看）。
 
 
 **`arch/x86/kernel/setup.c::setup_arch`的内容**:
