@@ -2,7 +2,7 @@
 
 [The Linux/x86 Boot Protocol](https://docs.kernel.org/arch/x86/boot.html)
 [Linux内核的引导启动](https://frankjkl.github.io/2019/03/12/Linux%E5%86%85%E6%A0%B8-%E5%BC%95%E5%AF%BC%E5%90%AF%E5%8A%A8/)
-《Linux内核源代码情景分析》第10章
+《Linux内核源代码情景分析》第10章 系统引导和初始化
 《Professional Linux Kernel Architecture》APPENDIX D System Startup
 《Understanding the Linux Kernel》APPENDIX A System Startup
 
