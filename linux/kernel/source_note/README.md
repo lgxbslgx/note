@@ -30,9 +30,10 @@
   - 第9章 Process Address Space
   - 第15章 The Page Cache
   - 第17章 Page Frame Reclaiming
+《Understanding The Linux Virtual Memory Manager》
 
 
-### proecss_management.md
+### process_management.md
 《Linux Kernel Development》
   - 第3章 Process Management
   - 第4章 Process Scheduling

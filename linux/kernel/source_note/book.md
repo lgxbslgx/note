@@ -9,6 +9,9 @@
 《Professional Linux Kernel Architecture》2008年
 《Understanding the Linux Kernel》2006年
 
+## 内存相关
+《Understanding The Linux Virtual Memory Manager》2007年
+
 ## 网络相关
 《Understanding Linux Network Internals》
 《Practical Unix & Internet Security》
