@@ -153,9 +153,9 @@
   - 页表在`arch/x86/boot/compressed/head_64.S::pgtable`
   - 大小为 32*4 KB
 - 设置4级页表具体内容
-  - 第四级页表叫做`PML4 page map level 4`，对应的页是刚刚`pgtable`的第一个页。它的第一项指向`pgtable`的下一个页（三级页表的一个页），权限是`存在内存present、可写writable、用户可访问accessable`
-  - 第三级页表叫做**页目录指针表**`PDPT Page Directory Pointer Table`。目前只有一个页，对应`pgtable`的第二个页。它的前4项分别指向`pgtable`的下四个页，权限是`存在内存present、可写writable、用户可访问accessable`
-  - 第二级页表叫做**页目录**`PDT Page Directory Table`。目前有四个页，`pgtable`的第3-6个页。这4个页的每一项（4*512=2048项）指向对应的内存空间（2048项 * 2M每个页 = 4G，所以现在可用的空间为4G），每个页的权限是`存在内存present、可写writable、使用2M页、全局翻译（也就是进程切换的时候，不需要flush对应的TLB Entry）`
+  - 第四级页表叫做`PML4 page map level 4`或`P4D Page Level 4 Directory`或`PGD Page Global Directory`，对应的页是刚刚`pgtable`的第一个页。它的第一项指向`pgtable`的下一个页（三级页表的一个页），权限是`存在内存present、可写writable、用户可访问accessable`
+  - 第三级页表叫做**页目录指针表**`PDPT Page Directory Pointer Table`或`PUD Page Upper Directory`。目前只有一个页，对应`pgtable`的第二个页。它的前4项分别指向`pgtable`的下四个页，权限是`存在内存present、可写writable、用户可访问accessable`
+  - 第二级页表叫做**页目录**`PDT Page Directory Table`或`PMD Page Middle Directory`。目前有四个页，`pgtable`的第3-6个页。这4个页的每一项（4*512=2048项）指向对应的内存空间（2048项 * 2M每个页 = 4G，所以现在可用的空间为4G），每个页的权限是`存在内存present、可写writable、使用2M页、全局翻译（也就是进程切换的时候，不需要flush对应的TLB Entry）`
   - 第一级页表叫做**页表**`PT Page Table`。因为用的是2M的页，所以没有第一级页表（4k的页才有）。
 - 把第4级页表（根）的地址放入寄存器`cr3`
 - 设置寄存器`EFER (Extended Feature Enable Register)`的`LME`位为`1`（启动长模式，使用64位地址和4级页表）
@@ -244,7 +244,7 @@
   - 设置`CR4`的`PAE Physical Address Extension`位`1`（开启2M大页，地址布局为`2|9|9|12`）
   - 设置`CR4`的`PGE Page Global Enabled`位为`1`（开启全局地址转换）
   - 设置`CR4`的`LA57 57-Bit Linear Addresses`位为`1`（开启五级页表）
-  - 注意目前为止还设置寄存器`cr3`（顶层页表的开始地址），所以使用的还是boot阶段设置的`arch/x86/boot/compressed/head_64.S::pgtable`
+  - 注意目前为止还没设置寄存器`cr3`（顶层页表的开始地址），所以使用的还是boot阶段设置的`arch/x86/boot/compressed/head_64.S::pgtable`
 - 验证新的页表的地址，内存加密的内容（不懂）
 - 切换到新的页表，即设置寄存器`cr3`为`early_top_pgt`（顶层页表的开始地址）
 - 再次设置`CR4`的`PGE Page Global Enabled`位为`1`（开启全局地址转换），确保TLB已经flush
@@ -325,9 +325,9 @@
 - 设置日记buf。`kernel/printk.c::setup_log_buf`
 - 初始化虚拟文件系统（新建dcache和inode使用的hashtable）。`fs/dcaches.c::vfs_caches_init_early`
 - 排序异常表。`kernel/extable.c::sort_main_extable`
-- 初始化trap。`arch/x86/kernel/traps.c::trap_init`
+- 初始化trap（陷阱trap，中断的一种）。`arch/x86/kernel/traps.c::trap_init`
 - 初始化内存分配器。`mm/mm_init.c::mm_core_init`
-- 初始化poking。`arch/x86/mm/init.c::poking_init`
+- 初始化poking的`mm_struct`（内核钩子Hook的相关内容）。`arch/x86/mm/init.c::poking_init`
 - 初始化ftrace（内核空间的调试工具）。`kernel/trace/ftrace.c::ftrace_init`
 - 初始化trace（内核数据跟踪）。`kernel/trace/trace.c::early_trace_init`
 - 初始化调度相关内容。`kernel/sched.c::sched_init`
@@ -337,7 +337,7 @@
 - 初始化workqueue（一个进程，用于执行延时异步操作）。`kernel/workqueue.c::workqueue_init_early`
 - 初始化rcu（Read-Copy Update 读拷贝更新机制，一种同步机制）。`kernel/rcu/tree.c::rcu_init`
 - 初始化trace（内核数据跟踪）。`kernel/trace/trace.c::trace_init`
-- 初始化IRQ（Interrupt ReQuest 来自设备的中断请求）。`kernel/irq/irqdesc.c::early_irq_init`和`arch/x86/kernel/irqinit.c::init_IRQ`
+- 初始化IRQ（Interrupt ReQuest 来自外部设备的中断请求）。`kernel/irq/irqdesc.c::early_irq_init`和`arch/x86/kernel/irqinit.c::init_IRQ`
 - 初始化tick（tick是时间片轮转调度以及延迟操作的时间度量单位）。`kernel/time/tick-common.c::tick_init`
 - 初始化timers（计时相关）。`kernel/time/timer.c::init_timers`
 - 初始化srcu（Sleepable Read-Copy Update 可睡眠的读拷贝更新机制）。
@@ -362,6 +362,7 @@
 - 初始化调度时钟Scheduling Clock。`kernel/sched.c::sched_clock_init`
 - 初始化calibrate delay校准延迟。`init/calibrate.c::calibrate_delay`
 - 结束初始化CPU。`arch/x86/kernel/cpu/common.c::arch_cpu_finalize_init`
+  - 里面的`alternative_instructions`会修改cr3为poking的`poking_mm->pgd`，进行对应操作之后，再修改成原来的`init_top_pgt`
 - 初始化整数ID管理机制。`kernel/pid.c::pid_idr_init`
 - 初始化匿名反向映射的内容（页表可以说是`虚拟页->物理页`正向映射，这里是`物理页->虚拟页`反向映射）。`mm/rmap.c::anon_vma_init`
 - 初始化证书`credential`相关内容。`kernel/cred.c::cred_init`
