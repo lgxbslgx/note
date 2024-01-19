@@ -57,8 +57,32 @@ arch/x86/kernel/idt.c::struct idt_data early_pf_idts
 每个实际工作的Linux中断函数都会生成一个以`asm_`和`xen_asm_`开头的函数名。
 比如`X86_TRAP_NP`对应的函数为`exc_segment_not_present`，在`arch/x86/include/asm/idtentry.h`会声明函数`asm_exc_segment_not_present`、`xen_asm_exc_segment_not_present`、`exc_segment_not_present`。
 
-每个中断向量标号对应的中断处理函数在`arch/x86/kernel/traps.c`中**定义**（注意，定义使用了`arch/x86/include/asm/idtentry.h`的宏`DEFINE_IDTENTRY_`）。
-比如`X86_TRAP_NP`对应的函数为`exc_segment_not_present`，在`arch/x86/kernel/traps.c`会使用`DEFINE_IDTENTRY_ERRORCODE(exc_segment_not_present)`定义`exc_segment_not_present`。
+每个中断向量标号对应的中断处理函数的C语言部分（即实际操作）在`arch/x86/kernel/traps.c`中**定义**（注意，定义使用了`arch/x86/include/asm/idtentry.h`的宏`DEFINE_IDTENTRY_*`）。
+比如`X86_TRAP_NP`对应的函数为`exc_segment_not_present`，在`arch/x86/kernel/traps.c`会使用`DEFINE_IDTENTRY_ERRORCODE(exc_segment_not_present)`定义`exc_segment_not_present`C语言函数。
+
+每个中断向量标号对应的中断处理函数的汇编语言部分（即以`asm_`开头的汇编语言函数，比如`asm_exc_segment_not_present`）在`arch/x86/entry/entry_64.S`**定义**，主要在下列宏中：
+```
+.macro idtentry_irq
+.macro idtentry
+.macro idtentry_body
+```
+
+还有以`xen_asm_`开头的函数在`arch/x86/xen/xen-asm.S`中定义，在宏`.macro xen_pv_trap`中。
+
+IDT的条目只有256项，前32条为CPU保留的，后面`224`条不能满足所有外部设备的中断请求，所以需要把第255项（最后一项）设置为通用项，对应的中断处理函数为`common_interrupt`（定义在`arch/x86/kernel/irq.c`）。函数`common_interrupt`通过传过来的向量号，在表`arch/x86/include/asm/hw_irq.h::vector_irq`中获取对应的中断描述信息（包括中断处理函数）进行运行。调用路径（倒序）如下：
+```
+timer_interrupt time.c:57 // 具体的中断处理函数，这里`timer_interrupt`是计时器中断的处理函数
+__handle_irq_event_percpu handle.c:158 // 这一步调用中断描述信息中的`struct irqaction	*action`中的`irq_handler_t	 handler`，即具体的中断处理函数
+handle_irq_event_percpu handle.c:193
+handle_irq_event handle.c:210
+handle_level_irq chip.c:648
+generic_handle_irq_desc irqdesc.h:161 // 这一步调用中断描述信息中的函数`handle_irq`
+handle_irq irq.c:238
+__common_interrupt irq.c:257 // 这一步从vector_irq获取对应的中断描述信息`struct irq_desc`
+common_interrupt irq.c:247
+asm_common_interrupt idtentry.h:640
+<unknown> 0x0000000000000000
+```
 
 
 ### 系统调用
