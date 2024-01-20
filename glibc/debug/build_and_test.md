@@ -10,12 +10,11 @@
 - make dir:		`mkdir glibc-build` `mkdir glibc-install`
 - enter dir:	`cd glibc-build`
 - configure:	`../configure --prefix=/home/lgx/source/c/glibc/glibc-install`
-- make:			`make -j4`
+- make:			`make -j2`
+- 生成`compile_commands.json`: `~/.local/bin/intercept-build make -j2`
+- 软链接: `ln -s /home/lgx/source/c/glibc/glibc-build/compile_commands.json /home/lgx/source/c/glibc/compile_commands.json`
 
 - test:			`make check`
 - Reference Manual:	`make dvi`
 - rewrite config in file `configparms`
 - install: 		`make install`  
-
-#### submit patch
-
