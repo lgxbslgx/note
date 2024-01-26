@@ -4,14 +4,16 @@
 - vim
 - idea
 - pycharm
-- phpstorm
+- goland
 - clion
 - python 2\3
-- openjdk 8\11
+- openjdk 8\11\17\21
 - git
 - gcc
 - make
 - vscode
+- maven
+- gradle
 
 ## source code in linux
 - linux kernel main
