@@ -62,7 +62,7 @@
   - 第18章 The Ext2 and Ext3 Filesystems
 
 
-### 中断、异常、系统调用 interrupt_exception_system_call.md
+### 中断、异常和系统调用 interrupt_exception_system_call.md
 《Linux Kernel Development》
   - 第5章 System Calls
   - 第7章 Interrupts and Interrupt Handlers
@@ -98,7 +98,8 @@
 《Understanding the Linux Kernel》
   - 第19章 Process Communication
 
-### synchronization_lock.md
+
+### 并发、同步和锁 concurrency_synchronization_lock.md
 《Linux Kernel Development》
   - 第9章 An Introduction to Kernel Synchronization
   - 第10章 Kernel Synchronization Methods
