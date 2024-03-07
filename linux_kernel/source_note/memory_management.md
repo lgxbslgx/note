@@ -66,7 +66,7 @@ arch/x86/mm/*
 #### 虚拟内存相关数据结构
 每个进程（或线程）的`include/linux/sched.h::task_struct`中，有一个`struct mm_struct *mm/active_mm`表示该进程（或线程，多个线程共享一个`mm_struct`）的所有内存相关信息。
 
-`task_struct`具体内容详见`进程管理 process_management.md`。
+`task_struct`具体内容详见[进程管理 process_management.md](/linux_kernel/source_note/process_management.md)。
 
 进程的所有内存相关信息`include/linux/mm_types.h::mm_struct`：
 - 上一层的信息：`struct task_struct *owner`

@@ -1,4 +1,4 @@
-### 系统启动 kernel_startup.md
+### 系统启动 [kernel_startup.md](/linux_kernel/source_note/kernel_startup.md)
 [The Linux/x86 Boot Protocol](https://docs.kernel.org/arch/x86/boot.html)
 [Linux内核的引导启动](https://frankjkl.github.io/2019/03/12/Linux%E5%86%85%E6%A0%B8-%E5%BC%95%E5%AF%BC%E5%90%AF%E5%8A%A8/)
 《Linux Kernel Development》没有相关内容
@@ -10,7 +10,7 @@
   - APPENDIX A System Startup
 
 
-### 内存管理 memory_management.md
+### 内存管理 [memory_management.md](/linux_kernel/source_note/memory_management.md)
 [x86_64 Support - 29.3. Memory Management](https://docs.kernel.org/arch/x86/x86_64/mm.html)
 [Memory Layout on AArch64 Linux](https://docs.kernel.org/arch/arm64/memory.html)
 《Linux Kernel Development》
@@ -33,7 +33,7 @@
 《Understanding The Linux Virtual Memory Manager》
 
 
-### process_management.md
+### 进程管理 [process_management.md](/linux_kernel/source_note/process_management.md)
 《Linux Kernel Development》
   - 第3章 Process Management
   - 第4章 Process Scheduling
@@ -62,7 +62,7 @@
   - 第18章 The Ext2 and Ext3 Filesystems
 
 
-### 中断、异常和系统调用 interrupt_exception_system_call.md
+### 中断、异常和系统调用 [interrupt_exception_system_call.md](/linux_kernel/source_note/interrupt_exception_system_call.md)
 《Linux Kernel Development》
   - 第5章 System Calls
   - 第7章 Interrupts and Interrupt Handlers
@@ -99,7 +99,7 @@
   - 第19章 Process Communication
 
 
-### 并发、同步和锁 concurrency_synchronization_lock.md
+### 并发、同步和锁 [concurrency_synchronization_lock.md](/linux_kernel/source_note/concurrency_synchronization_lock.md)
 《Linux Kernel Development》
   - 第9章 An Introduction to Kernel Synchronization
   - 第10章 Kernel Synchronization Methods
@@ -122,7 +122,7 @@
 《Practical Unix & Internet Security》
 
 
-### 时间管理 time_management.md
+### 时间管理 [time_management.md](/linux_kernel/source_note/time_management.md)
 《Linux Kernel Development》
   - 第11章 Timers and Time Management
 《Linux内核源代码情景分析》第3章中断、异常和系统调用 3.7时钟中断 有少量内容

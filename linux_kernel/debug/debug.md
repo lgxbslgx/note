@@ -22,14 +22,14 @@
 
 ### 直接使用gdb
 - 进入linux目录 `cd ~/source/c/linux`
-- 构建内核，详见`building.md`
+- 构建内核，详见[building.md](/linux_kernel/debug/building.md)
 - 启动gdb server `qemu-system-x86_64 -kernel arch/x86/boot/bzImage -nographic -append "console=ttyS0 nokaslr" -initrd ~/source/c/initramfs/tiny-initrd.img -s -S`
 - gdb调试 `gdb vmlinux`
   - 在gdb里面连接gdb server `target remote :1234`
   - 继续运行代码 `continue`
 
 ### 使用Clion
-- 打开linux代码，详见`clion.md`
+- 打开linux代码，详见[clion.md](/linux_kernel/debug/clion.md)
   - `File` -> `Open`
   - `选择 compile_commands.json`
   - `选择 Open As Project`

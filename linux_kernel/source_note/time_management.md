@@ -26,7 +26,7 @@
 
 
 ### 计时器中断处理函数的操作
-关于中断的信息详见`interrupt_exception_system_call.md`，中断处理函数为`arch/x86/kernel/time.c::timer_interrupt -> kernel/time/tick-common.c::tick_handle_periodic -> kernel/time/tick-common.c::tick_periodic`。详细操作如下：
+关于中断的信息详见[interrupt_exception_system_call.md](/linux_kernel/source_note/interrupt_exception_system_call.md)，中断处理函数为`arch/x86/kernel/time.c::timer_interrupt -> kernel/time/tick-common.c::tick_handle_periodic -> kernel/time/tick-common.c::tick_periodic`。详细操作如下：
 - 进行计时操作。`kernel/time/timekeeping.c::do_timer`
   - 把`jiffies_64`递增1
   - 更新`Load averages`。`kernel/sched/loadavg.c::calc_global_load`（加载平衡？不懂）
