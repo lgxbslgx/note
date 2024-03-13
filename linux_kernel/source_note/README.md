@@ -78,9 +78,9 @@
   - 第11章 Signals
 
 
-### loader_linker.md
+### 加载和链接 [loader_linker.md](/linux_kernel/source_note/loader_linker.md)
 《Linux Kernel Development》没有相关内容
-《Linux内核源代码情景分析》没有相关内容
+《Linux内核源代码情景分析》4.4 系统调用execve
 《Professional Linux Kernel Architecture》没有相关内容
 《Understanding the Linux Kernel》
   - 第20章 Program Execution
