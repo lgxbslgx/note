@@ -30,7 +30,7 @@
 简单描述:
 - `BarrierSet`及其子类用C++实现barrier，主要给`BarrierSet::AccessBarrier`使用。
 - `BarrierSet::AccessBarrier`及其子类使用`BarrierSet`的方法实现了C++版本的barrier，给runtime代码使用。
-  - 所有C++代码需要访问堆的都要经过`BarrierSet::AccessBarrier`。详见`gc_heap_access.md`。
+  - 所有C++代码需要访问堆的都要经过`BarrierSet::AccessBarrier`。详见[gc_heap_access.md](/openjdk/source_reading_record/hotspot/gc_heap_access.md)。
 - `BarrierSetAssembler`的子类实现了`GC barrier`的汇编器，给模板解释器使用。C1、C2也可能使用它。
 - `BarrierSetC1`的子类实现了C1的barrier
 - `BarrierSetC2`的子类实现了C2的barrier
