@@ -98,7 +98,7 @@
 
 
 ### 无分代ZGC
-并发标记`mark`时用递增更新（increment update)的读barrier，和G1不同。在读barrier中完成标记操作(gc线程也在标记)。
+并发标记`mark`时用递增更新（increment update）的读barrier，和G1不同。在读barrier中完成标记操作(gc线程也在标记)。
 并发转移`relocate`时使用`tospace invariant`，保证没有`tospace`指向`fromspace`的指针，也是在读barrier中完成（gc线程也在转移）。
 
 - `读barrier`，为了标记`mark`、转移`reloate`被读的对象、remap对象指针
