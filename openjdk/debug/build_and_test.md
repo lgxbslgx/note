@@ -193,6 +193,8 @@ sh configure \
 ### build
 - `make images`
     - build all the code and generate the complete jdk
+- `graal-builder-image`
+    - 构建GraalVM需要的JDK
 - `make clean`
     - clean the old build
 - `make compile-commands`
