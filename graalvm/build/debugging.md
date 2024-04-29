@@ -8,6 +8,9 @@
 # 进入graal/compiler目录
 cd compiler
 
+# 设置JAVA_HOME
+export JAVA_HOME=/home/lgx/source/java/jdk22u/build/linux-x86_64-server-release/images/graal-builder-jdk
+
 # 使用mx -d 或者 mx --dgb 开启调试
 mx -d -v vm \
 --class-path=/home/lgx/source/java/test-graalvm \
@@ -38,6 +41,9 @@ HelloWorld
 ```shell
 # 进入项目目录
 cd /home/lgx/source/java/test-graalvm
+
+# 设置JAVA_HOME
+export JAVA_HOME=/home/lgx/source/java/jdk22u/build/linux-x86_64-server-release/images/graal-builder-jdk
 
 # 开启调试
 /home/lgx/source/java/graal/sdk/mxbuild/linux-amd64/GRAALVM_3AE5F1FE8B_JAVA22/graalvm-3ae5f1fe8b-java22-24.1.0-dev/bin/native-image \
