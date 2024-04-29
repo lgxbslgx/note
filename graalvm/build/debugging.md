@@ -25,33 +25,39 @@ HelloWorld
 
 # IDEA打断点，点击调试按钮（远程调试），详见[java-remote-debug](/openjdk/debug/java_remote_debug.md)
 # 代码入口在`graal/compiler/src/jdk.graal.compiler/src/jdk/graal/compiler/hotspot/HotSpotGraalCompiler.java::main`
-
-# 上面的mx命令最终使用下面的命令开启调试
-/home/lgx/source/java/graal/sdk/mxbuild/linux-amd64/GRAALJDK_CE_1602C36D2E_JAVA22/graaljdk-ce-1602c36d2e-java22-24.1.0-dev/bin/java \
--server -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI -Djdk.graal.CompilationFailureAction=Diagnose -Djdk.graal.DumpOnError=true \
--Djdk.graal.ShowDumpFiles=true -Djdk.graal.PrintGraph=Network -Djdk.graal.ObjdumpExecutables=objdump,gobjdump \
--Dgraalvm.locatorDisabled=true -agentlib:jdwp=transport=dt_socket,server=y,address=8000,suspend=y -XX:+UseJVMCICompiler \
---class-path=/home/lgx/source/java/test-graalvm -Djvmci.Compiler=graal -XX:CompileCommand=compileonly,HelloWorld::test \
--XX:CompileCommand=PrintCompilation,HelloWorld::test -XX:CompileThreshold=1 -XX:-BackgroundCompilation -XX:-TieredCompilation HelloWorld
 ```
 
 
 ### 调试SubstrateVM
 
 ```shell
-# 进入项目目录
-cd /home/lgx/source/java/test-graalvm
+# 进入graal/substratevm目录
+cd substratevm
 
 # 设置JAVA_HOME
 export JAVA_HOME=/home/lgx/source/java/jdk22u/build/linux-x86_64-server-release/images/graal-builder-jdk
 
-# 开启调试
-/home/lgx/source/java/graal/sdk/mxbuild/linux-amd64/GRAALVM_3AE5F1FE8B_JAVA22/graalvm-3ae5f1fe8b-java22-24.1.0-dev/bin/native-image \
---verbose \
+# 调试Driver（注意参数`-d`）
+mx -d -v native-image \
 --class-path=/home/lgx/source/java/test-graalvm \
+--verbose \
+HelloWorld
+
+# 调试native-image-configure（注意参数`-d`）
+mx -v -d native-image-configure \
+generate \
+--input-dir=/home/lgx/source/java/test-graalvm/META-INF/native-image \
+--output-dir=/home/lgx/source/java/test-graalvm/META-INF/native-image
+
+# 调试静态编译器（注意参数`--debug-attach`）
+mx -v native-image \
+--class-path=/home/lgx/source/java/test-graalvm \
+--verbose \
 --debug-attach \
 HelloWorld
 
 # IDEA打断点，点击调试按钮（远程调试），详见[java-remote-debug](/openjdk/debug/java_remote_debug.md)
-# 代码入口在`graal/substratevm/src/com.oracle.svm.driver/src/com/oracle/svm/driver/NativeImage.java::main`
+# Driver代码入口在`graal/substratevm/src/com.oracle.svm.driver/src/com/oracle/svm/driver/NativeImage.java::main`
+# native-image-configure代码入口在`graal/substratevm/src/com.oracle.svm.configure/src/com/oracle/svm/configure/ConfigurationTool.java::main`
+# 静态编译器代码入口在`graal/substratevm/src/com.oracle.svm.hosted/src/com/oracle/svm/hosted/NativeImageGeneratorRunner.java::main`
 ```

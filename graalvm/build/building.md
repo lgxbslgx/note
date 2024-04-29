@@ -36,7 +36,7 @@ mx -p substratevm intellijinit
 cd vm
 
 # 使用配置文件 mx.vm/ce 进行构建
-mx --env ce build
+mx --env ce --force-bash-launchers=true build
 ```
 
 
@@ -47,10 +47,11 @@ mx --env ce build
 cd substratevm
 
 # 构建
-mx build
+mx --force-bash-launchers=true build
 
-# 运行，相当于`java`命令，只是对应的`java`命令是我们构建的，并指定了一些特殊参数
-mx vm
+# 运行，相当于`native-image`命令，只是对应的`native-image`命令是我们构建的，并指定了一些特殊参数
+# `MainClassFile`表示包含主类的Class文件
+mx native-image <MainClassFile>
 ```
 
 
@@ -64,5 +65,6 @@ cd compiler
 mx build
 
 # 运行，相当于`java`命令，只是对应的`java`命令是我们构建的，并指定了一些特殊参数
-mx vm
+# `MainClass`表示主类，该类一定要在类路径中
+mx vm <MainClass>
 ```
