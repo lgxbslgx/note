@@ -221,7 +221,7 @@ sh configure \
     - eg: make test TEST="jtreg:hotspot:tier1_common jtreg:hotspot:tier1_gc jtreg:hotspot:tier1_runtime jtreg:hotspot:tier1_serviceability" JTREG="TIMEOUT_FACTOR=20;" JOBS=4
 
     - 如果设备性能很差，则使用`JTREG="TIMEOUT_FACTOR=20;"`来调节超时时间，避免超时引起的测试失败。注意`TIMEOUT_FACTOR`默认值是`4`，设置的值要比4大才有用。
-    - 后台运行 `nohup make test TEST=jtreg:hotspot:tier1 JTREG="TIMEOUT_FACTOR=20;" JOBS=4 > out.log 2>&1 &`
+    - 后台运行 `nohup make test TEST=jtreg:hotspot:tier1 JTREG="TIMEOUT_FACTOR=60;" JOBS=1 > out.log 2>&1 &`
     - 切换到后台运行
     ```
     Ctrl + Z 暂停程序
