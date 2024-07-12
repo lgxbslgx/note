@@ -2,7 +2,7 @@
 
 ```
 cd /home/lgx/source/java/jtreg
-bash make/build.sh --jdk /home/lgx/source/java/jdk11u-dev/build/linux-x86_64-normal-server-release/images/jdk/ --skip-download
+bash make/build.sh --jdk /usr/lib/jvm/java-1.11.0-openjdk-amd64/ --skip-download
 ```
 
 - run test
