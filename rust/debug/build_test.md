@@ -25,7 +25,7 @@ rm config.toml
 # 清理除了llvm的所有内容
 ./x.py clean
 
-# 配置，生成文件config.toml。（选择compiler）
+# 配置，生成文件config.toml。（选择compiler，生成vscode的项目文件）
 ./x.py setup
 
 # 默认构建stage1编译器和库
