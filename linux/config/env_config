@@ -5,4 +5,4 @@ export PATH="/home/lgx/.moon/bin:$PATH"
 export GOPATH="/home/lgx/install/golib"
 
 . "$HOME/.cargo/env"
-eval $(opam config env)
+eval $(opam env)
