@@ -44,6 +44,13 @@
 	  - 设置路径: `Settings | Build, Execution, Deployment | Toolchains`
 	    - `Credentials`类似ssh远程连接的配置
 	    - CLion会自动侦探远程的工具链（注意远程要安装CMake、rsync、gdb等）
+  - 新建`Remote Debug`运行配置
+    - name: riscv-remote
+    - gdb: Remote Host Gdb
+    - target: 192.168.0.103:33334
+    - path mappings
+      - remote: /home/user/source/jdk
+      - local: /home/lgx/source/java/jdk-riscv64/
   - 设置远程开发工具
     - 设置路径: `Settings | Build, Execution, Deployment | Deployment`
 	  - `Connection`
@@ -53,14 +60,8 @@
 	    - `/source/java/jdk-riscv64` -> `/source/jdk`
 		  - `/home/lgx/source/cpp/gtest/googlemock/src/gmock-all.cc` -> `/source/gtest/googlemock/src/gmock-all.cc`
 		  - `/home/lgx/source/cpp/gtest/googletest/src/gtest-all.cc` -> `/source/gtest/googletest/src/gtest-all.cc`
-	  - `Excluded Paths`: 新加`Local Path` -> `/source/java/jdk-riscv64/build`
-  - 新建`Remote Debug`运行配置
-    - name: riscv-remote
-    - gdb: Remote Host Gdb
-    - target: 192.168.0.103:33334
-    - path mappings
-      - remote: /home/user/source/jdk
-      - local: /source/java/jdk-riscv64/
+	  - `Excluded Paths`: 新加`Local Path` -> `/home/lgx/source/java/riscv64-slow-jdk/build`
+- 注意：远程调试前期要读取远程的库到本地，很慢，要等很久。
 
 
 ## 常见问题
