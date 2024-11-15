@@ -11,7 +11,7 @@
 ```
 sh configure \
 --with-jtreg=/home/lgx/source/java/jtreg-stable/build/images/jtreg \
---with-boot-jdk=/home/lgx/source/java/jdk22u/build/linux-x86_64-server-release/images/jdk \
+--with-boot-jdk=/home/lgx/install/jdk-23.0.1 \
 --with-gtest=/home/lgx/source/cpp/gtest \
 --with-jmh=/home/lgx/source/java/jdk/build/jmh/jars \
 --disable-warnings-as-errors \
@@ -36,7 +36,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/riscv/sysroot/lib:/opt/riscv/sysroo
 
 
 sh configure \
---with-boot-jdk=/home/lgx/source/java/jdk22u/build/linux-x86_64-server-release/images/jdk \
+--with-boot-jdk=/home/lgx/install/jdk-23.0.1 \
 --disable-warnings-as-errors \
 --openjdk-target=riscv64-linux-gnu \
 --with-sysroot=/opt/riscv/sysroot \
@@ -47,7 +47,7 @@ sh configure \
 # debug
 sh configure \
 --with-jtreg=/home/lgx/source/java/jtreg-stable/build/images/jtreg \
---with-boot-jdk=/home/lgx/source/java/jdk22u/build/linux-x86_64-server-release/images/jdk \
+--with-boot-jdk=/home/lgx/install/jdk-23.0.1 \
 --with-gtest=/home/lgx/source/cpp/gtest \
 --with-jmh=/home/lgx/source/java/jdk/build/jmh/jars \
 --disable-warnings-as-errors \
@@ -92,7 +92,7 @@ sudo chroot /home/lgx/source/debian-sysroot/riscv64 symlinks -cr .
 
 sh configure \
 --with-jtreg=/home/lgx/source/java/jtreg-stable/build/images/jtreg \
---with-boot-jdk=/home/lgx/source/java/jdk22u/build/linux-x86_64-server-release/images/jdk \
+--with-boot-jdk=/home/lgx/install/jdk-23.0.1 \
 --with-gtest=/home/lgx/source/cpp/gtest \
 --with-jmh=/home/lgx/source/java/jdk/build/jmh/jars \
 --disable-warnings-as-errors \
@@ -130,7 +130,7 @@ sudo chroot /home/lgx/source/debian-sysroot/arm64 symlinks -cr .
 
 sh configure \
 --with-jtreg=/home/lgx/source/java/jtreg-stable/build/images/jtreg \
---with-boot-jdk=/home/lgx/source/java/jdk22u/build/linux-x86_64-server-release/images/jdk \
+--with-boot-jdk=/home/lgx/install/jdk-23.0.1 \
 --with-gtest=/home/lgx/source/cpp/gtest \
 --with-jmh=/home/lgx/source/java/jdk/build/jmh/jars \
 --disable-warnings-as-errors \
@@ -144,7 +144,7 @@ sh configure \
 ```
 sh configure \
 --with-jtreg=/home/user/source/jtreg \
---with-boot-jdk=/usr/lib/jvm/java-22-openjdk-riscv64 \
+--with-boot-jdk=/usr/lib/jvm/java-23-openjdk-riscv64 \
 --with-gtest=/home/user/source/gtest \
 --with-jmh=/home/user/source/jdk/build/jmh/jars \
 --disable-warnings-as-errors \
@@ -174,7 +174,7 @@ sh configure \
 ```
 sh configure \
 --with-jtreg=/home/pi/source/jtreg \
---with-boot-jdk=/home/pi/install/jdk-22.0.1 \
+--with-boot-jdk=/home/pi/install/jdk-23.0.1 \
 --with-gtest=/home/pi/source/googletest \
 --with-jmh=/home/pi/source/jdk/build/jmh/jars \
 --disable-warnings-as-errors \
