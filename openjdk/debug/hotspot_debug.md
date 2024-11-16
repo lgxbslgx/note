@@ -20,19 +20,93 @@
 - set breakpoint, start debugging or running.
 
 
-- 交叉编译使用qemu和原生gdb调试:
-  ```
-  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/riscv/sysroot/lib:/opt/riscv/sysroot/usr/lib
-  qemu-riscv64 -L /opt/riscv/sysroot -g 33334 \
-  /source/java/jdk-riscv64/build/linux-riscv64-server-slowdebug/images/jdk/bin/java \
-  --version
+## 交叉编译RISCV64后的调试
+- qemu运行程序：
+```shell
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/lgx/source/debian-sysroot/riscv64/lib:/home/lgx/source/debian-sysroot/riscv64/usr/lib:/home/lgx/source/debian-sysroot/riscv64/lib/riscv64-linux-gnu
 
-  /opt/riscv/bin/riscv64-unknown-linux-gnu-gdb \
-  --eval-command="target remote localhost:33334" \
-  --eval-command="set solib-search-path \
-  /source/java/jdk-riscv64/build/linux-riscv64-server-slowdebug/images/jdk/lib:/source/java/jdk-riscv64/build/linux-riscv64-server-slowdebug/images/jdk/lib/jli:/source/java/jdk-riscv64/build/linux-riscv64-server-slowdebug/images/jdk/lib/server:/opt/riscv/sysroot/lib:/opt/riscv/sysroot/usr/lib" \
-  --args /source/java/jdk-riscv64/build/linux-riscv64-server-slowdebug/images/jdk/bin/java
+qemu-riscv64-static -L /home/lgx/source/debian-sysroot/riscv64/ -g 33334 \
+/home/lgx/source/java/riscv64-slow-jdk/build/linux-riscv64-server-slowdebug/images/jdk/bin/java \
+--version
+```
+
+- 原生GDB调试
+```shell
+gdb-multiarch \
+--eval-command="target remote :33334" \
+--eval-command="set solib-search-path \
+/home/lgx/source/java/riscv64-slow-jdk/build/linux-riscv64-server-slowdebug/images/jdk/lib:/home/lgx/source/java/riscv64-slow-jdk/build/linux-riscv64-server-slowdebug/images/jdk/lib/jli:/home/lgx/source/java/riscv64-slow-jdk/build/linux-riscv64-server-slowdebug/images/jdk/lib/server:/home/lgx/source/debian-sysroot/riscv64/lib:/home/lgx/source/debian-sysroot/riscv64/lib/riscv64-linux-gnu:/home/lgx/source/debian-sysroot/riscv64/usr/lib" \
+--args /home/lgx/source/java/riscv64-slow-jdk/build/linux-riscv64-server-slowdebug/images/jdk/bin/java
+```
+
+- Clion调试:
+  - 在`/home/lgx/.gdbinit`中设置使用项目本地初始化文件（该文件也叫`.gdbinit`，位于项目根目录）:
   ```
+  set auto-load local-gdbinit on
+  add-auto-load-safe-path /
+  ```
+  - 项目本地初始化文件`.gdbinit`中设置gdb钩子，即添加下面内容：
+  ```
+  define target hookpost-remote
+    set solib-search-path /home/lgx/source/java/riscv64-slow-jdk/build/linux-riscv64-server-slowdebug/images/jdk/lib:/home/lgx/source/java/riscv64-slow-jdk/build/linux-riscv64-server-slowdebug/images/jdk/lib/jli:/home/lgx/source/java/riscv64-slow-jdk/build/linux-riscv64-server-slowdebug/images/jdk/lib/server:/home/lgx/source/debian-sysroot/riscv64/lib:/home/lgx/source/debian-sysroot/riscv64/lib/riscv64-linux-gnu:/home/lgx/source/debian-sysroot/riscv64/usr/lib
+    break main
+  end
+  ```
+  - Clion中新建工具链
+	  - 选择：`Settings | Build, Execution, Deployment | Toolchains`
+    - 添加：`+` System toolchain
+    - 最后的Debugger选择`gdb-multiarch`
+  - Clion中新建`Remote Debug`运行配置
+    - name: riscv-local
+    - gdb: 刚刚新建的工具链`gdb-multiarch`
+    - target: 127.0.0.1:33334
+    - symbol file: /home/lgx/source/java/riscv64-slow-jdk/build/linux-riscv64-server-slowdebug/images/jdk/bin/java
+    - sysroot: /home/lgx/source/debian-sysroot/riscv64/
+
+
+## 交叉编译ARM64后的调试
+- qemu运行程序：
+```shell
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/lgx/source/debian-sysroot/arm64/lib:/home/lgx/source/debian-sysroot/arm64/usr/lib:/home/lgx/source/debian-sysroot/arm64/lib/aarch64-linux-gnu
+
+qemu-aarch64-static -L /home/lgx/source/debian-sysroot/arm64/ -g 33334 \
+/home/lgx/source/java/arm64-slow-jdk/build/linux-aarch64-server-slowdebug/images/jdk/bin/java \
+--version
+```
+
+- 原生GDB调试
+```shell
+gdb-multiarch \
+--eval-command="target remote :33334" \
+--eval-command="set solib-search-path \
+/home/lgx/source/java/arm64-slow-jdk/build/linux-aarch64-server-slowdebug/images/jdk/lib:/home/lgx/source/java/arm64-slow-jdk/build/linux-aarch64-server-slowdebug/images/jdk/lib/jli:/home/lgx/source/java/arm64-slow-jdk/build/linux-aarch64-server-slowdebug/images/jdk/lib/server:/home/lgx/source/debian-sysroot/arm64/lib:/home/lgx/source/debian-sysroot/arm64/lib/aarch64-linux-gnu:/home/lgx/source/debian-sysroot/arm64/usr/lib" \
+--args /home/lgx/source/java/arm64-slow-jdk/build/linux-aarch64-server-slowdebug/images/jdk/bin/java
+```
+
+- Clion调试:
+  - 在`/home/lgx/.gdbinit`中设置使用项目本地初始化文件（该文件也叫`.gdbinit`，位于项目根目录）:
+  ```
+  set auto-load local-gdbinit on
+  add-auto-load-safe-path /
+  ```
+  - 项目本地初始化文件`.gdbinit`中设置gdb钩子，即添加下面内容：
+  ```
+  define target hookpost-remote
+    set solib-search-path /home/lgx/source/java/arm64-slow-jdk/build/linux-aarch64-server-slowdebug/images/jdk/lib:/home/lgx/source/java/arm64-slow-jdk/build/linux-aarch64-server-slowdebug/images/jdk/lib/jli:/home/lgx/source/java/arm64-slow-jdk/build/linux-aarch64-server-slowdebug/images/jdk/lib/server:/home/lgx/source/debian-sysroot/arm64/lib:/home/lgx/source/debian-sysroot/arm64/lib/aarch64-linux-gnu:/home/lgx/source/debian-sysroot/arm64/usr/lib
+    break main
+  end
+  ```
+  - Clion中新建工具链
+	  - 选择：`Settings | Build, Execution, Deployment | Toolchains`
+    - 添加：`+` System toolchain
+    - 最后的Debugger选择`gdb-multiarch`
+  - Clion中新建`Remote Debug`运行配置
+    - name: ARM64-local
+    - gdb: 刚刚新建的工具链`gdb-multiarch`
+    - target: 127.0.0.1:33334
+    - symbol file: /home/lgx/source/java/arm64-slow-jdk/build/linux-aarch64-server-slowdebug/images/jdk/bin/java
+    - sysroot: /home/lgx/source/debian-sysroot/arm64
+
 
 ## 连接另一台机器进行远程**开发**和调试（比如嵌入式riscv开发板）: 
 - 开发板:
@@ -50,14 +124,14 @@
     - target: 192.168.0.103:33334
     - path mappings
       - remote: /home/user/source/jdk
-      - local: /home/lgx/source/java/jdk-riscv64/
+      - local: /home/lgx/source/java/riscv64-slow-jdk/
   - 设置远程开发工具
     - 设置路径: `Settings | Build, Execution, Deployment | Deployment`
 	  - `Connection`
 	    - `Type`: `SFTP`
 		  - `Root path`: `/home/user`
 	  - `Mappings`
-	    - `/source/java/jdk-riscv64` -> `/source/jdk`
+	    - `/source/java/riscv64-slow-jdk` -> `/source/jdk`
 		  - `/home/lgx/source/cpp/gtest/googlemock/src/gmock-all.cc` -> `/source/gtest/googlemock/src/gmock-all.cc`
 		  - `/home/lgx/source/cpp/gtest/googletest/src/gtest-all.cc` -> `/source/gtest/googletest/src/gtest-all.cc`
 	  - `Excluded Paths`: 新加`Local Path` -> `/home/lgx/source/java/riscv64-slow-jdk/build`
