@@ -150,17 +150,7 @@ sh configure \
 --disable-warnings-as-errors \
 --with-debug-level=slowdebug \
 --with-native-debug-symbols=internal \
---with-hsdis=binutils \
---with-binutils-src=/home/user/source/binutils
-
-# 使用llvm来构建hsdis
---with-hsdis=llvm --with-llvm=/usr/lib/llvm-15
-
-# capstone现在不支持riscv
-
-# 使用llvm/clang工具链（不成功，链接报错）
---with-toolchain-type=clang \
---with-toolchain-path=/usr/lib/llvm-15/bin
+--with-hsdis=capstone
 
 # `make images JOBS=4`可能会内存溢出，用`JOBS=1`就好了。
 # `JOBS=1`还是不行，`ld`链接时内存不足。
