@@ -76,3 +76,9 @@ nmcli device up wlx2c0547a11b5
 UseDNS no
 GSSAPIAuthentication no
 ```
+
+## 添加apt源
+
+```shell
+deb https://ftp.debian.org/debian trixie main
+```
