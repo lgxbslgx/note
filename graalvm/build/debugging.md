@@ -9,7 +9,7 @@
 cd compiler
 
 # 设置JAVA_HOME
-export JAVA_HOME=/home/lgx/source/java/jdk22u/build/linux-x86_64-server-release/images/graal-builder-jdk
+export JAVA_HOME=/home/lgx/source/java/jdk/build/linux-x86_64-server-release/images/graal-builder-jdk
 
 # 使用mx -d 或者 mx --dgb 开启调试
 mx -d -v vm \

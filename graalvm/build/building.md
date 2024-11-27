@@ -10,7 +10,7 @@ git clone https://github.com/graalvm/mx.git
 export PATH=/home/lgx/install/mx:$PATH
 
 # 设置JAVA_HOME（使用`make graal-builder-image`构建的JDK才行）
-export JAVA_HOME=/home/lgx/source/java/jdk22u/build/linux-x86_64-server-release/images/graal-builder-jdk
+export JAVA_HOME=/home/lgx/source/java/jdk/build/linux-x86_64-server-release/images/graal-builder-jdk
 
 # 下载GraalVM
 git clone git@github.com:oracle/graal.git
