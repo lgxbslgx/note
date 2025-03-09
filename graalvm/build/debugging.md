@@ -24,7 +24,7 @@ mx -d -v vm \
 HelloWorld
 
 # IDEA打断点，点击调试按钮（远程调试），详见[java-remote-debug](/openjdk/debug/java_remote_debug.md)
-# 代码入口在`graal/compiler/src/jdk.graal.compiler/src/jdk/graal/compiler/hotspot/HotSpotGraalCompiler.java::main`
+# 代码入口在`graal/compiler/src/jdk.graal.compiler/src/jdk/graal/compiler/hotspot/HotSpotGraalCompiler.java::compileMethod`
 ```
 
 
