@@ -4,4 +4,3 @@
 
 - debug 构建、测试、调试相关内容
 - source_note 源码笔记
-- framework.md .NET整体架构
