@@ -55,14 +55,14 @@ flowchart LR
 ## JIT编译器
 
 - [RyuJIT](https://github.com/dotnet/runtime/tree/main/src/coreclr/jit)：CoreCLR官方JIT编译器，位于runtime代码仓库的src/coreclr/jit目录中。
-- [Mono JIT](https://github.com/dotnet/runtime/tree/main/src/mono/mono/mini)：Mono的JIT编译器，支持的平台多，但是性能低于RyuJIT。
+- [Mono JIT](https://github.com/dotnet/runtime/tree/main/src/mono/mono/mini)：Mono的JIT编译器。
 - [LLILC](https://github.com/dotnet/llilc)：基于LLVM的JIT编译器，目前已经停止维护。
 
 ## AOT编译器
 
 - [​NativeAOT](https://github.com/dotnet/runtime/tree/main/src/coreclr/nativeaot)：CoreCLR官方AOT编译器（以前叫CoreRT），位于runtime代码仓库的src/coreclr/nativeaot目录中。它会调用RyuJIT编译器进行具体编译操作。
 - [Mono AOT](https://github.com/dotnet/runtime/tree/main/src/mono/mono/mini)：Mono的AOT编译器（和JIT编译器同一个目录）
-- [Crossgen2 (R2R AOT)](https://github.com/dotnet/runtime/tree/main/src/coreclr/tools/aot)：把一部分CIL编译器成机器码，加快启动速度，但是不完整编译。
+- [Crossgen2 (R2R AOT)](https://github.com/dotnet/runtime/tree/main/src/coreclr/tools/aot)：把一部分CIL编译成机器码，加快启动速度，但是不完整编译所有CIL。
 - 试验项目：
   - [​NativeAOT-LLVM（试验阶段）](https://github.com/dotnet/runtimelab/tree/feature/NativeAOT-LLVM)：基于LLVM的AOT编译器，目前只支持生成WebAssembly代码
   - [​NativeAOT-Mint（试验阶段）](https://github.com/dotnet/runtimelab/tree/feature/NativeAOT-Mint)：使用Mono解释器增强的NativeAOT编译器的动态代码创建功能。
