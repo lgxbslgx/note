@@ -1,7 +1,11 @@
 # 构建整个.Net
 
+## 相关链接
+
 - [环境准备](https://github.com/dotnet/runtime/blob/main/docs/workflow/requirements/linux-requirements.md)
 - [构建过程](https://github.com/dotnet/dotnet/tree/main?tab=readme-ov-file#building)
+
+## 构建
 
 ```shell
 # 下载代码
