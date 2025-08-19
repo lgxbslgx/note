@@ -2,7 +2,7 @@
 
 ## 代码位置
 
-[仓库dotnet/runtime的目录src/mono](https://github.com/dotnet/runtime/tree/main/src/mono)
+- [仓库dotnet/runtime的目录src/mono](https://github.com/dotnet/runtime/tree/main/src/mono)
 
 ## 各个目录详情
 

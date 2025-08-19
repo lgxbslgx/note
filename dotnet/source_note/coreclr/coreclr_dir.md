@@ -2,7 +2,7 @@
 
 ## 代码位置
 
-[仓库dotnet/runtime的目录src/coreclr](https://github.com/dotnet/runtime/tree/main/src/coreclr)
+- [仓库dotnet/runtime的目录src/coreclr](https://github.com/dotnet/runtime/tree/main/src/coreclr)
 
 ## 各个目录详情
 
