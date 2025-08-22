@@ -19,6 +19,12 @@ cd runtime
 sudo apt install -y cmake llvm lld clang build-essential \
   python-is-python3 curl git lldb libicu-dev liblttng-ust-dev \
   libssl-dev libkrb5-dev ninja-build pigz cpio
+
+# 安装新版本的LLVM
+wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+sudo add-apt-repository "deb http://apt.llvm.org/$(lsb_release -sc)/ llvm-toolchain-$(lsb_release -sc)-18 main"
+sudo apt update
+sudo apt install clang-18 lld-18 clangd-18
 ```
 
 ## 构建完整内容
