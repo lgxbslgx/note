@@ -65,8 +65,7 @@ artifacts/bin/coreclr/linux.x64.Debug/
 
 ```shell
 # 构建NativeAOT和库
-./build.sh -subset clr.aot+libs -c Debug /p:WarningsAsErrors=false
-./build.sh -subset clr.aot+libs -c Debug /p:TreatWarningsAsErrors=false
+./build.sh -subset clr.aot+libs -c Debug /p:WarningsAsErrors=false /p:TreatWarningsAsErrors=false
 
 # 构建结果所在目录
 artifacts/bin/coreclr/<OS>.<Architecture>.<Configuration>/ilc/
