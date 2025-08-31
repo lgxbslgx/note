@@ -6,6 +6,7 @@
 
 ## 各个目录详情
 
+```shell
 ├── browser 浏览器环境（WebAssembly）的运行时支持
 │   ├── build 构建脚本和配置
 │   ├── debugger 浏览器调试器集成
@@ -77,3 +78,4 @@
     ├── templates WASM项目模板
     ├── testassets 测试所需的静态资源文件
     └── Wasm.Build.Tests 构建测试
+```

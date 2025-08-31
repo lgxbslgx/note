@@ -6,6 +6,7 @@
 
 ## 各个目录详情
 
+```shell
 ├── binder 程序集加载与绑定逻辑
 │   └── inc
 ├── classlibnative 核心库本地（Native）方法
@@ -139,3 +140,4 @@
     ├── riscv64
     ├── wasm WebAssembly运行时支持
     └── wks 工作站GC相关实现
+```
