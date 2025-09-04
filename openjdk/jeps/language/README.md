@@ -1,0 +1,85 @@
+# Java语言
+
+该目录的文档主要描写Java新语言特征的实现。这里主要是Javac的内容，少了核心库和虚拟机的内容。
+
+## 新语言特征列表
+
+- 目标类型推导
+  - [JEP 101: Generalized Target-Type Inference](https://openjdk.org/jeps/101)
+- 类型注解
+  - [JEP 104: Type Annotations](https://openjdk.org/jeps/104)
+- 可重复注解
+  - [JEP 120: Repeating Annotations](https://openjdk.org/jeps/120)
+- Lambda表达式和方法引用
+  - [JEP 126: Lambda Expressions & Virtual Extension Methods](https://openjdk.org/jeps/126)
+- 接口默认方法
+  - [JEP 213: Milling Project Coin](https://openjdk.org/jeps/213)
+- 模块化
+  - [JEP 261: Module System](https://openjdk.org/jeps/261)
+  - [JEP 220: Modular Run-Time Images](https://openjdk.org/jeps/220)
+  - [JEP 201: Modular Source Code](https://openjdk.org/jeps/201)
+  - [JEP 200: The Modular JDK](https://openjdk.org/jeps/200)
+  - [JEP 162: Prepare for Modularization](https://openjdk.org/jeps/162)
+- 局部变量类型推导
+  - [JEP 323: Local-Variable Syntax for Lambda Parameters](https://openjdk.org/jeps/323)
+  - [JEP 286: Local-Variable Type Inference](https://openjdk.org/jeps/286)
+- switch表达式
+  - [JEP 361: Switch Expressions](https://openjdk.org/jeps/361)
+  - [JEP 354: Switch Expressions (Second Preview)](https://openjdk.org/jeps/354)
+  - [JEP 325: Switch Expressions (Preview)](https://openjdk.org/jeps/325)
+- 文本块
+  - [JEP 378: Text Blocks](https://openjdk.org/jeps/378)
+  - [JEP 368: Text Blocks (Second Preview)](https://openjdk.org/jeps/368)
+  - [JEP 355: Text Blocks (Preview)](https://openjdk.org/jeps/355)
+  - [JEP 326: Raw String Literals (Preview)](https://openjdk.org/jeps/326)
+- 记录
+  - [JEP 395: Records](https://openjdk.org/jeps/395)
+  - [JEP 384: Records (Second Preview)](https://openjdk.org/jeps/384)
+  - [JEP 359: Records (Preview)](https://openjdk.org/jeps/359)
+- instanceof模式匹配
+  - [JEP 394: Pattern Matching for instanceof](https://openjdk.org/jeps/394)
+  - [JEP 375: Pattern Matching for instanceof (Second Preview)](https://openjdk.org/jeps/375)
+  - [JEP 305: Pattern Matching for instanceof (Preview)](https://openjdk.org/jeps/305)
+- 封闭类（sealed class）
+  - [JEP 409: Sealed Classes](https://openjdk.org/jeps/409)
+  - [JEP 397: Sealed Classes (Second Preview)](https://openjdk.org/jeps/397)
+  - [JEP 360: Sealed Classes (Preview)](https://openjdk.org/jeps/360)
+- switch模式匹配
+  - [JEP 441: Pattern Matching for switch](https://openjdk.org/jeps/441)
+  - [JEP 433: Pattern Matching for switch (Fourth Preview)](https://openjdk.org/jeps/433)
+  - [JEP 427: Pattern Matching for switch (Third Preview)](https://openjdk.org/jeps/427)
+  - [JEP 420: Pattern Matching for switch (Second Preview)](https://openjdk.org/jeps/420)
+  - [JEP 406: Pattern Matching for switch (Preview)](https://openjdk.org/jeps/406)
+- 记录模式匹配
+  - [JEP 440: Record Patterns](https://openjdk.org/jeps/440)
+  - [JEP 432: Record Patterns (Second Preview)](https://openjdk.org/jeps/432)
+  - [JEP 405: Record Patterns (Preview)](https://openjdk.org/jeps/405)
+- 无名模式和变量
+  - [JEP 456: Unnamed Variables & Patterns](https://openjdk.org/jeps/456)
+  - [JEP 443: Unnamed Patterns and Variables (Preview)](https://openjdk.org/jeps/443)
+- 字符串模板
+  - [JEP 465: String Templates (Third Preview)](https://openjdk.org/jeps/465)
+  - [JEP 459: String Templates (Second Preview)](https://openjdk.org/jeps/459)
+  - [JEP 430: String Templates (Preview)](https://openjdk.org/jeps/430)
+- 直接运行Java文件
+  - [JEP 458: Launch Multi-File Source-Code Programs](https://openjdk.org/jeps/458)
+  - [JEP 330: Launch Single-File Source-Code Programs](https://openjdk.org/jeps/330)
+- 模式匹配中使用原子类型
+  - [JEP 507: Primitive Types in Patterns, instanceof, and switch (Third Preview)](https://openjdk.org/jeps/507)
+  - [JEP 488: Primitive Types in Patterns, instanceof, and switch (Second Preview)](https://openjdk.org/jeps/488)
+  - [JEP 455: Primitive Types in Patterns, instanceof, and switch (Preview)](https://openjdk.org/jeps/455)
+- 模块导入声明
+  - [JEP 511: Module Import Declarations](https://openjdk.org/jeps/511)
+  - [JEP 494: Module Import Declarations (Second Preview](https://openjdk.org/jeps/494)
+  - [JEP 476: Module Import Declarations (Preview)](https://openjdk.org/jeps/476)
+- 简化源文件和main方法
+  - [JEP 512: Compact Source Files and Instance Main Methods](https://openjdk.org/jeps/512)
+  - [JEP 495: Simple Source Files and Instance Main Methods (Fourth Preview)](https://openjdk.org/jeps/495)
+  - [JEP 477: Implicitly Declared Classes and Instance Main Methods (Third Preview)](https://openjdk.org/jeps/477)
+  - [JEP 463: Implicitly Declared Classes and Instance Main Methods (Second Preview)](https://openjdk.org/jeps/463)
+  - [JEP 445: Unnamed Classes and Instance Main Methods (Preview)](https://openjdk.org/jeps/445)
+- 灵活的构造器方法体
+  - [JEP 513: Flexible Constructor Bodies](https://openjdk.org/jeps/513)
+  - [JEP 492: Flexible Constructor Bodies (Third Preview)](https://openjdk.org/jeps/492)
+  - [JEP 482: Flexible Constructor Bodies (Second Preview)](https://openjdk.org/jeps/482)
+  - [JEP 447: Statements before super(...) (Preview)](https://openjdk.org/jeps/447)
