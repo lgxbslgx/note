@@ -25,6 +25,10 @@ wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
 sudo add-apt-repository "deb http://apt.llvm.org/$(lsb_release -sc)/ llvm-toolchain-$(lsb_release -sc)-18 main"
 sudo apt update
 sudo apt install clang-18 lld-18 clangd-18
+
+# 创建测试集
+cd src/mono/sample/HelloWorld
+make publish
 ```
 
 ## 构建完整内容
@@ -42,7 +46,8 @@ artifacts/bin/coreclr/linux.x64.Release/
 artifacts/packages/Release/Shipping/
 
 # 运行
-./artifacts/bin/coreclr/linux.x64.Release/corerun <程序集>
+./artifacts/bin/coreclr/linux.x64.Release/corerun \
+./artifacts/bin/HelloWorld/x64/Debug/linux-x64/HelloWorld.dll
 ```
 
 ## 构建CoreCLR
@@ -58,7 +63,8 @@ artifacts/bin/coreclr/<OS>.<Architecture>.<Configuration>/
 artifacts/bin/coreclr/linux.x64.Debug/
 
 # 运行
-./artifacts/bin/coreclr/linux.x64.Debug/corerun <程序集>
+./artifacts/bin/coreclr/linux.x64.Debug/corerun \
+./artifacts/bin/HelloWorld/x64/Debug/linux-x64/HelloWorld.dll
 ```
 
 ## 构建NativeAOT
@@ -74,23 +80,26 @@ artifacts/bin/coreclr/<OS>.<Architecture>.<Configuration>/ilc/
 artifacts/bin/coreclr/linux.x64.Debug/ilc/
 
 # 运行
-DOTNET_ROOT=.dotnet/ artifacts/bin/coreclr/linux.x64.Debug/ilc/ilc --version
+DOTNET_ROOT=.dotnet/ \
+./artifacts/bin/coreclr/linux.x64.Debug/ilc/ilc \
+../runtime-mono/artifacts/bin/HelloWorld/x64/Debug/linux-x64/HelloWorld.dll
 ```
 
 ## 构建Mono
 
 ```shell
 # 构建Mono和库
-./build.sh mono+libs -c Debug /p:MonoEnableLLVM=true /p:KeepNativeSymbols=true
-
+./build.sh mono+libs -c Debug /p:KeepNativeSymbols=true /p:MonoEnableLLVM=true
 # 构建结果所在目录
 artifacts/obj/mono/<OS>.<Architecture>.<Configuration>/out/
 
 # 构建结果实际目录
-artifacts/obj/mono/linux.x64.Debug/out/
+./artifacts/bin/mono/linux.x64.Debug/
 
 # 运行
-./artifacts/obj/mono/linux.x64.Debug/out/bin/mono-sgen <程序集>
+MONO_PATH=./artifacts/bin/HelloWorld/x64/Debug/linux-x64 \
+./artifacts/obj/mono/linux.x64.Debug/out/bin/mono-sgen \
+./artifacts/bin/HelloWorld/x64/Debug/linux-x64/HelloWorld.dll
 ```
 
 ## 构建子集说明（subset）
