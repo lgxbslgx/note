@@ -20,7 +20,7 @@
 │   ├── eglib 基础工具库，为跨平台抽象层提供基础支持（轻量级GLib实现）
 │   ├── eventpipe 跨平台事件管道系统，用于诊断和性能分析
 │   ├── metadata 程序集元数据管理（程序集加载、反射、类型系统等）
-│   ├── mini JIT编译器的核心实现
+│   ├── mini JIT编译器和解释器（interp子目录）的核心实现
 │   ├── minipal 最小化平台抽象层（Platform Abstraction Layer）
 │   ├── offsets 和runtime内部数据结构偏移相关（生成给调试器/GC用的偏移表）
 │   ├── profiler 性能分析和诊断的工具接口
