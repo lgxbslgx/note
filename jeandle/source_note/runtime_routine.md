@@ -1,6 +1,6 @@
 # 运行时库函数
 
-运行时库函数主要在目录`templatemodule`和文件`jeandleRuntimeRoutine.*pp`中。
+运行时库函数主要在目录`templatemodule`和文件`jeandleRuntimeRoutine.*pp`中。一些内容在对应的架构目录，比如`src/hotspot/cpu/x86/jeandleRuntimeRoutine_x86.cpp`。
 
 ## 目录`templatemodule`
 

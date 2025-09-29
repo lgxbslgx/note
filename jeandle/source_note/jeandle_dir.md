@@ -20,7 +20,7 @@
 ├── jeandleReadELF.*pp ELF文件的读取和查找操作
 ├── jeandleRegister.hpp 寄存器内容（通用寄存器、栈指针、线程指针等）。具体内容在对应的架构目录，比如`src/hotspot/cpu/x86/jeandleRegister_x86.cpp`
 ├── jeandleResourceObj.*pp 资源对象基类。用于实现place new操作。
-├── jeandleRuntimeRoutine.*pp 运行时库函数（C/C++、汇编代码）
+├── jeandleRuntimeRoutine.*pp 运行时库函数（C/C++、汇编代码）。一些内容在对应的架构目录，比如`src/hotspot/cpu/x86/jeandleRuntimeRoutine_x86.cpp`
 ├── jeandleType.*pp 类型和常量相关操作（被JeandleAbstractInterpreter使用）
 ├── jeandleUtils.*pp 工具类
 └── templatemodule 运行时库函数（Java代码，以LLVM IR的形式定义）
