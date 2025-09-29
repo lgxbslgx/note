@@ -2,14 +2,14 @@
 
 目录内容在：src/hotspot/share/jeandle
 
-## 各个子目录内容
+## 各个子目录或文件的内容
 
 ```shell
 ├── jeandleAbstractInterpreter.*pp 抽象解释器（前端）
-|———— JeandleVMState 状态信息（栈和局部变量等）
-|———— JeandleBasicBlock 基本块信息
-|———— BasicBlockBuilder 基本块构造器
-|———— JeandleAbstractInterpreter 把字节码转换成LLVM IR（LLVM指令、基础块、控制流图）
+    ├── 类JeandleVMState：状态信息（栈和局部变量等）
+    ├── 类JeandleBasicBlock：基本块信息
+    ├── 类BasicBlockBuilder：基本块构造器
+    └── 类JeandleAbstractInterpreter：把字节码转换成LLVM IR（LLVM指令、基础块、控制流图）
 ├── jeandleAssembler.*pp 宏汇编器。具体内容在对应的架构目录，比如`src/hotspot/cpu/x86/jeandleAssembler_x86.cpp`
 ├── jeandleCallVM.*pp 生成调用运行时库函数的蹦床代码（trampoline）。被jeandleRuntimeRoutine.*pp使用
 ├── jeandleCompilation.*pp 编译整体流程
