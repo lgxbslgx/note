@@ -13,7 +13,18 @@ cmake -S llvm -B build -G "Ninja" \
 -DLLVM_ENABLE_ASSERTIONS="ON" \
 -DCMAKE_C_COMPILER="/usr/bin/clang-15" \
 -DCMAKE_CXX_COMPILER="/usr/bin/clang++-15" \
--DCMAKE_INSTALL_PREFIX="/home/lgx/install/llvm-dev" \
+-DCMAKE_INSTALL_PREFIX="/home/lgx/install/llvm-dev-main" \
+-DLLVM_USE_LINKER="lld"
+
+cmake -S llvm -B build -G "Ninja" \
+-DLLVM_ENABLE_PROJECTS="bolt;clang;clang-tools-extra;cross-project-tests;libclc;lld;lldb;mlir;polly;pstl;compiler-rt;libc;openmp" \
+-DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi;libunwind" \
+-DLLVM_TARGETS_TO_BUILD="X86;RISCV;AArch64" \
+-DCMAKE_BUILD_TYPE="Release" \
+-DLLVM_ENABLE_ASSERTIONS="ON" \
+-DCMAKE_C_COMPILER="/usr/bin/clang-15" \
+-DCMAKE_CXX_COMPILER="/usr/bin/clang++-15" \
+-DCMAKE_INSTALL_PREFIX="/home/lgx/install/llvm-dev-main" \
 -DLLVM_USE_LINKER="lld"
 ```
 
