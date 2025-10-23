@@ -87,29 +87,24 @@ sudo chroot /home/lgx/source/debian-sysroot/arm64 symlinks -cr .
 mkdir build
 cd build
 
-cat - <<EOF > toolchain-aarch64.cmake
-set(CMAKE_SYSTEM_NAME Linux)
-set(CMAKE_SYSROOT /home/lgx/source/debian-sysroot/arm64)
-set(CMAKE_SYSTEM_PROCESSOR arm64)
-set(CMAKE_C_COMPILER aarch64-linux-gnu-gcc)
-set(CMAKE_CXX_COMPILER aarch64-linux-gnu-g++)
-set(CMAKE_C_COMPILER_TARGET aarch64-linux-gnu)
-set(CMAKE_CXX_COMPILER_TARGET aarch64-linux-gnu)
-set(CMAKE_FIND_ROOT_PATH /home/lgx/source/debian-sysroot/arm64)
-set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
-set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
-set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
-set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
-set(CMAKE_EXE_LINKER_FLAGS "-L/home/lgx/source/debian-sysroot/arm64/usr/lib/aarch64-linux-gnu -L/home/lgx/source/debian-sysroot/arm64/usr/lib/gcc/aarch64-linux-gnu/11 -latomic")
-set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
-EOF
-
 cmake -G "Unix Makefiles" \
--DCMAKE_TOOLCHAIN_FILE=toolchain-aarch64.cmake \
 -DLLVM_TARGETS_TO_BUILD="AArch64" \
 -DCMAKE_BUILD_TYPE="Release" \
 -DLLVM_DEFAULT_TARGET_TRIPLE="aarch64-unknown-linux-gnu" \
 -DCMAKE_SYSROOT="/home/lgx/source/debian-sysroot/arm64" \
+-DCMAKE_SYSTEM_NAME=Linux \
+-DCMAKE_SYSTEM_PROCESSOR=aarch64 \
+-DCMAKE_C_COMPILER=/usr/bin/aarch64-linux-gnu-gcc \
+-DCMAKE_CXX_COMPILER=/usr/bin/aarch64-linux-gnu-g++ \
+-DCMAKE_C_COMPILER_TARGET=/usr/bin/aarch64-linux-gnu \
+-DCMAKE_CXX_COMPILER_TARGET=/usr/bin/aarch64-linux-gnu \
+-DCMAKE_FIND_ROOT_PATH=/home/lgx/source/debian-sysroot/aarch64 \
+-DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER \
+-DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY \
+-DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY \
+-DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=ONLY \
+-DCMAKE_EXE_LINKER_FLAGS="-L/home/lgx/source/debian-sysroot/arm64/sysroot/usr/lib/aarch64-linux-gnu -L/home/lgx/source/debian-sysroot/arm64/usr/lib/gcc/aarch64-linux-gnu/11 -latomic" \
+-DCMAKE_SHARED_LINKER_FLAGS="-L/home/lgx/source/debian-sysroot/arm64/sysroot/usr/lib/aarch64-linux-gnu -L/home/lgx/source/debian-sysroot/arm64/usr/lib/gcc/aarch64-linux-gnu/11 -latomic" \
 -DCMAKE_INSTALL_PREFIX="/home/lgx/source/debian-sysroot/arm64/install/llvm-dev" \
 -DLLVM_BUILD_LLVM_DYLIB=On \
 -DLLVM_DYLIB_COMPONENTS=all \
@@ -150,7 +145,7 @@ qemu-aarch64-static -L /home/lgx/source/debian-sysroot/arm64/ /home/lgx/source/j
 sudo apt install g++-riscv64-linux-gnu gcc-riscv64-linux-gnu
 sudo apt install debootstrap
 sudo apt install qemu-user-static
-sudo ln -s /usr/riscv64-linux-gnu/lib/ld-linux-riscv64.so.1  /lib/ld-linux-riscv64.so.1
+sudo ln -s /usr/riscv64-linux-gnu/lib/ld-linux-riscv64-lp64d.so.1 /lib/ld-linux-riscv64-lp64d.so.1
 
 # 创建debian系统
 sudo debootstrap \
@@ -169,27 +164,22 @@ sudo chroot /home/lgx/source/debian-sysroot/riscv64 symlinks -cr .
 mkdir build
 cd build
 
-cat - <<EOF > toolchain-riscv64.cmake
-set(CMAKE_SYSTEM_NAME Linux)
-set(CMAKE_SYSROOT /home/lgx/source/debian-sysroot/riscv64)
-set(CMAKE_SYSTEM_PROCESSOR riscv64)
-set(CMAKE_C_COMPILER riscv64-linux-gnu-gcc)
-set(CMAKE_CXX_COMPILER riscv64-linux-gnu-g++)
-set(CMAKE_C_COMPILER_TARGET riscv64-linux-gnu)
-set(CMAKE_CXX_COMPILER_TARGET riscv64-linux-gnu)
-set(CMAKE_FIND_ROOT_PATH /home/lgx/source/debian-sysroot/riscv64)
-set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
-set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
-set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
-set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
-set(CMAKE_EXE_LINKER_FLAGS "-L/home/lgx/source/debian-sysroot/riscv64/usr/lib/riscv64-linux-gnu -L/home/lgx/source/debian-sysroot/riscv64/usr/lib/gcc/riscv64-linux-gnu/11 -latomic")
-set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
-EOF
-
 cmake -G "Unix Makefiles" \
--DCMAKE_TOOLCHAIN_FILE=toolchain-riscv64.cmake \
 -DLLVM_TARGETS_TO_BUILD="RISCV" \
 -DCMAKE_BUILD_TYPE="Release" \
+-DCMAKE_SYSTEM_NAME=Linux \
+-DCMAKE_SYSTEM_PROCESSOR=riscv64 \
+-DCMAKE_C_COMPILER=/usr/bin/riscv64-linux-gnu-gcc \
+-DCMAKE_CXX_COMPILER=/usr/bin/riscv64-linux-gnu-g++ \
+-DCMAKE_C_COMPILER_TARGET=/usr/bin/riscv64-linux-gnu \
+-DCMAKE_CXX_COMPILER_TARGET=/usr/bin/riscv64-linux-gnu \
+-DCMAKE_FIND_ROOT_PATH=/home/lgx/source/debian-sysroot/riscv64 \
+-DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER \
+-DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY \
+-DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY \
+-DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=ONLY \
+-DCMAKE_EXE_LINKER_FLAGS="-L/home/lgx/source/debian-sysroot/riscv64/usr/lib/riscv64-linux-gnu -L/home/lgx/source/debian-sysroot/riscv64/usr/lib/gcc/riscv64-linux-gnu/11 -latomic" \
+-DCMAKE_SHARED_LINKER_FLAGS="-L/home/lgx/source/debian-sysroot/riscv64/usr/lib/riscv64-linux-gnu -L/home/lgx/source/debian-sysroot/riscv64/usr/lib/gcc/riscv64-linux-gnu/11 -latomic" \
 -DLLVM_DEFAULT_TARGET_TRIPLE="riscv64-unknown-linux-gnu" \
 -DCMAKE_SYSROOT="/home/lgx/source/debian-sysroot/riscv64" \
 -DCMAKE_INSTALL_PREFIX="/home/lgx/source/debian-sysroot/riscv64/install/llvm-dev" \
