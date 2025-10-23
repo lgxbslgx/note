@@ -7,7 +7,7 @@
 - 重新构建对应的模块，比如 `ninja clang`
 - 使用新构建的内容测试之前的demo，比如 `./build/bin/clang test.c`
 - 执行该模块所有的测试，比如 `ninja check-clang`
-- 执行指定的测试，比如 `.build/bin/llvm-lit -v clang/test/SemaCXX/warn-infinite-recursion.cpp` 或者 `bin/llvm-lit -v ../clang/test/SemaCXX/warn-infinite-recursion.cpp`
+- 执行指定的测试，比如 `./build/bin/llvm-lit -v clang/test/SemaCXX/warn-infinite-recursion.cpp` 或者 `bin/llvm-lit -v ../clang/test/SemaCXX/warn-infinite-recursion.cpp`
 - 执行单元测试，比如 `ninja ToolingTests && tools/clang/unittests/Tooling/ToolingTests --gtest_filter=ReplacementTest.CanDeleteAllText`
 - 本地提交代码，比如 `git commit -m "[模块名] 修改的内容"`
 
