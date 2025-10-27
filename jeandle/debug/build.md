@@ -20,7 +20,7 @@ cmake -G "Unix Makefiles" \
 -DLLVM_DYLIB_COMPONENTS=all ../llvm
 
 # 构建
-cmake --build . --target install  -- -j 12
+cmake --build . --target install  -- -j 10
 ```
 
 ## 构建JDK
@@ -43,7 +43,7 @@ sh configure \
 --with-jeandle-llvm=/home/lgx/install/llvm-dev
 
 # 构建
-make images JOBS=12
+make images JOBS=10
 
 # 测试
 ./build/linux-x86_64-server-slowdebug/images/jdk/bin/java --version
@@ -98,20 +98,20 @@ cmake -G "Unix Makefiles" \
 -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++ \
 -DCMAKE_C_COMPILER_TARGET=aarch64-linux-gnu \
 -DCMAKE_CXX_COMPILER_TARGET=aarch64-linux-gnu \
--DCMAKE_FIND_ROOT_PATH=/home/lgx/source/debian-sysroot/aarch64 \
+-DCMAKE_FIND_ROOT_PATH=/home/lgx/source/debian-sysroot/arm64 \
 -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER \
 -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY \
 -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY \
 -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=ONLY \
 -DCMAKE_EXE_LINKER_FLAGS="-L/home/lgx/source/debian-sysroot/arm64/sysroot/usr/lib/aarch64-linux-gnu -L/home/lgx/source/debian-sysroot/arm64/usr/lib/gcc/aarch64-linux-gnu/11 -latomic -lpthread" \
 -DCMAKE_SHARED_LINKER_FLAGS="-L/home/lgx/source/debian-sysroot/arm64/sysroot/usr/lib/aarch64-linux-gnu -L/home/lgx/source/debian-sysroot/arm64/usr/lib/gcc/aarch64-linux-gnu/11 -latomic -lpthread" \
--DCMAKE_INSTALL_PREFIX="/home/lgx/source/debian-sysroot/arm64/install/llvm-dev" \
+-DCMAKE_INSTALL_PREFIX="/home/lgx/install/llvm-aarch64" \
 -DLLVM_BUILD_LLVM_DYLIB=On \
 -DLLVM_DYLIB_COMPONENTS=all \
 ../llvm
 
 # 构建LLVM
-sudo cmake --build . --target install  -- -j 12
+cmake --build . --target install  -- -j 10
 
 sudo ldconfig -r ~/source/debian-sysroot/arm64/
 
@@ -128,11 +128,11 @@ sh configure \
 --openjdk-target=aarch64-linux-gnu \
 --with-sysroot=/home/lgx/source/debian-sysroot/arm64 \
 --with-host-jeandle-llvm=/home/lgx/install/llvm-dev \
---with-jeandle-llvm=/home/lgx/source/debian-sysroot/arm64/install/llvm-dev
+--with-jeandle-llvm=/home/lgx/install/llvm-aarch64
 
 # 构建JDK
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/lgx/source/debian-sysroot/arm64/lib:/home/lgx/source/debian-sysroot/arm64/usr/lib:/home/lgx/source/debian-sysroot/arm64/lib/aarch64-linux-gnu:/home/lgx/source/debian-sysroot/arm64/usr/lib/aarch64-linux-gnu:/home/lgx/source/debian-sysroot/arm64/install/llvm-dev/lib
-make images JOBS=12
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/lgx/source/debian-sysroot/arm64/lib:/home/lgx/source/debian-sysroot/arm64/usr/lib:/home/lgx/source/debian-sysroot/arm64/lib/aarch64-linux-gnu:/home/lgx/source/debian-sysroot/arm64/usr/lib/aarch64-linux-gnu:/home/lgx/install/llvm-aarch64/lib
+make images JOBS=10
 
 # 运行
 qemu-aarch64-static -L /home/lgx/source/debian-sysroot/arm64/ /home/lgx/source/java/jeandle-jdk-aarch64/build/linux-aarch64-server-slowdebug/images/jdk/bin/java --version
@@ -182,13 +182,13 @@ cmake -G "Unix Makefiles" \
 -DCMAKE_SHARED_LINKER_FLAGS="-L/home/lgx/source/debian-sysroot/riscv64/usr/lib/riscv64-linux-gnu -L/home/lgx/source/debian-sysroot/riscv64/usr/lib/gcc/riscv64-linux-gnu/11 -latomic -lpthread" \
 -DLLVM_DEFAULT_TARGET_TRIPLE="riscv64-unknown-linux-gnu" \
 -DCMAKE_SYSROOT="/home/lgx/source/debian-sysroot/riscv64" \
--DCMAKE_INSTALL_PREFIX="/home/lgx/source/debian-sysroot/riscv64/install/llvm-dev" \
+-DCMAKE_INSTALL_PREFIX="/home/lgx/install/llvm-riscv64" \
 -DLLVM_BUILD_LLVM_DYLIB=On \
 -DLLVM_DYLIB_COMPONENTS=all \
 ../llvm
 
 # 构建LLVM
-sudo cmake --build . --target install  -- -j 12
+cmake --build . --target install  -- -j 10
 
 sudo ldconfig -r ~/source/debian-sysroot/riscv64
 
@@ -205,11 +205,11 @@ sh configure \
 --openjdk-target=riscv64-linux-gnu \
 --with-sysroot=/home/lgx/source/debian-sysroot/riscv64 \
 --with-host-jeandle-llvm=/home/lgx/install/llvm-dev \
---with-jeandle-llvm=/home/lgx/source/debian-sysroot/riscv64/install/llvm-dev
+--with-jeandle-llvm=/home/lgx/install/llvm-riscv64
 
 # 构建JDK
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/lgx/source/debian-sysroot/riscv64/lib:/home/lgx/source/debian-sysroot/riscv64/usr/lib:/home/lgx/source/debian-sysroot/riscv64/lib/riscv64-linux-gnu:/home/lgx/source/debian-sysroot/riscv64/usr/lib/riscv64-linux-gnu:/home/lgx/source/debian-sysroot/riscv64/install/llvm-dev/lib
-make images JOBS=12
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/lgx/source/debian-sysroot/riscv64/lib:/home/lgx/source/debian-sysroot/riscv64/usr/lib:/home/lgx/source/debian-sysroot/riscv64/lib/riscv64-linux-gnu:/home/lgx/source/debian-sysroot/riscv64/usr/lib/riscv64-linux-gnu:/home/lgx/install/llvm-riscv64/lib
+make images JOBS=10
 
 # 运行
 qemu-riscv64-static -L /home/lgx/source/debian-sysroot/riscv64/ /home/lgx/source/java/jeandle-jdk-riscv64/build/linux-riscv64-server-slowdebug/images/jdk/bin/java --version
