@@ -134,6 +134,9 @@ sh configure \
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/lgx/source/debian-sysroot/arm64/lib:/home/lgx/source/debian-sysroot/arm64/usr/lib:/home/lgx/source/debian-sysroot/arm64/lib/aarch64-linux-gnu:/home/lgx/source/debian-sysroot/arm64/usr/lib/aarch64-linux-gnu:/home/lgx/install/llvm-aarch64/lib
 make images JOBS=10
 
+# 按顺序输出完整日记
+make --trace images JOBS=1 | tee log.txt
+
 # 运行
 qemu-aarch64-static -L /home/lgx/source/debian-sysroot/arm64/ /home/lgx/source/java/jeandle-jdk-aarch64/build/linux-aarch64-server-slowdebug/images/jdk/bin/java --version
 ```
@@ -210,6 +213,9 @@ sh configure \
 # 构建JDK
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/lgx/source/debian-sysroot/riscv64/lib:/home/lgx/source/debian-sysroot/riscv64/usr/lib:/home/lgx/source/debian-sysroot/riscv64/lib/riscv64-linux-gnu:/home/lgx/source/debian-sysroot/riscv64/usr/lib/riscv64-linux-gnu:/home/lgx/install/llvm-riscv64/lib
 make images JOBS=10
+
+# 按顺序输出完整日记
+make --trace images JOBS=1 | tee log.txt
 
 # 运行
 qemu-riscv64-static -L /home/lgx/source/debian-sysroot/riscv64/ /home/lgx/source/java/jeandle-jdk-riscv64/build/linux-riscv64-server-slowdebug/images/jdk/bin/java --version
