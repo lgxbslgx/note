@@ -33,5 +33,5 @@ cmake -S llvm -B build -G "Ninja" \
 - 执行测试：`cd build && ninja check-clang` 前缀是`check-`
 - 执行指定的测试，比如 `./build/bin/llvm-lit -v clang/test/SemaCXX/warn-infinite-recursion.cpp` 或者 `bin/llvm-lit -v ../clang/test/SemaCXX/warn-infinite-recursion.cpp`
 - 执行单元测试，比如 `ninja ToolingTests && tools/clang/unittests/Tooling/ToolingTests --gtest_filter=ReplacementTest.CanDeleteAllText`
-
+- 创建编译数据库的符号链接：`ln -s  build/compile_commands.json compile_commands.json`
 
