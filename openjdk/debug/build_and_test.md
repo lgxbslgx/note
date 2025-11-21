@@ -150,6 +150,7 @@ sh configure \
 --disable-warnings-as-errors \
 --with-debug-level=slowdebug \
 --with-native-debug-symbols=internal \
+--with-extra-ldflags="-Wl,--undefined-version" \
 --with-hsdis=capstone
 
 # `make images JOBS=4`可能会内存溢出，用`JOBS=1`就好了。
