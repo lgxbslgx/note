@@ -142,7 +142,6 @@ sh configure \
 
 - riscv visionfive2
 ```
-CC=clang-19 CXX=clang++-19 \
 sh configure \
 --with-jtreg=/home/user/source/jtreg \
 --with-boot-jdk=/usr/lib/jvm/java-23-openjdk-riscv64 \

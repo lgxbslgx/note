@@ -12,11 +12,13 @@ mkdir build
 cd build
 
 # 配置
-CC=clang-19 CXX=clang++-19 \
 cmake -G "Unix Makefiles" \
 -DLLVM_TARGETS_TO_BUILD="X86;RISCV;AArch64" \
 -DCMAKE_BUILD_TYPE="Release" \
 -DCMAKE_INSTALL_PREFIX="/home/lgx/install/llvm-dev" \
+-DCMAKE_C_COMPILER="/usr/bin/clang-19" \
+-DCMAKE_CXX_COMPILER="/usr/bin/clang++-19" \
+-DLLVM_USE_LINKER="lld" \
 -DLLVM_BUILD_LLVM_DYLIB=On \
 -DLLVM_DYLIB_COMPONENTS=all ../llvm
 
