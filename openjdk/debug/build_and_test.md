@@ -142,6 +142,7 @@ sh configure \
 
 - riscv visionfive2
 ```
+CC=clang-19 CXX=clang++-19 \
 sh configure \
 --with-jtreg=/home/user/source/jtreg \
 --with-boot-jdk=/usr/lib/jvm/java-23-openjdk-riscv64 \
@@ -150,7 +151,7 @@ sh configure \
 --disable-warnings-as-errors \
 --with-debug-level=slowdebug \
 --with-native-debug-symbols=internal \
---with-extra-ldflags="-Wl,--undefined-version" \
+--with-toolchain-type=clang \
 --with-hsdis=capstone
 
 # `make images JOBS=4`可能会内存溢出，用`JOBS=1`就好了。
@@ -158,7 +159,7 @@ sh configure \
 # 使用`lld`替换`ld`:
 #   安装`lld`: `sudo apt install lld-15`
 #   删除之前的`ld`符号链接（之前指向 `/usr/bin/riscv64-linux-gnu-ld`）： `sudo rm /usr/bin/ld`
-#   使用`lld`: `sudo ln -s /usr/bin/ld.lld-15 /usr/bin/ld`
+#   使用`lld`: `sudo ln -s /usr/bin/ld.lld-19 /usr/bin/ld`
 ```
 
 - arm rk3399

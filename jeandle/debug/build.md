@@ -12,6 +12,7 @@ mkdir build
 cd build
 
 # 配置
+CC=clang-19 CXX=clang++-19 \
 cmake -G "Unix Makefiles" \
 -DLLVM_TARGETS_TO_BUILD="X86;RISCV;AArch64" \
 -DCMAKE_BUILD_TYPE="Release" \
