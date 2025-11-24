@@ -57,7 +57,13 @@ make images JOBS=10
 ./build/linux-x86_64-server-slowdebug/images/jdk/bin/java \
 -XX:-TieredCompilation -Xcomp \
 -XX:CompileCommand=compileonly,FibonacciTest::fibonacci \
--XX:+UseJeandleCompiler FibonacciTest
+-XX:+UseJeandleCompiler \
+-XX:+PrintStubCode \
+-XX:+PrintNMethods \
+-XX:+PrintAssembly \
+-XX:+PrintNativeNMethods \
+-XX:+PrintMethodHandleStubs \
+FibonacciTest
 ```
 
 ## 交叉编译
@@ -140,6 +146,19 @@ make --trace images JOBS=1 | tee log.txt
 
 # 运行
 qemu-aarch64-static -L /home/lgx/source/debian-sysroot/arm64/ /home/lgx/source/java/jeandle-jdk-aarch64/build/linux-aarch64-server-slowdebug/images/jdk/bin/java --version
+
+qemu-aarch64-static -L /home/lgx/source/debian-sysroot/arm64/ \
+/home/lgx/source/java/jeandle-jdk-aarch64/build/linux-aarch64-server-slowdebug/images/jdk/bin/java \
+-XX:-TieredCompilation \
+-Xcomp \
+-XX:CompileCommand=compileonly,FibonacciTest::fibonacci \
+-XX:+UseJeandleCompiler \
+-XX:+PrintStubCode \
+-XX:+PrintNMethods \
+-XX:+PrintAssembly \
+-XX:+PrintNativeNMethods \
+-XX:+PrintMethodHandleStubs \
+FibonacciTest
 ```
 
 ### 交叉编译到riscv64
@@ -220,4 +239,18 @@ make --trace images JOBS=1 | tee log.txt
 
 # 运行
 qemu-riscv64-static -L /home/lgx/source/debian-sysroot/riscv64/ /home/lgx/source/java/jeandle-jdk-riscv64/build/linux-riscv64-server-slowdebug/images/jdk/bin/java --version
+
+qemu-riscv64-static -L /home/lgx/source/debian-sysroot/riscv64/ \
+/home/lgx/source/java/jeandle-jdk-riscv64/build/linux-riscv64-server-slowdebug/images/jdk/bin/java \
+-XX:-TieredCompilation \
+-Xcomp \
+-XX:CompileCommand=compileonly,FibonacciTest::fibonacci \
+-XX:+UseJeandleCompiler \
+-XX:+UnlockDiagnosticVMOptions \
+-XX:+PrintStubCode \
+-XX:+PrintNMethods \
+-XX:+PrintAssembly \
+-XX:+PrintNativeNMethods \
+-XX:+PrintMethodHandleStubs \
+FibonacciTest
 ```
