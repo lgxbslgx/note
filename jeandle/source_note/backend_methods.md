@@ -1,20 +1,5 @@
 # jeandle-jdk特有的后端方法解析
 
-## 文件`relocInfo_<arch>.cpp`
-
-### 方法`Relocation::pd_set_jeandle_data_value`
-
-设置已编译方法（`nmethod`）中使用的可重定向的数据。常用于GC完成后，更新`nmethod`使用的OOP。
-常见调用路径：
-
-```shell
-Relocation::pd_set_jeandle_data_value
-DataRelocation::set_value
-oop_Relocation::fix_oop_relocation
-nmethod::fix_oop_relocations
-G1CodeBlobClosure::do_evacuation_and_fixup # GC相关代码
-```
-
 ## 文件`jeandleAssembler_<arch>.cpp`
 
 ### 方法`JeandleAssembler::emit_static_call_stub`
@@ -66,7 +51,7 @@ JeandleCompilation::JeandleCompilation
 
 ### 方法`JeandleAssembler::patch_routine_call_site`
 
-设置调用runtime方法的目标地址，生成重定向信息。
+设置调用runtime方法的目标地址，生成重定向信息。目标地址本来就有，主要是生成重定向信息。
 如果目标地址离当前地址太远，则会生成跳床`trampoline`存根代码，用于长跳转（长调用）。
 常用调用路径：
 
@@ -432,4 +417,19 @@ JeandleCompiler::initialize
 CompileBroker::init_compiler_runtime
 CompileBroker::compiler_thread_loop
 CompilerThread::thread_entry
+```
+
+## 文件`relocInfo_<arch>.cpp`
+
+### 方法`Relocation::pd_set_jeandle_data_value`
+
+设置已编译方法（`nmethod`）中使用的可重定向的数据。常用于GC完成后，更新`nmethod`使用的OOP。
+常见调用路径：
+
+```shell
+Relocation::pd_set_jeandle_data_value
+DataRelocation::set_value
+oop_Relocation::fix_oop_relocation
+nmethod::fix_oop_relocations
+G1CodeBlobClosure::do_evacuation_and_fixup # GC相关代码
 ```
