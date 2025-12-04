@@ -21,7 +21,7 @@ JeandleCompilation::JeandleCompilation
 
 设置静态调用（对应字节码`invokedynamic`、`invokestatic`、`invokespecial`）的目标地址，生成重定向信息。
 如果目标地址离当前地址太远，则会生成跳床`trampoline`存根代码，用于长跳转（长调用）。
-这个目标地址是runtime方法`resolve_static_call`或`resolve_opt_virtual_call`的入口地址。
+这个目标地址指向runtime方法`resolve_static_call`或`resolve_opt_virtual_call`的入口地址。
 常用调用路径：
 
 ```shell
@@ -51,7 +51,7 @@ JeandleCompilation::JeandleCompilation
 
 ### 方法`JeandleAssembler::patch_routine_call_site`
 
-设置调用runtime方法的目标地址，生成重定向信息。目标地址本来就有，主要是生成重定向信息。
+设置调用runtime方法的目标地址，生成重定向信息。**目标地址本来就存在，所以这里主要是用于生成重定向信息。**
 如果目标地址离当前地址太远，则会生成跳床`trampoline`存根代码，用于长跳转（长调用）。
 常用调用路径：
 
@@ -66,7 +66,8 @@ JeandleCompilation::JeandleCompilation
 
 ### 方法`JeandleAssembler::patch_ic_call_site`
 
-设置 动态调用（对应字节码`invokevirtual`、`invokeinterface`）时、receiver类型和缓存的类型（inline cache）相同时 对应的目标地址。这个目标地址是runtime方法`resolve_virtual_call`的入口地址。
+设置 动态调用（对应字节码`invokevirtual`、`invokeinterface`）时、receiver类型和缓存的类型（inline cache）相同时 对应的目标地址。
+这个目标地址指向runtime方法`resolve_virtual_call`的入口地址。
 `ic`是`inline cache`的缩写。
 常用调用路径：
 
@@ -81,7 +82,8 @@ JeandleCompilation::JeandleCompilation
 
 ### 方法`JeandleAssembler::emit_ic_check`
 
-生成 判断动态调用（对应字节码`invokevirtual`、`invokeinterface`）的receiver类型是否为缓存的类型（inline cache） 的代码。receiver类型和缓存的类型不相同则调用runtime方法`ic_miss_stub`进行处理。
+生成 判断动态调用（对应字节码`invokevirtual`、`invokeinterface`）的receiver类型是否为缓存的类型（inline cache） 的代码。
+receiver类型和缓存的类型不相同则调用runtime方法`ic_miss_stub`进行处理。
 `ic`是`inline cache`的缩写。
 常用调用路径：
 
@@ -97,7 +99,7 @@ JeandleCompilation::JeandleCompilation
 
 ### 方法`JeandleAssembler::emit_exception_handler`
 
-生成 调用异常处理器 的代码，放到`CodeOffsets`的`Exceptions`段。异常处理器的代码在方法`JeandleRuntimeRoutine::generate_exception_handler`中生成（下文有该方法的说明）。
+生成 **调用**异常处理器 的代码，放到`CodeOffsets`的`Exceptions`段。异常处理器的代码在方法`JeandleRuntimeRoutine::generate_exception_handler`中生成（下文有该方法的说明）。
 常用调用路径：
 
 ```shell
@@ -135,10 +137,7 @@ JeandleCompilation::JeandleCompilation
 
 ### 方法`JeandleAssembler::fixup_routine_call_inst_offset`
 
-获取 调用runtime方法指令 末尾的地址
-
-- X86：指令末尾地址
-- arm、riscv:下一条指令的地址、即调用的返回地址
+获取 调用runtime方法指令 末尾的地址。即下一条指令的地址、也是调用的返回地址
 
 常用调用路径：
 
@@ -423,7 +422,7 @@ CompilerThread::thread_entry
 
 ### 方法`Relocation::pd_set_jeandle_data_value`
 
-设置已编译方法（`nmethod`）中使用的可重定向的数据。常用于GC完成后，更新`nmethod`使用的OOP。
+修改已编译方法（`nmethod`）中使用的可重定向的数据。常用于GC完成后，更新`nmethod`使用的OOP。
 常见调用路径：
 
 ```shell
