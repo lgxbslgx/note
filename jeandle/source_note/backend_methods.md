@@ -97,9 +97,35 @@ JeandleCompilation::JeandleCompilation
 综合`JeandleAssembler::patch_ic_call_site`和`JeandleAssembler::emit_ic_check`：
 如果receiver类型和缓存的类型（inline cache）相同，则直接调用`resolve_virtual_call`，否则调用`ic_miss_stub`。
 
+### 方法`JeandleAssembler::emit_verified_entry`
+
+生成一个空指令。后面会patch成一个跳转指令，跳转到用于验证的代码。
+常用调用路径：
+
+```shell
+JeandleAssembler::emit_verified_entry
+JeandleCompiledCode::finalize
+JeandleCompilation::compile_java_method
+JeandleCompilation::JeandleCompilation
+```
+
+### 方法`JeandleAssembler::interior_entry_alignment`
+
+方法入口需要对齐的字节数。注意：对齐前，有inline cache的检测代码。
+常用调用路径：
+
+```shell
+JeandleAssembler::interior_entry_alignment
+JeandleCompiledCode::finalize
+JeandleCompilation::compile_java_method
+JeandleCompilation::JeandleCompilation
+```
+
 ### 方法`JeandleAssembler::emit_exception_handler`
 
-生成 **调用**异常处理器 的代码，放到`CodeOffsets`的`Exceptions`段。异常处理器的代码在方法`JeandleRuntimeRoutine::generate_exception_handler`中生成（下文有该方法的说明）。
+生成 **调用**异常处理器 的代码，放到`CodeOffsets`的`Exceptions`段。
+异常处理器的代码在方法`JeandleRuntimeRoutine::generate_exception_handler`中生成（下文有该方法的说明）。
+虚拟机**内部发生异常**时，会使用`Exceptions`中的代码，从而调用异常处理器。
 常用调用路径：
 
 ```shell
@@ -347,7 +373,10 @@ CompilerThread::thread_entry
 
 ### 方法`JeandleRuntimeRoutine::install_exceptional_return`
 
-抛出异常时，会检查当前方法的异常处理表，判断是否捕获了该异常，如果没有捕获，则要向上层抛出异常。向上抛出异常时，`install_exceptional_return`负责设置异常返回地址（也设置了原调用的返回地址和异常类型到`JavaThread`中），使得当前返回地址为异常返回代码的地址（而不是原调用的返回地址）。
+用于向上层方法抛出异常，即用于**实现向上展开unwind操作**。
+当方法抛出异常时，会检查当前方法的异常处理表，判断是否捕获了该异常，如果没有捕获，则要向上层抛出异常。
+向上抛出异常时，`install_exceptional_return`负责设置异常返回地址（也设置了原调用的返回地址和异常类型到`JavaThread`中），
+使得当前返回地址为异常返回代码的地址（而不是原调用的返回地址）。
 
 ### 方法`JeandleRuntimeRoutine::generate_exceptional_return`
 
@@ -373,7 +402,7 @@ CompilerThread::thread_entry
 生成异常处理器代码。
 
 - 设置栈结构（return address、frame pointer等）
-- 调用方法`JeandleRuntimeRoutine::search_landingpad`，检查异常处理表中，该异常对应的处理代码地址
+- 调用方法`JeandleRuntimeRoutine::search_landingpad`，检查异常处理表中，该抛出异常的位置对应的处理代码地址
 - 跳转到处理代码
 
 常用调用路径：
