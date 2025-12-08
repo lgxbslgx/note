@@ -20,8 +20,18 @@ cmake -G "Unix Makefiles" \
 -DLLVM_BUILD_LLVM_DYLIB=On \
 -DLLVM_DYLIB_COMPONENTS=all ../llvm
 
+cmake -G "Unix Makefiles" \
+-DLLVM_TARGETS_TO_BUILD="X86;RISCV;AArch64" \
+-DCMAKE_BUILD_TYPE="Debug" \
+-DLLVM_ENABLE_ASSERTIONS="ON" \
+-DCMAKE_INSTALL_PREFIX="/home/lgx/install/llvm-dev" \
+-DLLVM_BUILD_LLVM_DYLIB=On \
+-DLLVM_DYLIB_COMPONENTS=all \
+-DLLVM_USE_LINKER="lld" \
+../llvm
+
 # 构建
-cmake --build . --target install  -- -j 10
+cmake --build . --target install  -- -j 8
 ```
 
 ## 构建JDK
@@ -44,7 +54,7 @@ sh configure \
 --with-jeandle-llvm=/home/lgx/install/llvm-dev
 
 # 构建
-make images JOBS=10
+make images JOBS=8
 
 # 测试
 ./build/linux-x86_64-server-slowdebug/images/jdk/bin/java --version
@@ -118,7 +128,7 @@ cmake -G "Unix Makefiles" \
 ../llvm
 
 # 构建LLVM
-cmake --build . --target install  -- -j 10
+cmake --build . --target install  -- -j 8
 
 sudo ldconfig -r ~/source/debian-sysroot/arm64/
 
@@ -139,7 +149,7 @@ sh configure \
 
 # 构建JDK
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/lgx/source/debian-sysroot/arm64/lib:/home/lgx/source/debian-sysroot/arm64/usr/lib:/home/lgx/source/debian-sysroot/arm64/lib/aarch64-linux-gnu:/home/lgx/source/debian-sysroot/arm64/usr/lib/aarch64-linux-gnu:/home/lgx/install/llvm-aarch64/lib
-make images JOBS=10
+make images JOBS=8
 
 # 按顺序输出完整日记
 make --trace images JOBS=1 | tee log.txt
@@ -211,7 +221,7 @@ cmake -G "Unix Makefiles" \
 ../llvm
 
 # 构建LLVM
-cmake --build . --target install  -- -j 10
+cmake --build . --target install  -- -j 8
 
 sudo ldconfig -r ~/source/debian-sysroot/riscv64
 
@@ -232,7 +242,7 @@ sh configure \
 
 # 构建JDK
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/lgx/source/debian-sysroot/riscv64/lib:/home/lgx/source/debian-sysroot/riscv64/usr/lib:/home/lgx/source/debian-sysroot/riscv64/lib/riscv64-linux-gnu:/home/lgx/source/debian-sysroot/riscv64/usr/lib/riscv64-linux-gnu:/home/lgx/install/llvm-riscv64/lib
-make images JOBS=10
+make images JOBS=8
 
 # 按顺序输出完整日记
 make --trace images JOBS=1 | tee log.txt
