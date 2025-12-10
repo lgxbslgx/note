@@ -1,4 +1,4 @@
-### building
+# 构建、测试LLVM
 
 - cd llvm-project
 - mkdir build
@@ -7,8 +7,8 @@
 ```shell
 # debug
 cmake -S llvm -B build -G "Ninja" \
--DLLVM_ENABLE_PROJECTS="bolt;clang;clang-tools-extra;cross-project-tests;libclc;lld;lldb;mlir;polly;pstl;compiler-rt;libc;openmp" \
--DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi;libunwind" \
+-DLLVM_ENABLE_PROJECTS="bolt;clang;clang-tools-extra;cross-project-tests;lld;lldb;mlir;polly;flang" \
+-DLLVM_ENABLE_RUNTIMES="compiler-rt;libcxx;libcxxabi;libunwind;libc;openmp;libclc;llvm-libgcc;offload;flang-rt;libsycl;orc-rt" \
 -DLLVM_TARGETS_TO_BUILD="X86;RISCV;AArch64" \
 -DCMAKE_BUILD_TYPE="Debug" \
 -DLLVM_ENABLE_ASSERTIONS="ON" \
@@ -19,8 +19,8 @@ cmake -S llvm -B build -G "Ninja" \
 
 # release
 cmake -S llvm -B build -G "Ninja" \
--DLLVM_ENABLE_PROJECTS="bolt;clang;clang-tools-extra;cross-project-tests;libclc;lld;lldb;mlir;polly;pstl;compiler-rt;libc;openmp" \
--DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi;libunwind" \
+-DLLVM_ENABLE_PROJECTS="bolt;clang;clang-tools-extra;cross-project-tests;lld;lldb;mlir;polly;flang" \
+-DLLVM_ENABLE_RUNTIMES="compiler-rt;libcxx;libcxxabi;libunwind;libc;openmp;libclc;llvm-libgcc;offload;flang-rt;libsycl;orc-rt" \
 -DLLVM_TARGETS_TO_BUILD="X86;RISCV;AArch64" \
 -DCMAKE_BUILD_TYPE="Release" \
 -DLLVM_ENABLE_ASSERTIONS="ON" \
@@ -48,4 +48,3 @@ cmake -S llvm -B build -G "Ninja" \
 - 执行指定的测试，比如 `./build/bin/llvm-lit -v clang/test/SemaCXX/warn-infinite-recursion.cpp` 或者 `bin/llvm-lit -v ../clang/test/SemaCXX/warn-infinite-recursion.cpp`
 - 执行单元测试，比如 `ninja ToolingTests && tools/clang/unittests/Tooling/ToolingTests --gtest_filter=ReplacementTest.CanDeleteAllText`
 - 创建编译数据库的符号链接：`ln -s  build/compile_commands.json compile_commands.json`
-
