@@ -7,8 +7,8 @@
 ```shell
 # debug
 cmake -S llvm -B build -G "Ninja" \
--DLLVM_ENABLE_PROJECTS="bolt;clang;clang-tools-extra;cross-project-tests;lld;lldb;mlir;polly;flang" \
--DLLVM_ENABLE_RUNTIMES="compiler-rt;libcxx;libcxxabi;libunwind;libc;openmp;libclc;llvm-libgcc;offload;flang-rt;libsycl;orc-rt" \
+-DLLVM_ENABLE_PROJECTS="bolt;clang;clang-tools-extra;cross-project-tests;lld;lldb;mlir;polly" \
+-DLLVM_ENABLE_RUNTIMES="compiler-rt;libcxx;libcxxabi;libunwind;libc;openmp;libclc" \
 -DLLVM_TARGETS_TO_BUILD="X86;RISCV;AArch64" \
 -DCMAKE_BUILD_TYPE="Debug" \
 -DLLVM_ENABLE_ASSERTIONS="ON" \
@@ -19,8 +19,8 @@ cmake -S llvm -B build -G "Ninja" \
 
 # release
 cmake -S llvm -B build -G "Ninja" \
--DLLVM_ENABLE_PROJECTS="bolt;clang;clang-tools-extra;cross-project-tests;lld;lldb;mlir;polly;flang" \
--DLLVM_ENABLE_RUNTIMES="compiler-rt;libcxx;libcxxabi;libunwind;libc;openmp;libclc;llvm-libgcc;offload;flang-rt;libsycl;orc-rt" \
+-DLLVM_ENABLE_PROJECTS="bolt;clang;clang-tools-extra;cross-project-tests;lld;lldb;mlir;polly" \
+-DLLVM_ENABLE_RUNTIMES="compiler-rt;libcxx;libcxxabi;libunwind;libc;openmp;libclc" \
 -DLLVM_TARGETS_TO_BUILD="X86;RISCV;AArch64" \
 -DCMAKE_BUILD_TYPE="Release" \
 -DLLVM_ENABLE_ASSERTIONS="ON" \
