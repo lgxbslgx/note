@@ -161,53 +161,66 @@ JeandleCompilation::compile_java_method
 JeandleCompilation::JeandleCompilation
 ```
 
-### 方法`JeandleAssembler::fixup_routine_call_inst_offset`
+### 方法`JeandleAssembler::fixup_call_inst_offset`
 
 获取 调用runtime方法指令 末尾的地址。即下一条指令的地址、也是调用的返回地址
 
 常用调用路径：
 
 ```shell
-JeandleAssembler::fixup_routine_call_inst_offset
+JeandleAssembler::fixup_call_inst_offset
 JeandleCompiledCode::resolve_reloc_info
 JeandleCompiledCode::finalize
 JeandleCompilation::compile_java_method
 JeandleCompilation::JeandleCompilation
 ```
 
-### 方法`JeandleAssembler::is_oop_reloc_kind`
+### 方法`JeandleAssembler::is_oop_reloc`
 
 判断链接图（LinkGraph）的边类型是否为OOP的重定向类型。
 常用调用路径：
 
 ```shell
-JeandleAssembler::is_oop_reloc_kind
+JeandleAssembler::is_oop_reloc
 JeandleCompiledCode::resolve_reloc_info
 JeandleCompiledCode::finalize
 JeandleCompilation::compile_java_method
 JeandleCompilation::JeandleCompilation
 ```
 
-### 方法`JeandleAssembler::is_routine_call_reloc_kind`
+### 方法`JeandleAssembler::is_routine_call_reloc`
 
 判断链接图（LinkGraph）的边类型是否为runtime方法调用的重定向类型。
 常用调用路径：
 
 ```shell
-JeandleAssembler::is_routine_call_reloc_kind
+JeandleAssembler::is_routine_call_reloc
 JeandleCompiledCode::resolve_reloc_info
 JeandleCompiledCode::finalize
 JeandleCompilation::compile_java_method
 JeandleCompilation::JeandleCompilation
 ```
 
-### 方法`JeandleAssembler::is_const_reloc_kind`
+### 方法`JeandleAssembler::is_external_call_reloc`
+
+判断链接图（LinkGraph）的边类型是否为外部方法调用的重定向类型。
+常用调用路径：
+
+```shell
+JeandleAssembler::is_external_call_reloc
+JeandleCompiledCode::resolve_reloc_info
+JeandleCompiledCode::finalize
+JeandleCompilation::compile_java_method
+JeandleCompilation::JeandleCompilation
+```
+
+### 方法`JeandleAssembler::is_const_reloc`
 
 判断链接图（LinkGraph）的边类型是否为常量的重定向类型。
 常用调用路径：
 
 ```shell
-JeandleAssembler::is_const_reloc_kind
+JeandleAssembler::is_const_reloc
 JeandleCompiledCode::resolve_reloc_info
 JeandleCompiledCode::finalize
 JeandleCompilation::compile_java_method
@@ -296,6 +309,10 @@ CompileBroker::invoke_compiler_on_method
 CompileBroker::compiler_thread_loop
 CompilerThread::thread_entry
 ```
+
+### 方法`JeandleCompiledCode::build_exception_handler_table`
+
+获取LLVM生成的异常表。
 
 ## 文件`jeandleRegister_<arch>.hpp`
 
@@ -461,3 +478,7 @@ oop_Relocation::fix_oop_relocation
 nmethod::fix_oop_relocations
 G1CodeBlobClosure::do_evacuation_and_fixup # GC相关代码
 ```
+
+### 方法`trampoline_stub_Relocation::pd_fix_owner_after_move`
+
+调整代码中跳转到trampoline_stub的指令的目标地址。当需要调用外部方法的时候，才需要实现这个函数。
