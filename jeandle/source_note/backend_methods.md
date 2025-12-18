@@ -390,10 +390,15 @@ CompilerThread::thread_entry
 
 ### 方法`JeandleRuntimeRoutine::install_exceptional_return`
 
-用于向上层方法抛出异常，即用于**实现向上展开unwind操作**。
+用于**jeandle编译的方法**向上层方法抛出异常，即用于**实现向上展开unwind操作**。
 当方法抛出异常时，会检查当前方法的异常处理表，判断是否捕获了该异常，如果没有捕获，则要向上层抛出异常。
 向上抛出异常时，`install_exceptional_return`负责设置异常返回地址（也设置了原调用的返回地址和异常类型到`JavaThread`中），
 使得当前返回地址为异常返回代码的地址（而不是原调用的返回地址）。
+
+### 方法`JeandleRuntimeRoutine::install_exceptional_return_for_call_vm`
+
+类似`JeandleRuntimeRoutine::install_exceptional_return`，用于**jeandle C routine代码**向上层方法抛出异常，
+具体含义和上文`JeandleRuntimeRoutine::install_exceptional_return`差不多。
 
 ### 方法`JeandleRuntimeRoutine::generate_exceptional_return`
 

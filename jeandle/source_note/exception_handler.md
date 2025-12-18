@@ -40,20 +40,22 @@
 graph TD
     正常代码 --出现显式异常，直接跳转--> 异常遍历代码
     异常遍历代码 --instanceof匹配，直接跳转--> 异常处理代码
+    异常遍历代码 --instanceof都不匹配，向上展开调用栈 --> 异常返回代码
 ```
 
 ### 隐式调用流程
 
-异常处理器（用于异常表搜索的routine）会被`JeandleCompiledCode::finalize`中install到`CodeOffsets::Exceptions`代码段中。
-虚拟机运行中生成异常时，会跳转到`CodeOffsets::Exceptions`段的代码，然后异常处理器会搜索该代码位置对应的异常遍历代码，跳转至异常遍历代码。
+jeandle的异常处理器（用于异常表搜索的routine）会被`JeandleCompiledCode::finalize`中install到`CodeOffsets::Exceptions`代码段中。
+虚拟机运行中生成异常时，会跳转到`CodeOffsets::Exceptions`段的代码，然后jeandle的异常处理器会搜索该代码位置对应的异常遍历代码，跳转至异常遍历代码。
 异常遍历代码会判断异常类型，类型匹配则跳转到`异常处理代码`，否则继续向上展开调用栈。
 
 ```mermaid
 graph TD
     正常代码 --抛出异常--> `CodeOffsets::Exceptions`代码段
-    `CodeOffsets::Exceptions`代码段 --经`JeandleAssembler::emit_exception_handler`生成的代码跳转--> 异常处理器
-    异常处理器 --找到代码位置对应的异常遍历代码--> 异常遍历代码
+    `CodeOffsets::Exceptions`代码段 --经`JeandleAssembler::emit_exception_handler`生成的代码跳转--> jeandle的异常处理器
+    jeandle的异常处理器 --找到代码位置对应的异常遍历代码--> 异常遍历代码
     异常遍历代码 --instanceof匹配，直接跳转--> 异常处理代码
+    异常遍历代码 --instanceof都不匹配，向上展开调用栈 --> 异常返回代码
 ```
 
 ### 异常返回流程（向上展开unwind处理流程）
@@ -62,9 +64,12 @@ graph TD
 
 ```mermaid
 graph TD
+    省略上文的显式或隐式调用流程的前面大部分 --> 异常遍历代码
     异常遍历代码 --instanceof都不匹配，向上展开调用栈 --> 异常返回代码
-    异常返回代码 --设置环境为上一层的方法--> 异常处理器
-    异常处理器 --找到上一层方法的代码位置对应的异常遍历代码--> 上一层方法的异常遍历代码
+    异常遍历代码 --instanceof匹配，直接跳转--> 异常处理代码
+    异常返回代码 --设置环境为上一层的方法--> SharedRuntime的异常处理器
+    SharedRuntime的异常处理器 --> jeandle的异常处理器
+    jeandle的异常处理器 --找到上一层方法的代码位置对应的异常遍历代码--> 上一层方法的异常遍历代码
     上一层方法的异常遍历代码 --instanceof匹配，直接跳转--> 上一层方法的异常处理代码
     上一层方法的异常遍历代码 --instanceof都不匹配，继续向上展开调用栈--> 异常返回代码
 ```
