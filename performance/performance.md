@@ -22,7 +22,6 @@
 - ltrace：追踪进程的库函数调用。
 - eBPF：内核级动态追踪框架。
 - DTrace：
-- top-down：
 
 ## Java相关性能工具
 

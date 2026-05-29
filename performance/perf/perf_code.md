@@ -76,6 +76,21 @@ static const struct pmu perf_ops_cpu_clock = { // CPU时钟事件对应的PMU
 
 ## 代码运行
 
+### 注册事件
+
+使用方法`sys_perf_event_open`注册事件，里面会创建`perf_event`并保存，最后返回。
+参数`perf_event_attr`为用户提供的事件属性。
+
+```c
+int sys_perf_event_open(struct perf_event_attr *hw_event_uptr,
+                        pid_t pid, int cpu, int group_fd,
+                        unsigned long flags);
+
+SYSCALL_DEFINE5(perf_event_open,
+        struct perf_event_attr __user *, attr_uptr,
+        pid_t, pid, int, cpu, int, group_fd, unsigned long, flags)
+```
+
 ### 启用事件
 
 进程被调度运行的时候，启用对应的事件，流程如下所示。
@@ -229,4 +244,5 @@ perf_output_sample(struct perf_output_handle *handle,
 
 ## 参考内容
 
+- [初入源码-从perf文档开始](https://zhuanlan.zhihu.com/p/622956899)
 - [一文看懂 Linux 性能分析｜perf 源码实现（超详细~）](https://zhuanlan.zhihu.com/p/573703139)

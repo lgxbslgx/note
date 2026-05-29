@@ -11,7 +11,7 @@
 - `sudo perf stat <command>`：运行命令并获取计数数据
 - `sudo perf top`：显示实时采样数据
 - `sudo perf record <command>`：运行命令并记录采样数据
-- `sudo perf script -i perf.data`：读取数据，显示采样记录（不聚合，每个采样逐条打印）
+- `sudo perf script -i perf.data`：读取数据，显示采样记录，即转换成可以阅读的形式（不聚合，每个采样逐条打印）
 - `sudo perf report -i perf.data`：读取数据，显示采样数据的报告（按函数/指令​聚合，显示汇总信息）
 
 ## 常用参数
